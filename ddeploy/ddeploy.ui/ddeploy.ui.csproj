@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.VS2019Dark" Version="20.2.4" />
+      <PackageReference Include="twentySix.Framework.Core" Version="3.0.0" />
+      <PackageReference Include="twentySix.Framework.Theme" Version="3.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="ddeploy.ico" />
+      <Resource Include="ddeploy.ico" />
+    </ItemGroup>
+
+</Project>
