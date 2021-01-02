@@ -1,13 +1,13 @@
-﻿using ddeploy.ui.Views;
+﻿using fita.ui.Views;
 using LightInject;
 
-namespace ddeploy.ui
+namespace fita.ui
 {
     public class Composition : ICompositionRoot
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<MainWindow>(new PerContainerLifetime());
+            serviceRegistry.Register<ShellView>(new PerContainerLifetime());
             //serviceRegistry.Register<ShellViewModel>();
         }
     }

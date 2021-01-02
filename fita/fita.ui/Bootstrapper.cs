@@ -2,14 +2,15 @@
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-using ddeploy.ui.Views;
+using ddeploy.ui;
 using DevExpress.Mvvm.UI;
+using fita.ui.Views;
 using LightInject;
 using twentySix.Framework.Core.Helpers;
 using twentySix.Framework.Core.UI;
 using twentySix.Framework.Core.UI.Interfaces;
 
-namespace ddeploy.ui
+namespace fita.ui
 {
     public class Bootstrapper : LightInjectBootstrapper
     {
@@ -37,14 +38,14 @@ namespace ddeploy.ui
         {
             // devexpress
             var callingAssemblyLocation = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
-            var appFiles = Directory.EnumerateFiles(callingAssemblyLocation, "ddeploy.ui.exe");
+            var appFiles = Directory.EnumerateFiles(callingAssemblyLocation, "fita.ui.exe");
             var viewLocator = new ViewLocator(appFiles.Select(Assembly.LoadFile));
             ViewLocator.Default = viewLocator;
         }
 
         protected override void ShowWindow()
         {
-            this.Container.GetInstance<MainWindow>().Show();
+            this.Container.GetInstance<ShellView>().Show();
         }
 
         protected override void OnExit()

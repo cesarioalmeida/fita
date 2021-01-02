@@ -14,7 +14,6 @@
 
     <ItemGroup>
       <None Remove="ddeploy.ico" />
-      <Resource Include="ddeploy.ico" />
     </ItemGroup>
 
 </Project>

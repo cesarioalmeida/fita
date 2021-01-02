@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows;
+using ddeploy.ui;
 using DevExpress.Mvvm;
 using DevExpress.Xpf.Core;
 
-namespace ddeploy.ui
+namespace fita.ui
 {
     public partial class App
     {
@@ -18,7 +19,7 @@ namespace ddeploy.ui
                 Status = "starting ...",
                 Title = "ddeploy",
                 Subtitle = "powered by twentySix.Framework 3.0", 
-                Logo = new Uri(@"pack://application:,,,/ddeploy.ui;component/ddeploy.ico")
+                Logo = new Uri(@"pack://application:,,,/fita.ui;component/ddeploy.ico")
             }).ShowOnStartup();
 
             var bootstrapper = new Bootstrapper(this);

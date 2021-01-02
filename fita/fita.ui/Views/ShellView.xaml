@@ -1,9 +1,10 @@
-﻿<dx:ThemedWindow x:Class="ddeploy.ui.Views.MainWindow"
+﻿<dx:ThemedWindow x:Class="fita.ui.Views.ShellView"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+                 xmlns:views1="clr-namespace:fita.ui.Views"
                  mc:Ignorable="d"
                  Title="ddeploy"
                  Height="768"
@@ -11,5 +12,9 @@
                  WindowState="Maximized"
                  WindowStartupLocation="CenterOwner"
                  Icon="../ddeploy.ico">
-    <Grid />
+    <dx:BackgroundPanel Margin="5">
+        <Grid>
+            <views1:DashboardView />
+        </Grid>
+    </dx:BackgroundPanel>
 </dx:ThemedWindow>
