@@ -16,4 +16,9 @@
       <None Remove="ddeploy.ico" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="fita.ico" />
+      <Resource Include="fita.ico" />
+    </ItemGroup>
+
 </Project>

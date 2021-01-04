@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-using ddeploy.ui;
 using DevExpress.Mvvm.UI;
 using fita.ui.Views;
 using LightInject;

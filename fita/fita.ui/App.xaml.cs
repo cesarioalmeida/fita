@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using ddeploy.ui;
 using DevExpress.Mvvm;
 using DevExpress.Xpf.Core;
 
@@ -17,9 +16,9 @@ namespace fita.ui
                 Copyright = string.Empty,
                 IsIndeterminate = true,
                 Status = "starting ...",
-                Title = "ddeploy",
+                Title = "fita",
                 Subtitle = "powered by twentySix.Framework 3.0", 
-                Logo = new Uri(@"pack://application:,,,/fita.ui;component/ddeploy.ico")
+                Logo = new Uri(@"pack://application:,,,/fita.ui;component/fita.ico")
             }).ShowOnStartup();
 
             var bootstrapper = new Bootstrapper(this);

@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fita.ui", "fita.ui\fita.ui.csproj", "{DE776980-E79E-49A2-A96D-619E63F0B775}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fita.ui.tests", "fita.ui.tests\fita.ui.tests.csproj", "{9923051B-BF19-4587-8D63-96B2BF9923CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{DE776980-E79E-49A2-A96D-619E63F0B775}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE776980-E79E-49A2-A96D-619E63F0B775}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE776980-E79E-49A2-A96D-619E63F0B775}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9923051B-BF19-4587-8D63-96B2BF9923CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9923051B-BF19-4587-8D63-96B2BF9923CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9923051B-BF19-4587-8D63-96B2BF9923CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9923051B-BF19-4587-8D63-96B2BF9923CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

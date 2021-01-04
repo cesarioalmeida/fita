@@ -1,13 +1,13 @@
-# Default ignored files
+﻿# Default ignored files
 /shelf/
 /workspace.xml
 # Rider ignored files
+/modules.xml
 /projectSettingsUpdater.xml
 /contentModel.xml
-/modules.xml
-/.idea.ddeploy.iml
+/.idea.fita.iml
 # Datasource local storage ignored files
-/../../../../../../../../:\Development\CS\ddeploy\ddeploy\.idea\.idea.ddeploy\.idea/dataSources/
+/../../../../../../../../:\Development\CS\fita\fita\.idea\.idea.fita\.idea/dataSources/
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/

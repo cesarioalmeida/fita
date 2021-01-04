@@ -4,17 +4,17 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
-                 xmlns:views1="clr-namespace:fita.ui.Views"
+                 xmlns:views="clr-namespace:fita.ui.Views"
                  mc:Ignorable="d"
-                 Title="ddeploy"
+                 Title="fita"
                  Height="768"
                  Width="1024"
                  WindowState="Maximized"
                  WindowStartupLocation="CenterOwner"
-                 Icon="../ddeploy.ico">
+                 Icon="../fita.ico">
     <dx:BackgroundPanel Margin="5">
         <Grid>
-            <views1:DashboardView />
+            <views:DashboardView />
         </Grid>
     </dx:BackgroundPanel>
 </dx:ThemedWindow>
