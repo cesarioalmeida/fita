@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fita.ui", "fita.ui\fita.ui.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fita.ui.tests", "fita.ui.tests\fita.ui.tests.csproj", "{9923051B-BF19-4587-8D63-96B2BF9923CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fita.core.tests", "fita.core.tests\fita.core.tests.csproj", "{336C7CC7-540A-4272-92E9-1D88074321AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fita.core", "fita.core\fita.core.csproj", "{71A5C0B3-F1C7-46F6-9017-3B58DC32AA44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{9923051B-BF19-4587-8D63-96B2BF9923CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9923051B-BF19-4587-8D63-96B2BF9923CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9923051B-BF19-4587-8D63-96B2BF9923CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{336C7CC7-540A-4272-92E9-1D88074321AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{336C7CC7-540A-4272-92E9-1D88074321AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{336C7CC7-540A-4272-92E9-1D88074321AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{336C7CC7-540A-4272-92E9-1D88074321AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71A5C0B3-F1C7-46F6-9017-3B58DC32AA44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71A5C0B3-F1C7-46F6-9017-3B58DC32AA44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71A5C0B3-F1C7-46F6-9017-3B58DC32AA44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71A5C0B3-F1C7-46F6-9017-3B58DC32AA44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

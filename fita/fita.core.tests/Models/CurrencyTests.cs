@@ -1,8 +1,8 @@
 using System;
-using fita.ui.Models;
+using fita.core.Models;
 using NUnit.Framework;
 
-namespace fita.ui.tests.Models
+namespace fita.core.tests.Models
 {
     public class CurrencyTests
     {

@@ -21,4 +21,8 @@
       <Resource Include="fita.ico" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\fita.core\fita.core.csproj" />
+    </ItemGroup>
+
 </Project>

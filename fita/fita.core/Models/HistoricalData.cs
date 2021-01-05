@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using fita.ui.DTOs;
+using fita.core.DTOs;
 using twentySix.Framework.Core.UI.Models;
 
-namespace fita.ui.Models
+namespace fita.core.Models
 {
     public class HistoricalData : SynchronizableModelWithDTO<HistoricalData, HistoricalDataDTO>
     {

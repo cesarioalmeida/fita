@@ -1,7 +1,7 @@
-﻿using fita.ui.DTOs;
+﻿using fita.core.DTOs;
 using twentySix.Framework.Core.UI.Models;
 
-namespace fita.ui.Models
+namespace fita.core.Models
 {
     public class Currency : SynchronizableModelWithDTO<Currency, CurrencyDTO>
     {
@@ -40,7 +40,7 @@ namespace fita.ui.Models
 
             return other.Name.Equals(Name)
                    && other.Symbol.Equals(Symbol)
-                   && other.ExchangeData.Id == this.ExchangeData.Id;
+                   && other.ExchangeData.Id == ExchangeData.Id;
         }
 
         public override void SyncFrom(Currency obj)

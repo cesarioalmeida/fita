@@ -1,7 +1,7 @@
-﻿using fita.ui.DTOs;
+﻿using fita.core.DTOs;
 using twentySix.Framework.Core.UI.Models;
 
-namespace fita.ui.Models
+namespace fita.core.Models
 {
     public class Account : SynchronizableModelWithDTO<Account, AccountDTO>
     {
@@ -14,6 +14,8 @@ namespace fita.ui.Models
 
         public Currency Currency { get; set; }
         
+        public bool IsCreditCard { get; set; }
+        
         public override AccountDTO GetDTO()
         {
             return new()
@@ -22,7 +24,8 @@ namespace fita.ui.Models
                 IsDeleted = IsDeleted,
                 LastUpdated = LastUpdated,
                 Name = Name,
-                CurrencyId = Currency.Id
+                CurrencyId = Currency.Id,
+                IsCreditCard = IsCreditCard
             };
         }
 
@@ -34,7 +37,8 @@ namespace fita.ui.Models
             }
 
             return other.Name.Equals(Name)
-                   && other.Currency.Id == this.Currency.Id;
+                   && other.Currency.Id == Currency.Id
+                   && other.IsCreditCard == IsCreditCard;
         }
 
         public override void SyncFrom(Account obj)
@@ -43,6 +47,7 @@ namespace fita.ui.Models
             LastUpdated = obj.LastUpdated;
             Name = (string) obj.Name?.Clone();
             Currency.SyncFrom(obj.Currency);
+            IsCreditCard = obj.IsCreditCard;
         }
     }
 }

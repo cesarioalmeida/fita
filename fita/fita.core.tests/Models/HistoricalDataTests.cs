@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using fita.ui.Models;
+using fita.core.Models;
 using LiteDB;
 using NUnit.Framework;
 
-namespace fita.ui.tests.Models
+namespace fita.core.tests.Models
 {
     public class HistoricalDataTests
     {
