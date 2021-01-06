@@ -11,13 +11,13 @@ namespace fita.core.Models
             Symbol = "€";
             ExchangeData = new HistoricalData();
         }
-        
+
         public string Name { get; set; }
 
         public string Symbol { get; set; }
-        
+
         public HistoricalData ExchangeData { get; set; }
-        
+
         public override CurrencyDTO GetDTO()
         {
             return new()

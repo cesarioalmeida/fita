@@ -9,7 +9,7 @@ namespace fita.core.Models
     public class HistoricalData : SynchronizableModelWithDTO<HistoricalData, HistoricalDataDTO>
     {
         public Dictionary<DateTime, decimal> Data { get; private set; } = new Dictionary<DateTime, decimal>();
-        
+
         public override HistoricalDataDTO GetDTO()
         {
             return new()
@@ -68,7 +68,7 @@ namespace fita.core.Models
                     Data[key] = value;
                 }
             }
-            
+
             SortData();
         }
 

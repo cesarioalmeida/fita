@@ -9,13 +9,13 @@ namespace fita.core.Models
         {
             Currency = new Currency();
         }
-        
+
         public string Name { get; set; }
 
         public Currency Currency { get; set; }
-        
+
         public bool IsCreditCard { get; set; }
-        
+
         public override AccountDTO GetDTO()
         {
             return new()
