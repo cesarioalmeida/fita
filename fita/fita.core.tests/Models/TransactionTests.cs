@@ -18,7 +18,7 @@ namespace fita.core.tests.Models
             _targetPopulated = new Transaction
             {
                 Date = DateTime.Today.AddDays(-1), Payee = "Pingo Doce", Tags = new[] {"supermarket", "shopping"},
-                Category = new Category {Group = CategoryGroupEnum.PersonalExpenses, Name = "Groceries"}, Value = 26.32m
+                Category = new Category {Group = CategoryGroupEnum.PersonalExpenses, Name = "Groceries"}, Amount = 26.32m
             };
         }
 
@@ -44,7 +44,7 @@ namespace fita.core.tests.Models
             Assert.AreEqual(DateTime.Today.AddDays(-1), result.Date);
             Assert.AreEqual("Pingo Doce", result.Payee);
             Assert.IsTrue(result.Tags.Contains("shopping"));
-            Assert.AreEqual(26.32m, result.Value);
+            Assert.AreEqual(26.32m, result.Amount);
             Assert.AreEqual(_targetPopulated.Category.Id, result.CategoryId);
         }
         
@@ -56,7 +56,7 @@ namespace fita.core.tests.Models
             var other = new Transaction
             {
                 Date = DateTime.Today.AddDays(1), Payee = "Me",
-                Category = new Category {Group = CategoryGroupEnum.TransfersIn}, Tags = tags, Value = 0.3m
+                Category = new Category {Group = CategoryGroupEnum.TransfersIn}, Tags = tags, Amount = 0.3m
             };
         
             _targetPopulated.SyncFrom(other);
@@ -66,7 +66,7 @@ namespace fita.core.tests.Models
             Assert.IsTrue(_targetPopulated.Tags.Contains("test"));
             Assert.AreNotSame(tags, _targetPopulated.Tags);
             Assert.AreEqual(CategoryGroupEnum.TransfersIn, _targetPopulated.Category.Group);
-            Assert.AreEqual(0.3m, _targetPopulated.Value);
+            Assert.AreEqual(0.3m, _targetPopulated.Amount);
         }
     }
 }

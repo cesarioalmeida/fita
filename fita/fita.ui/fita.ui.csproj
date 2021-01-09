@@ -4,6 +4,7 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net5.0-windows</TargetFramework>
         <UseWPF>true</UseWPF>
+        <ApplicationIcon>fita.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,7 +19,15 @@
 
     <ItemGroup>
       <None Remove="fita.ico" />
+      <None Remove="Resources\Categories_32x32.png" />
+      <None Remove="Resources\Currency_32x32.png" />
+      <None Remove="Resources\Settings_32x32.png" />
       <Resource Include="fita.ico" />
+      <None Remove="Resources\Add_32x32.png" />
+      <Resource Include="Resources\Add_32x32.png" />
+      <Resource Include="Resources\Categories_32x32.png" />
+      <Resource Include="Resources\Currency_32x32.png" />
+      <Resource Include="Resources\Settings_32x32.png" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using fita.core.DTOs;
+﻿using System.Linq;
+using fita.core.DTOs;
 using twentySix.Framework.Core.UI.Models;
 
 namespace fita.core.Models
@@ -17,6 +18,8 @@ namespace fita.core.Models
         public string Symbol { get; set; }
 
         public HistoricalData ExchangeData { get; set; }
+
+        public decimal CurrentExchangeRate => ExchangeData?.Data?.Count > 0 ? ExchangeData.Data.First().Value : 1m;
 
         public override CurrencyDTO GetDTO()
         {

@@ -41,5 +41,21 @@ namespace fita.core.tests.Models
             CollectionAssert.IsNotEmpty(_target.ExchangeData.Data);
             Assert.AreNotSame(_target.ExchangeData.Data, other.ExchangeData.Data);
         }
+
+        [Test]
+        public void CurrentExchangeRate_NoHistorialData_Returns1()
+        {
+            Assert.AreEqual(1m, _target.CurrentExchangeRate);
+        }
+        
+        [Test]
+        public void CurrentExchangeRate_WithHistorialData_ReturnsLastest()
+        {
+            _target.ExchangeData.AddOrUpdate(DateTime.Today.AddDays(-2), 0.3m);
+            _target.ExchangeData.AddOrUpdate(DateTime.Today, 0.1m);
+            _target.ExchangeData.AddOrUpdate(DateTime.Today.AddDays(-1), 0.5m);
+
+            Assert.AreEqual(0.1m, _target.CurrentExchangeRate);
+        }
     }
 }

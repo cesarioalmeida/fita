@@ -17,7 +17,7 @@ namespace fita.core.Models
 
         public Category Category { get; set; } = new();
 
-        public decimal Value { get; set; }
+        public decimal Amount { get; set; }
 
         public override TransactionDTO GetDTO()
         {
@@ -31,7 +31,7 @@ namespace fita.core.Models
                 Memo = Memo,
                 Tags = Tags,
                 CategoryId = Category.Id,
-                Value = Value
+                Amount = Amount
             };
         }
 
@@ -48,7 +48,7 @@ namespace fita.core.Models
                 && other.Tags == null && Tags == null || other.Tags != null && Tags != null &&
                 other.Tags.SequenceEqual(Tags)
                 && other.Category.Id == Category.Id
-                && other.Value == Value;
+                && other.Amount == Amount;
         }
 
         public override void SyncFrom(Transaction obj)
@@ -60,7 +60,7 @@ namespace fita.core.Models
             Memo = (string) obj.Memo?.Clone();
             Tags = obj.Tags?.ToArray();
             Category.SyncFrom(obj.Category);
-            Value = obj.Value;
+            Amount = obj.Amount;
         }
     }
 }

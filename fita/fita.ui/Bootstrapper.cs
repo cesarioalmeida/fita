@@ -23,23 +23,25 @@ namespace fita.ui
 
         protected override void ConfigureApplication()
         {
-            ApplicationHelper.SetApplicationDetails("twentySix", "ddeploy");
+            ApplicationHelper.SetApplicationDetails("twentySix", "fita");
         }
 
         protected override void ConfigureServiceContainer()
         {
             base.ConfigureServiceContainer();
 
+            Container.RegisterAssembly("fita.core.dll");
             this.Container.RegisterFrom<Composition>();
         }
 
         protected override void ConfigureViewModelLocator()
         {
-            // devexpress
-            var callingAssemblyLocation = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
-            var appFiles = Directory.EnumerateFiles(callingAssemblyLocation, "fita.ui.exe");
-            var viewLocator = new ViewLocator(appFiles.Select(Assembly.LoadFile));
-            ViewLocator.Default = viewLocator;
+            //// devexpress
+            //var callingAssemblyLocation = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
+            //var appFiles = Directory.EnumerateFiles(callingAssemblyLocation, "fita.core.dll")
+            //    .Concat(Directory.EnumerateFiles(callingAssemblyLocation, "fita.ui.exe"));
+            //var viewLocator = new ViewLocator(appFiles.Select(Assembly.LoadFile));
+            //ViewLocator.Default = viewLocator;
         }
 
         protected override void ShowWindow()

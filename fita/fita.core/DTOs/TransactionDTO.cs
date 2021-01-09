@@ -16,6 +16,6 @@ namespace fita.core.DTOs
         
         public ObjectId CategoryId { get; set; }
         
-        public decimal Value { get; set; }
+        public decimal Amount { get; set; }
     }
 }
