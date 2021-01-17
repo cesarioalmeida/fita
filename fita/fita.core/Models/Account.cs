@@ -39,7 +39,7 @@ namespace fita.core.Models
                 LastUpdated = LastUpdated,
                 Group = Group,
                 Name = Name,
-                CurrencyId = Currency.Id,
+                //CurrencyId = Currency.Id,
                 IsCreditCard = IsCreditCard,
                 TransactionsIds = Transactions?.Select(x => x.Value.Id).ToArray()
             };
@@ -54,7 +54,7 @@ namespace fita.core.Models
 
             return other.Group.Equals(Group)
                    && other.Name.Equals(Name)
-                   && other.Currency.Id == Currency.Id
+                   //&& other.Currency.Id == Currency.Id
                    && other.IsCreditCard == IsCreditCard
                    && other.Transactions == null && Transactions == null ||
                    other.Transactions != null && Transactions != null && other.Transactions.SequenceEqual(Transactions);
@@ -66,7 +66,7 @@ namespace fita.core.Models
             LastUpdated = obj.LastUpdated;
             Group = (string) obj.Group?.Clone();
             Name = (string) obj.Name?.Clone();
-            Currency.SyncFrom(obj.Currency);
+            //Currency.SyncFrom(obj.Currency);
             IsCreditCard = obj.IsCreditCard;
             Transactions =
                 new SortedList<DateTime, Transaction>(obj?.Transactions.ToDictionary(x => x.Key, x => x.Value));

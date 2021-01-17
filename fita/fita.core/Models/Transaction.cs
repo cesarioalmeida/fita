@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Linq;
 using fita.core.DTOs;
+using LiteDB;
 using twentySix.Framework.Core.UI.Models;
 
 namespace fita.core.Models
 {
     public class Transaction : SynchronizableModelWithDTO<Transaction, TransactionDTO>
     {
+        public Transaction()
+        {
+            Id = ObjectId.NewObjectId();
+        }
+
         public DateTime Date { get; set; } = DateTime.Today;
 
         public string Payee { get; set; }

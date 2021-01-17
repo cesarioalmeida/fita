@@ -1,12 +1,18 @@
 ﻿using System.Linq;
 using fita.core.Common;
 using fita.core.DTOs;
+using LiteDB;
 using twentySix.Framework.Core.UI.Models;
 
 namespace fita.core.Models
 {
     public class Category : SynchronizableModelWithDTO<Category, CategoryDTO>
     {
+        public Category()
+        {
+            Id = ObjectId.NewObjectId();
+        }
+
         public string Name { get; set; }
 
         public CategoryGroupEnum Group { get; set; }

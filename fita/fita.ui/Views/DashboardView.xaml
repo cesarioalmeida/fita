@@ -12,30 +12,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:themeKeys="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/themekeys"
     xmlns:viewModels="clr-namespace:fita.ui.ViewModels"
+    d:DataContext="{d:DesignInstance viewModels:DashboardViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="300"
     DataContext="{dxmvvm:ViewModelSource Type=viewModels:DashboardViewModel}"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <!--<ControlTemplate x:Key="AddButtonTemplate">
-            <Rectangle
-                x:Name="baseRect"
-                Width="16"
-                Height="16"
-                Fill="{dxi:ThemeResource ThemeKey={themeKeys:HamburgerMenuBrushesThemeKey ResourceKey=ItemForegroundBrush}}">
-                <Rectangle.OpacityMask>
-                    <ImageBrush ImageSource="../Resources/Add_32x32.png" />
-                </Rectangle.OpacityMask>
-            </Rectangle>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="baseRect" Property="Fill" Value="{dxi:ThemeResource ThemeKey={themeKeys:HamburgerMenuBrushesThemeKey ResourceKey=ItemHoverBackgroundBrush}}" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>-->
 
         <DataTemplate x:Key="MainMenuHeaderTemplate">
-            <dxlc:LayoutControl Padding="0,0,0,0">
+            <dxlc:LayoutControl Padding="0">
                 <dxlc:LayoutControl.Resources>
                     <Style TargetType="Label">
                         <Setter Property="Foreground" Value="{dxi:ThemeResource ThemeKey={themeKeys:HamburgerMenuBrushesThemeKey ResourceKey=ItemForegroundBrush}}" />
@@ -53,7 +38,7 @@
     </UserControl.Resources>
 
     <dxmvvm:Interaction.Behaviors>
-        <dx:WindowedDocumentUIService DocumentShowMode="Dialog" />
+        <dx:WindowedDocumentUIService DocumentShowMode="Dialog" WindowStartupLocation="CenterScreen" />
         <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
     </dxmvvm:Interaction.Behaviors>
 

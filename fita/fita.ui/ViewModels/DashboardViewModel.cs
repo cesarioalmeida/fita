@@ -4,7 +4,6 @@ using DevExpress.Mvvm.POCO;
 using fita.core.DTOs;
 using fita.core.Models;
 using fita.ui.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

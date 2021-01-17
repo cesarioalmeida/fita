@@ -1,38 +1,40 @@
-﻿using System.Linq;
-using fita.core.DTOs;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using LiteDB;
 using twentySix.Framework.Core.UI.Models;
 
 namespace fita.core.Models
 {
-    public class Currency : SynchronizableModelWithDTO<Currency, CurrencyDTO>
+    public class Currency : SynchronizableModel<Currency>, ICloneable
     {
         public Currency()
         {
-            Name = "Euro";
+            Name = "EUR";
             Symbol = "€";
             ExchangeData = new HistoricalData();
         }
 
-        public string Name { get; set; }
+        public int CurrencyId { get; set; }
 
-        public string Symbol { get; set; }
+        [Required, MinLength(3)]
+        public string Name
+        {
+            get => GetValue<string>();
+            set => SetValue(value);
+        }
+
+        [Required]
+        public string Symbol
+        {
+            get => GetValue<string>();
+            set => SetValue(value);
+        }
 
         public HistoricalData ExchangeData { get; set; }
 
+        [BsonIgnore]
         public decimal CurrentExchangeRate => ExchangeData?.Data?.Count > 0 ? ExchangeData.Data.First().Value : 1m;
-
-        public override CurrencyDTO GetDTO()
-        {
-            return new()
-            {
-                Id = Id,
-                IsDeleted = IsDeleted,
-                LastUpdated = LastUpdated,
-                Name = Name,
-                Symbol = Symbol,
-                HistoricalDataId = ExchangeData.Id
-            };
-        }
 
         public override bool PropertiesEqual(Currency other)
         {
@@ -41,19 +43,26 @@ namespace fita.core.Models
                 return false;
             }
 
-            return other.Name.Equals(Name)
-                   && other.Symbol.Equals(Symbol)
-                   && other.ExchangeData.Id == ExchangeData.Id;
+            return other.Name.Equals(Name) &&
+                   other.Symbol.Equals(Symbol) &&
+                   other.ExchangeData?.Data == null && ExchangeData?.Data == null ||
+                   other.ExchangeData?.Data != null && ExchangeData?.Data != null &&
+                   other.ExchangeData.Data.SequenceEqual(ExchangeData.Data);
+            ;
         }
 
         public override void SyncFrom(Currency obj)
         {
-            IsDeleted = obj.IsDeleted;
-            LastUpdated = obj.LastUpdated;
-            Name = (string) obj.Name?.Clone();
-            Symbol = (string) obj.Symbol?.Clone();
-            ExchangeData = new HistoricalData();
-            ExchangeData.AddOrUpdate(obj.ExchangeData.Data);
+            Name = (string) obj.Name.Clone();
+            Symbol = (string) obj.Symbol.Clone();
+            ExchangeData = (HistoricalData) obj.ExchangeData?.Clone();
+        }
+
+        public object Clone()
+        {
+            var currency = new Currency();
+            currency.SyncFrom(this);
+            return currency;
         }
     }
 }

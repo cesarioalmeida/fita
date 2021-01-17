@@ -8,8 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Resources\NewFolder\**" />
+      <EmbeddedResource Remove="Resources\NewFolder\**" />
+      <None Remove="Resources\NewFolder\**" />
+      <Page Remove="Resources\NewFolder\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid" Version="20.2.4" />
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.VS2019Dark" Version="20.2.4" />
-      <PackageReference Include="twentySix.Framework.Core" Version="3.0.0" />
+      <PackageReference Include="twentySix.Framework.Core" Version="4.0.0" />
       <PackageReference Include="twentySix.Framework.Theme" Version="3.0.0" />
     </ItemGroup>
 
@@ -21,12 +29,16 @@
       <None Remove="fita.ico" />
       <None Remove="Resources\Categories_32x32.png" />
       <None Remove="Resources\Currency_32x32.png" />
+      <None Remove="Resources\Delete_32x32.png" />
+      <None Remove="Resources\Refresh_32x32.png" />
       <None Remove="Resources\Settings_32x32.png" />
       <Resource Include="fita.ico" />
       <None Remove="Resources\Add_32x32.png" />
       <Resource Include="Resources\Add_32x32.png" />
       <Resource Include="Resources\Categories_32x32.png" />
       <Resource Include="Resources\Currency_32x32.png" />
+      <Resource Include="Resources\Delete_32x32.png" />
+      <Resource Include="Resources\Refresh_32x32.png" />
       <Resource Include="Resources\Settings_32x32.png" />
     </ItemGroup>
 

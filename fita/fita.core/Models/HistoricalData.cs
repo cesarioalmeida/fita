@@ -1,43 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using fita.core.DTOs;
-using twentySix.Framework.Core.UI.Models;
 
 namespace fita.core.Models
 {
-    public class HistoricalData : SynchronizableModelWithDTO<HistoricalData, HistoricalDataDTO>
+    public class HistoricalData : ICloneable
     {
-        public Dictionary<DateTime, decimal> Data { get; private set; } = new Dictionary<DateTime, decimal>();
-
-        public override HistoricalDataDTO GetDTO()
-        {
-            return new()
-            {
-                Id = Id,
-                IsDeleted = IsDeleted,
-                LastUpdated = LastUpdated,
-                Data = Data.ToDictionary(x => x.Key, x => x.Value)
-            };
-        }
-
-        public override bool PropertiesEqual(HistoricalData other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return other.Data == null && Data == null ||
-                   other.Data != null && Data != null && other.Data.SequenceEqual(Data);
-        }
-
-        public override void SyncFrom(HistoricalData obj)
-        {
-            IsDeleted = obj.IsDeleted;
-            LastUpdated = obj.LastUpdated;
-            Data = obj.Data.ToDictionary(x => x.Key, x => x.Value);
-        }
+        public int HistoricalDataId { get; set; }
+        
+        public Dictionary<DateTime, decimal> Data { get; private set; } = new();
 
         #region Add or update helper methods
 
@@ -78,5 +49,13 @@ namespace fita.core.Models
         }
 
         #endregion
+
+        public object Clone()
+        {
+            return new HistoricalData
+            {
+                Data = Data?.ToDictionary(x => x.Key, x => x.Value)
+            };
+        }
     }
 }
