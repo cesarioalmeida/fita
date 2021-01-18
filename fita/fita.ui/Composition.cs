@@ -11,7 +11,8 @@ namespace fita.ui
         {
             serviceRegistry.Register<ShellView>();
             serviceRegistry.Register<PersistenceService>();
-            serviceRegistry.Register<IIsModelView, CurrenciesView>();
+            serviceRegistry.Register<IIsModelView, CurrenciesView>(nameof(CurrenciesView) + "Service");
+            serviceRegistry.Register<IIsModelView, CategoriesView>(nameof(CategoriesView) + "Service");
         }
     }
 }

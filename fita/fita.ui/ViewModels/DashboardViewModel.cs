@@ -53,7 +53,7 @@ namespace fita.ui.ViewModels
 
         public void Categories()
         {
-            Messenger.Default.Send(new DisplayModelMessage(new Currencies()));
+            Messenger.Default.Send(new DisplayModelMessage(new Categories()));
         }
 
         public void Currencies()

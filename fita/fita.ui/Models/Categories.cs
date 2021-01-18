@@ -2,7 +2,7 @@
 
 namespace fita.ui.Models
 {
-    public class Currencies : BindableModel
+    public class Categories : BindableModel
     {
     }
 }

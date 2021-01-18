@@ -12,6 +12,13 @@
       <EmbeddedResource Remove="Resources\NewFolder\**" />
       <None Remove="Resources\NewFolder\**" />
       <Page Remove="Resources\NewFolder\**" />
+      <Page Update="Views\CategoriesView.xaml">
+        <SubType>Designer</SubType>
+      </Page>
+      <Compile Update="Views\CategoriesView.xaml.cs">
+        <SubType>Code</SubType>
+        <DependentUpon>CategoriesView.xaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
