@@ -1,10 +1,9 @@
 ﻿using System;
 using LiteDB;
-using twentySix.Framework.Core.DTOs;
 
 namespace fita.core.DTOs
 {
-    public class TransactionDTO : BaseDTO
+    public class TransactionDTO
     {
         public DateTime Date { get; set; }
         

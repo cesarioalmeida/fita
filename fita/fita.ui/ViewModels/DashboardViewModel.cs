@@ -35,7 +35,7 @@ namespace fita.ui.ViewModels
 
             try
             {
-                var accounts = await this.PersistenceService.GetAllAsync<Account, AccountDTO>();
+                //var accounts = await this.PersistenceService.GetAllAsync<Account, AccountDTO>();
                 //SelectedAccount = null;
             }
             finally

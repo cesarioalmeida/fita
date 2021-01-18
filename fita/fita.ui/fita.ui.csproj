@@ -17,7 +17,7 @@
     <ItemGroup>
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid" Version="20.2.4" />
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.VS2019Dark" Version="20.2.4" />
-      <PackageReference Include="twentySix.Framework.Core" Version="4.0.0" />
+      <PackageReference Include="twentySix.Framework.Core" Version="4.0.1" />
       <PackageReference Include="twentySix.Framework.Theme" Version="3.0.0" />
     </ItemGroup>
 

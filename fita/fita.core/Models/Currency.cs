@@ -34,7 +34,7 @@ namespace fita.core.Models
         public HistoricalData ExchangeData { get; set; }
 
         [BsonIgnore]
-        public decimal CurrentExchangeRate => ExchangeData?.Data?.Count > 0 ? ExchangeData.Data.First().Value : 1m;
+        public decimal CurrentExchangeRate => ExchangeData.Data.Count > 0 ? ExchangeData.Data.First().Value : 1m;
 
         public override bool PropertiesEqual(Currency other)
         {
@@ -45,8 +45,6 @@ namespace fita.core.Models
 
             return other.Name.Equals(Name) &&
                    other.Symbol.Equals(Symbol) &&
-                   other.ExchangeData?.Data == null && ExchangeData?.Data == null ||
-                   other.ExchangeData?.Data != null && ExchangeData?.Data != null &&
                    other.ExchangeData.Data.SequenceEqual(ExchangeData.Data);
             ;
         }
@@ -55,7 +53,7 @@ namespace fita.core.Models
         {
             Name = (string) obj.Name.Clone();
             Symbol = (string) obj.Symbol.Clone();
-            ExchangeData = (HistoricalData) obj.ExchangeData?.Clone();
+            ExchangeData = (HistoricalData) obj.ExchangeData.Clone();
         }
 
         public object Clone()

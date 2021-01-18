@@ -25,8 +25,8 @@ namespace fita.core.tests.Models
             _populatedObj.AddOrUpdate(DateTime.Today.AddDays(-2), 0.3m);
             
             Assert.AreEqual(4, _populatedObj.Data.Count);
-            Assert.AreEqual(DateTime.Today, _populatedObj.Data.First().Key);
-            Assert.AreEqual(DateTime.Today.AddDays(-2), _populatedObj.Data.ElementAt(2).Key);
+            Assert.AreEqual(DateTime.Today, _populatedObj.Data.First().Date);
+            Assert.AreEqual(DateTime.Today.AddDays(-2), _populatedObj.Data.ElementAt(2).Date);
         }
         
         [Test]
@@ -35,7 +35,7 @@ namespace fita.core.tests.Models
             _populatedObj.AddOrUpdate(DateTime.Today, 0.9m);
             
             Assert.AreEqual(3, _populatedObj.Data.Count);
-            Assert.AreEqual(DateTime.Today, _populatedObj.Data.First().Key);
+            Assert.AreEqual(DateTime.Today, _populatedObj.Data.First().Date);
             Assert.AreEqual(0.9m, _populatedObj.Data.First().Value);
         }
         
@@ -52,8 +52,8 @@ namespace fita.core.tests.Models
             _populatedObj.AddOrUpdate(other);
             
             Assert.AreEqual(5, _populatedObj.Data.Count);
-            Assert.AreEqual(DateTime.Today.AddDays(1), _populatedObj.Data.First().Key);
-            Assert.AreEqual(DateTime.Today.AddDays(-1), _populatedObj.Data.ElementAt(2).Key);
+            Assert.AreEqual(DateTime.Today.AddDays(1), _populatedObj.Data.First().Date);
+            Assert.AreEqual(DateTime.Today.AddDays(-1), _populatedObj.Data.ElementAt(2).Date);
             Assert.AreEqual(1.1m, _populatedObj.Data.ElementAt(1).Value);
         }
     }

@@ -1,11 +1,12 @@
 ﻿using DevExpress.Mvvm.DataAnnotations;
-using fita.core.DTOs;
 using fita.core.Models;
 using fita.ui.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using DevExpress.Mvvm.POCO;
-using LiteDB;
+using DevExpress.Xpf.WindowsUI;
+using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels
@@ -17,11 +18,13 @@ namespace fita.ui.ViewModels
         public virtual ObservableCollection<Currency> Currencies { get; set; }
 
         public virtual Currency SelectedCurrency { get; set; }
+        
+        public virtual HistoricalData.HistoricalDataPoint SelectedRow { get; set; }
 
         [ServiceProperty(Key = "NameFocusService")]
         public virtual IFocusService NameFocusService => null;
 
-        public ExtendedPersistenceService ExtendedPersistenceService { get; set; }
+        public PersistenceService PersistenceService { get; set; }
 
         public void Cancel()
         {
@@ -44,7 +47,7 @@ namespace fita.ui.ViewModels
                         continue;
                     }
 
-                    await ExtendedPersistenceService.SaveCurrency(currency);
+                    await PersistenceService.SaveCurrency(currency);
                 }
             }
             finally
@@ -60,6 +63,25 @@ namespace fita.ui.ViewModels
             return Currencies.All(x => !x.HasError(_ => _.Name) && !x.HasError(_ => _.Symbol));
         }
 
+        public void DeleteRow()
+        {
+            if (WinUIMessageBox.Show(
+                $"Are you sure you want to delete the date\n{SelectedRow.Date.ToShortDateString()}?",
+                "delete data",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Question) != MessageBoxResult.OK)
+            {
+                return;
+            }
+
+            SelectedCurrency.ExchangeData.Delete(SelectedRow);
+        }
+        
+        public bool CanDeleteRow()
+        {
+            return SelectedRow != null;
+        }
+
         public async void RefreshData()
         {
             IsBusy = true;
@@ -68,20 +90,12 @@ namespace fita.ui.ViewModels
 
             try
             {
-                var currencies = await PersistenceService.GetAllAsync<Currency, CurrencyDTO>();
+                var currencies = await PersistenceService.GetCurrencies();
 
                 if (currencies != null)
                 {
-                    foreach (var currency in currencies.Where(x => x.HistoricalDataId != ObjectId.Empty))
-                    {
-                        currency.ExchangeData =
-                            await PersistenceService.GetFromIdAsync<HistoricalData, HistoricalDataDTO>(
-                                currency.HistoricalDataId) ??
-                            new HistoricalData();
-
-                        currencies.ForEach(x => x.SaveState());
-                        Currencies.Add(currency);
-                    }
+                    currencies.ForEach(x => x.SaveState());
+                    Currencies.AddRange(currencies);
                 }
 
                 SelectedCurrency = currencies?.FirstOrDefault();

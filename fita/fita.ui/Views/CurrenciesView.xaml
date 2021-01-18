@@ -121,10 +121,6 @@
                     <StackPanel Grid.Column="1"
                                 Orientation="Horizontal">
                         <dxwui:HamburgerMenuBottomBarNavigationButton Width="40"
-                                                                      Glyph="../Resources/Delete_32x32.png"
-                                                                      GlyphHeight="16"
-                                                                      GlyphWidth="16" />
-                        <dxwui:HamburgerMenuBottomBarNavigationButton Width="40"
                                                                       Glyph="../Resources/Refresh_32x32.png"
                                                                       GlyphHeight="16"
                                                                       GlyphWidth="16"
@@ -151,10 +147,24 @@
                         <dxlc:LayoutItem VerticalAlignment="Stretch"
                                          Label="Historical Data">
                             <dxg:GridControl MaxHeight="600"
-                                             VerticalAlignment="Stretch">
+                                             FontSize="14"
+                                             VerticalAlignment="Stretch"
+                                             SelectionMode="Row"
+                                             ItemsSource="{Binding SelectedCurrency.ExchangeData.Data}"
+                                             SelectedItem="{Binding SelectedRow }">
+                                <dxg:GridColumn Header="Date"
+                                                FieldName="Date" />
+                                <dxg:GridColumn Header="Value"
+                                                FieldName="Value" />
                                 <dxg:GridControl.View>
                                     <dxg:TableView ShowGroupPanel="False"
-                                                   VerticalScrollbarVisibility="Auto" />
+                                                   VerticalScrollbarVisibility="Auto"
+                                                   NewItemRowPosition="Bottom">
+                                        <dxmvvm:Interaction.Behaviors>
+                                            <dxmvvm:KeyToCommand Command="{Binding DeleteRowCommand}"
+                                                                 KeyGesture="Del" />
+                                        </dxmvvm:Interaction.Behaviors>
+                                    </dxg:TableView>
                                 </dxg:GridControl.View>
                             </dxg:GridControl>
                         </dxlc:LayoutItem>

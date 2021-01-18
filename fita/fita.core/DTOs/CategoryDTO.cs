@@ -1,10 +1,9 @@
 ﻿using fita.core.Common;
 using LiteDB;
-using twentySix.Framework.Core.DTOs;
 
 namespace fita.core.DTOs
 {
-    public class CategoryDTO : BaseDTO
+    public class CategoryDTO
     {
         public string Name { get; set; }
 

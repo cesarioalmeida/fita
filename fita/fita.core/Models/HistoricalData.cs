@@ -1,61 +1,116 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DevExpress.Xpf.Core;
+using twentySix.Framework.Core.Extensions;
 
 namespace fita.core.Models
 {
     public class HistoricalData : ICloneable
     {
-        public int HistoricalDataId { get; set; }
-        
-        public Dictionary<DateTime, decimal> Data { get; private set; } = new();
+        public LockableCollection<HistoricalDataPoint> Data { get; set; } = new();
 
         #region Add or update helper methods
 
         public void AddOrUpdate(DateTime key, decimal value)
         {
-            if (!Data.ContainsKey(key))
-            {
-                Data.Add(key, value);
+            Data.BeginUpdate();
 
-                SortData();
-            }
-            else
+            try
             {
-                Data[key] = value;
+                if (Data.All(x => x.Date.Date != key.Date))
+                {
+                    Data.Add(new HistoricalDataPoint(key, value));
+
+                    SortData();
+                }
+                else
+                {
+                    Data.Single(x => x.Date.Date == key.Date).Value = value;
+                }
+            }
+            finally
+            {
+                Data.EndUpdate();
             }
         }
 
         public void AddOrUpdate(Dictionary<DateTime, decimal> other)
         {
-            foreach (var (key, value) in other)
-            {
-                if (!Data.ContainsKey(key))
-                {
-                    Data.Add(key, value);
-                }
-                else
-                {
-                    Data[key] = value;
-                }
-            }
+            Data.BeginUpdate();
 
-            SortData();
+            try
+            {
+                foreach (var (key, value) in other)
+                {
+                    if (Data.All(x => x.Date.Date != key.Date))
+                    {
+                        Data.Add(new HistoricalDataPoint(key, value));
+                    }
+                    else
+                    {
+                        Data.Single(x => x.Date.Date == key.Date).Value = value;
+                    }
+                }
+
+                SortData();
+            }
+            finally
+            {
+                Data.EndUpdate();
+            }
+        }
+
+        public void Delete(HistoricalDataPoint point)
+        {
+            Data.BeginUpdate();
+            
+            try
+            {
+                Data.Remove(point) ;
+            }
+            finally
+            {
+                Data.EndUpdate();
+            }
         }
 
         private void SortData()
         {
-            Data = new Dictionary<DateTime, decimal>(Data.OrderByDescending(x => x.Key));
+            var tmpData = Data.ToList();
+            Data.Clear();
+            Data.AddRange(tmpData.OrderByDescending(x => x.Date));
         }
 
         #endregion
 
         public object Clone()
         {
-            return new HistoricalData
+            var obj = new HistoricalData
             {
-                Data = Data?.ToDictionary(x => x.Key, x => x.Value)
+                Data = new LockableCollection<HistoricalDataPoint>()
             };
+            
+            obj.Data.AddRange(Data);
+
+            return obj;
+        }
+
+        public class HistoricalDataPoint
+        {
+            public HistoricalDataPoint()
+            {
+            }
+
+            public HistoricalDataPoint(DateTime date, decimal value)
+            {
+                Date = date;
+                Value = value;
+            }
+            
+            public DateTime Date { get; set; }
+
+            public decimal Value { get; set; }
         }
     }
 }

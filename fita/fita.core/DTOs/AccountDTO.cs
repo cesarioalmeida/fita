@@ -1,9 +1,8 @@
 ﻿using LiteDB;
-using twentySix.Framework.Core.DTOs;
 
 namespace fita.core.DTOs
 {
-    public class AccountDTO : BaseDTO
+    public class AccountDTO
     {
         public string Group { get; set; }
         

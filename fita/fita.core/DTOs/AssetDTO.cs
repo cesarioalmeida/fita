@@ -1,9 +1,8 @@
 ﻿using LiteDB;
-using twentySix.Framework.Core.DTOs;
 
 namespace fita.core.DTOs
 {
-    public class AssetDTO : BaseDTO
+    public class AssetDTO
     {
         public string Name { get; set; }
         
