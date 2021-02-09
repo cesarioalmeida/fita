@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using DevExpress.Mvvm.UI;
+using fita.services.Repositories;
 using fita.ui.Views;
 using LightInject;
 using twentySix.Framework.Core.Helpers;
@@ -30,15 +31,19 @@ namespace fita.ui
         {
             base.ConfigureServiceContainer();
 
-            Container.RegisterAssembly("fita.core.dll");
-            this.Container.RegisterFrom<Composition>();
+            Container.RegisterAssembly("twentySix.Framework.*.dll");
+            Container.RegisterAssembly("fita.common.dll");
+            Container.RegisterAssembly("fita.data.dll");
+            Container.RegisterAssembly("fita.services.dll");
+            
+            Container.RegisterFrom<Composition>();
         }
 
         protected override void ConfigureViewModelLocator()
         {
             //// devexpress
             //var callingAssemblyLocation = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
-            //var appFiles = Directory.EnumerateFiles(callingAssemblyLocation, "fita.core.dll")
+            //var appFiles = Directory.EnumerateFiles(callingAssemblyLocation, "fita.common.dll")
             //    .Concat(Directory.EnumerateFiles(callingAssemblyLocation, "fita.ui.exe"));
             //var viewLocator = new ViewLocator(appFiles.Select(Assembly.LoadFile));
             //ViewLocator.Default = viewLocator;
@@ -46,6 +51,11 @@ namespace fita.ui
 
         protected override void ShowWindow()
         {
+            foreach (var instance in Container.GetAllInstances<ISeedData>())
+            {
+                instance.SeedData();
+            }
+
             this.Container.GetInstance<ShellView>().Show();
         }
 

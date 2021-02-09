@@ -1,7 +1,6 @@
 ﻿using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
-using fita.ui.Models;
 using System.Collections.Generic;
 using System.Linq;
 using fita.ui.DisplayModels;
@@ -12,9 +11,9 @@ using twentySix.Framework.Core.UI.ViewModels;
 namespace fita.ui.ViewModels
 {
     [POCOViewModel]
-    public class DashboardViewModel : ComposedViewModelBase
+    public class ShellViewModel : ComposedViewModelBase
     {
-        public DashboardViewModel()
+        public ShellViewModel()
         {
             Messenger.Default.Register<DisplayModelMessage>(this, this.OnDisplayModelMessage);
         }
@@ -34,7 +33,6 @@ namespace fita.ui.ViewModels
             try
             {
                 //var accounts = await this.PersistenceService.GetAllAsync<Account, AccountDTO>();
-                //SelectedAccount = null;
             }
             finally
             {
@@ -51,7 +49,7 @@ namespace fita.ui.ViewModels
 
         public void Categories()
         {
-            Messenger.Default.Send(new DisplayModelMessage(new Categories()));
+            //Messenger.Default.Send(new DisplayModelMessage(new Categories()));
         }
 
         public void Currencies()
@@ -61,7 +59,7 @@ namespace fita.ui.ViewModels
 
         public void Settings()
         {
-            //Messenger.Default.Send(new DisplayModelMessage(new Currencies()));
+            //Messenger.Default.Send(new DisplayModelMessage(new ListCurrencies()));
         }
 
         private void OnDisplayModelMessage(DisplayModelMessage obj)

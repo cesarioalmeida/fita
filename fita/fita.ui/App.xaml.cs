@@ -13,11 +13,11 @@ namespace fita.ui
 
             SplashScreenManager.CreateFluent(new DXSplashScreenViewModel
             {
-                Copyright = string.Empty,
+                Copyright = "Cesario Almeida",
                 IsIndeterminate = true,
                 Status = "starting ...",
                 Title = "fita",
-                Subtitle = "powered by twentySix.Framework 3.0", 
+                Subtitle = "financial manager", 
                 Logo = new Uri(@"pack://application:,,,/fita.ui;component/fita.ico")
             }).ShowOnStartup();
 

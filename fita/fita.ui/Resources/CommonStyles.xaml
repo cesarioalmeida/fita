@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="H1" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Roboto Condensed" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Margin" Value="5,0" />
+    </Style>
+
+</ResourceDictionary>

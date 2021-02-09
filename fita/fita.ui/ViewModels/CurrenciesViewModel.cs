@@ -1,12 +1,15 @@
 ﻿using DevExpress.Mvvm.DataAnnotations;
-using fita.core.Models;
-using fita.ui.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
-using DevExpress.Xpf.WindowsUI;
+using fita.data.Models;
+using fita.services;
+using fita.services.Repositories;
 using twentySix.Framework.Core.Extensions;
+using twentySix.Framework.Core.Messages;
+using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels
@@ -14,75 +17,54 @@ namespace fita.ui.ViewModels
     [POCOViewModel]
     public class CurrenciesViewModel : ComposedDocumentViewModelBase
     {
+        private bool fireChangeNotification = false;
+
         public override object Title { get; set; } = "Currencies";
-        public virtual ObservableCollection<Currency> Currencies { get; set; }
 
-        public virtual Currency SelectedCurrency { get; set; }
-        
-        public virtual HistoricalData.HistoricalDataPoint SelectedRow { get; set; }
+        public FileSettingsService FileSettingsService { get; set; }
 
-        [ServiceProperty(Key = "NameFocusService")]
-        public virtual IFocusService NameFocusService => null;
+        public CurrencyService CurrencyService { get; set; }
 
-        public PersistenceService PersistenceService { get; set; }
+        public ExchangeRateService ExchangeRateService { get; set; }
 
-        public void Cancel()
+        protected virtual IDocumentManagerService DocumentManagerService => this.GetRequiredService<IDocumentManagerService>();
+
+        public ObservableCollection<Currency> Currencies { get; set; }
+
+        public FileSettings FileSettings { get; set; }
+
+        public void Close()
         {
+            // notify update of currency if there was a change in the base currency
+            if(fireChangeNotification)
+            {
+
+            }
+
             Currencies.Clear();
             DocumentOwner?.Close(this);
         }
-
-        public async void Ok()
-        {
-            IsBusy = true;
-
-            try
-            {
-                foreach (var currency in Currencies)
-                {
-                    // ignore currencies already defined
-                    if (currency.SavedState == null && Currencies.Except(new[] {currency}).Select(x => x.Name.ToUpper())
-                        .Contains(currency.Name.ToUpper()))
-                    {
-                        continue;
-                    }
-
-                    await PersistenceService.SaveCurrency(currency);
-                }
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-
-            DocumentOwner?.Close(this);
-        }
-
-        public bool CanOk()
-        {
-            return Currencies.All(x => !x.HasError(_ => _.Name) && !x.HasError(_ => _.Symbol));
-        }
-
+        
         public void DeleteRow()
         {
-            if (WinUIMessageBox.Show(
-                $"Are you sure you want to delete the date\n{SelectedRow.Date.ToShortDateString()}?",
-                "delete data",
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Question) != MessageBoxResult.OK)
-            {
-                return;
-            }
-
-            SelectedCurrency.ExchangeData.Delete(SelectedRow);
-        }
-        
-        public bool CanDeleteRow()
-        {
-            return SelectedRow != null;
+            // if (WinUIMessageBox.Show(
+            //     $"Are you sure you want to delete the date\n{SelectedRow.Date.ToShortDateString()}?",
+            //     "delete data",
+            //     MessageBoxButton.OKCancel,
+            //     MessageBoxImage.Question) != MessageBoxResult.OK)
+            // {
+            //     return;
+            // }
+            //
+            // SelectedCurrency.ExchangeData.Delete(SelectedRow);
         }
 
-        public async void RefreshData()
+        // public bool CanDeleteRow()
+        // {
+        //     return SelectedRow != null;
+        // }
+
+        public async Task RefreshData()
         {
             IsBusy = true;
 
@@ -90,15 +72,10 @@ namespace fita.ui.ViewModels
 
             try
             {
-                var currencies = await PersistenceService.GetCurrencies();
+                FileSettings = (await FileSettingsService.AllEnrichedAsync())?.FirstOrDefault();
 
-                if (currencies != null)
-                {
-                    currencies.ForEach(x => x.SaveState());
-                    Currencies.AddRange(currencies);
-                }
-
-                SelectedCurrency = currencies?.FirstOrDefault();
+                var currencies = await CurrencyService.AllAsync();
+                Currencies.AddRange(currencies);
             }
             finally
             {
@@ -110,9 +87,33 @@ namespace fita.ui.ViewModels
         {
             var currency = new Currency();
             Currencies.Add(currency);
-            SelectedCurrency = currency;
+        }
 
-            NameFocusService?.Focus();
+        public async Task SetBaseCurrency(Currency currency)
+        {
+            IsBusy = true;
+
+            fireChangeNotification = true;
+
+            try
+            {
+                FileSettings.BaseCurrency = currency;
+                if (await FileSettingsService.SaveAsync(FileSettings) == Result.Fail)
+                {
+                    Messenger.Default.Send(new NotificationMessage("Failed to save base currency.",
+                        NotificationStatusEnum.Error));
+                }
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+
+        public void Update()
+        {
+            fireChangeNotification = true;
         }
     }
 }

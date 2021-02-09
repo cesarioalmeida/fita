@@ -1,189 +1,93 @@
-﻿<UserControl x:Class="fita.ui.Views.CurrenciesView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
-             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-             xmlns:dxi="http://schemas.devexpress.com/winfx/2008/xaml/core/internal"
-             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
-             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:services="clr-namespace:fita.ui.Services"
-             xmlns:themeKeys="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/themekeys"
-             xmlns:viewModels="clr-namespace:fita.ui.ViewModels"
-             d:DataContext="{d:DesignInstance viewModels:CurrenciesViewModel}"
-             d:DesignHeight="450"
-             d:DesignWidth="800"
-             DataContext="{dxmvvm:ViewModelSource Type=viewModels:CurrenciesViewModel}"
-             mc:Ignorable="d">
-    <UserControl.Resources>
-        <Style TargetType="dxlc:LayoutGroup">
-            <Setter Property="ItemSpace"
-                    Value="10" />
-        </Style>
-        <Style TargetType="dxlc:LayoutItem">
-            <Setter Property="AddColonToLabel"
-                    Value="True" />
-            <Setter Property="FontSize"
-                    Value="16" />
-            <Setter Property="LabelVerticalAlignment"
-                    Value="Top" />
-            <Setter Property="LabelStyle">
-                <Setter.Value>
-                    <Style TargetType="dxlc:LayoutItemLabel">
-                        <Setter Property="Margin"
-                                Value="0,0,10,0" />
-                    </Style>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </UserControl.Resources>
-
+﻿<UserControl
+    x:Class="fita.ui.Views.CurrenciesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxi="http://schemas.devexpress.com/winfx/2008/xaml/core/internal"
+    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:services="clr-namespace:fita.ui.Services"
+    xmlns:themeKeys="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/themekeys"
+    xmlns:viewModels="clr-namespace:fita.ui.ViewModels"
+    d:DataContext="{d:DesignInstance viewModels:CurrenciesViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    DataContext="{dxmvvm:ViewModelSource Type=viewModels:CurrenciesViewModel}"
+    mc:Ignorable="d">
     <dxmvvm:Interaction.Behaviors>
-        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}"
-                               EventName="Loaded" />
+        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
     </dxmvvm:Interaction.Behaviors>
 
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="4" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <Grid Margin="5">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0"
-                  Grid.Column="0"
-                  Background="{dxi:ThemeResource ThemeKey={themeKeys:HamburgerMenuBrushesThemeKey ResourceKey=PaneBackgroundBrush}}">
-                <Grid Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <dxlc:LayoutControl Grid.Row="0"
-                                        Padding="0">
-                        <dxlc:LayoutGroup HorizontalAlignment="Stretch"
-                                          Orientation="Horizontal">
-                            <Label Margin="2"
-                                   VerticalAlignment="Center"
-                                   Content="Currencies"
-                                   FontSize="16" />
-                            <dxwui:HamburgerMenuBottomBarNavigationButton Width="32"
-                                                                          Command="{Binding AddCommand}"
-                                                                          Glyph="../Resources/Add_32x32.png"
-                                                                          GlyphHeight="16"
-                                                                          GlyphWidth="16" />
-                        </dxlc:LayoutGroup>
-                    </dxlc:LayoutControl>
-                    <ListView Grid.Row="1"
-                              dxc:ScrollBarExtensions.ScrollBarMode="TouchOverlap"
-                              Background="Transparent"
-                              BorderBrush="Transparent"
-                              BorderThickness="0"
-                              ItemsSource="{Binding Currencies}"
-                              SelectedItem="{Binding SelectedCurrency, UpdateSourceTrigger=PropertyChanged}"
-                              SelectionMode="Single">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Margin="4,4"
-                                           FontSize="13"
-                                           FontWeight="SemiBold"
-                                           Text="{Binding Name}" />
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </Grid>
-            </Grid>
+            <TextBlock
+                HorizontalAlignment="Center"
+                Style="{StaticResource H1}"
+                Text="Currencies" />
 
-            <Grid Grid.Row="0"
-                  Grid.Column="2"
-                  Background="{dxi:ThemeResource ThemeKey={themeKeys:HamburgerMenuBrushesThemeKey ResourceKey=PaneBackgroundBrush}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="10" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0"
-                      Margin="20,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               FontSize="34"
-                               Text="{Binding SelectedCurrency.Name}" />
-                    <StackPanel Grid.Column="1"
-                                Orientation="Horizontal">
-                        <dxwui:HamburgerMenuBottomBarNavigationButton Width="40"
-                                                                      Glyph="../Resources/Refresh_32x32.png"
-                                                                      GlyphHeight="16"
-                                                                      GlyphWidth="16"
-                                                                      IsEnabled="False" />
-                    </StackPanel>
-                </Grid>
+            <dxlc:LayoutControl Grid.Row="1">
+                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
+                    <dxlc:LayoutItem
+                        AddColonToLabel="True"
+                        Label="Current Base Currency"
+                        LabelPosition="Top">
+                        <dxe:TextEdit EditValue="{Binding FileSettings.BaseCurrency.Name}" IsReadOnly="True" />
+                    </dxlc:LayoutItem>
+                    <dxg:GridControl ItemsSource="{Binding Currencies}">
+                        <dxg:GridControl.Columns>
+                            <dxg:GridColumn Width="Auto">
+                                <dxg:GridColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <dxe:HyperlinkEdit EditValue="history" />
+                                            <dxe:HyperlinkEdit EditValue="edit" />
+                                            <dxe:HyperlinkEdit EditValue="base" />
+                                            <dxe:HyperlinkEdit EditValue="delete" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </dxg:GridColumn.CellTemplate>
+                            </dxg:GridColumn>
+                            <dxg:GridColumn FieldName="Name" Header="Name" />
+                            <dxg:GridColumn FieldName="Symbol" Header="Symbol" />
+                            <dxg:GridColumn Header="Last Date" />
+                            <dxg:GridColumn Header="Last Value" />
+                        </dxg:GridControl.Columns>
+                        <dxg:GridControl.View>
+                            <dxg:TableView
+                                AllowEditing="False"
+                                RowMinHeight="24"
+                                ShowGroupPanel="False"
+                                ShowSearchPanelMode="Always" />
+                        </dxg:GridControl.View>
+                    </dxg:GridControl>
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutControl>
 
-                <Separator Grid.Row="1" />
-
-                <dxlc:LayoutControl Grid.Row="2">
-                    <dxlc:LayoutGroup Orientation="Vertical">
-                        <dxlc:LayoutItem Label="Name">
-                            <dxe:TextEdit
-                                EditValue="{Binding SelectedCurrency.Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
-                                <dxmvvm:Interaction.Behaviors>
-                                    <services:FocusService x:Name="NameFocusService" />
-                                </dxmvvm:Interaction.Behaviors>
-                            </dxe:TextEdit>
-                        </dxlc:LayoutItem>
-                        <dxlc:LayoutItem Label="Symbol">
-                            <dxe:TextEdit
-                                EditValue="{Binding SelectedCurrency.Symbol, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
-                        </dxlc:LayoutItem>
-                        <dxlc:LayoutItem VerticalAlignment="Stretch"
-                                         Label="Historical Data">
-                            <dxg:GridControl MaxHeight="600"
-                                             FontSize="14"
-                                             VerticalAlignment="Stretch"
-                                             SelectionMode="Row"
-                                             ItemsSource="{Binding SelectedCurrency.ExchangeData.Data}"
-                                             SelectedItem="{Binding SelectedRow }">
-                                <dxg:GridColumn Header="Date"
-                                                FieldName="Date" />
-                                <dxg:GridColumn Header="Value"
-                                                FieldName="Value" />
-                                <dxg:GridControl.View>
-                                    <dxg:TableView ShowGroupPanel="False"
-                                                   VerticalScrollbarVisibility="Auto"
-                                                   NewItemRowPosition="Bottom">
-                                        <dxmvvm:Interaction.Behaviors>
-                                            <dxmvvm:KeyToCommand Command="{Binding DeleteRowCommand}"
-                                                                 KeyGesture="Del" />
-                                        </dxmvvm:Interaction.Behaviors>
-                                    </dxg:TableView>
-                                </dxg:GridControl.View>
-                            </dxg:GridControl>
-                        </dxlc:LayoutItem>
-                    </dxlc:LayoutGroup>
-                </dxlc:LayoutControl>
-            </Grid>
-
-            <Grid Grid.Row="1"
-                  Grid.Column="0"
-                  Grid.ColumnSpan="3">
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right">
-                    <Button Content="OK"
-                            Command="{Binding OkCommand}" />
-                    <Button Content="Cancel"
-                            IsCancel="True"
-                            Command="{Binding CancelCommand}" />
-                </StackPanel>
-            </Grid>
+            <StackPanel
+                Grid.Row="2"
+                Margin="4"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="dxc:SimpleButton">
+                        <Setter Property="Padding" Value="30,5" />
+                        <Setter Property="Margin" Value="7,0" />
+                    </Style>
+                </StackPanel.Resources>
+                <dxc:SimpleButton Command="{Binding CloseCommand}" Content="Update" />
+                <dxc:SimpleButton Command="{Binding CloseCommand}" Content="Close" />
+            </StackPanel>
         </Grid>
     </dxc:LoadingDecorator>
 

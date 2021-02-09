@@ -1,7 +1,6 @@
-﻿using fita.core.Models;
-using LightInject;
+﻿using LightInject;
 
-namespace fita.core
+namespace fita.common
 {
     public class Composition : ICompositionRoot
     {

@@ -1,5 +1,6 @@
 ﻿using fita.ui.Models;
 using System;
+using fita.ui.DisplayModels;
 using twentySix.Framework.Core.UI.Interfaces;
 
 namespace fita.ui.Views

@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Resources\NewFolder\**" />
-      <EmbeddedResource Remove="Resources\NewFolder\**" />
-      <None Remove="Resources\NewFolder\**" />
-      <Page Remove="Resources\NewFolder\**" />
       <Page Update="Views\CategoriesView.xaml">
         <SubType>Designer</SubType>
       </Page>
@@ -22,10 +18,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid" Version="20.2.4" />
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.VS2019Dark" Version="20.2.4" />
-      <PackageReference Include="twentySix.Framework.Core" Version="4.0.1" />
-      <PackageReference Include="twentySix.Framework.Theme" Version="3.0.0" />
+      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid" Version="20.2.5" />
+      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.All" Version="20.2.5" />
+      <PackageReference Include="twentySix.Framework.Core" Version="4.0.3" />
+      <PackageReference Include="twentySix.Framework.Theme" Version="4.0.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -41,16 +37,19 @@
       <None Remove="Resources\Settings_32x32.png" />
       <Resource Include="fita.ico" />
       <None Remove="Resources\Add_32x32.png" />
-      <Resource Include="Resources\Add_32x32.png" />
-      <Resource Include="Resources\Categories_32x32.png" />
-      <Resource Include="Resources\Currency_32x32.png" />
-      <Resource Include="Resources\Delete_32x32.png" />
-      <Resource Include="Resources\Refresh_32x32.png" />
-      <Resource Include="Resources\Settings_32x32.png" />
+      <Resource Include="Resources\Icons\Add_32x32.png" />
+      <Resource Include="Resources\Icons\Categories_32x32.png" />
+      <Resource Include="Resources\Icons\Currency_32x32.png" />
+      <Resource Include="Resources\Icons\Delete_32x32.png" />
+      <Resource Include="Resources\Icons\Refresh_32x32.png" />
+      <Resource Include="Resources\Icons\Settings_32x32.png" />
+      <None Remove="Resources\Currency_16x16.png" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\fita.core\fita.core.csproj" />
+      <ProjectReference Include="..\fita.common\fita.common.csproj" />
+      <ProjectReference Include="..\fita.data\fita.data.csproj" />
+      <ProjectReference Include="..\fita.services\fita.services.csproj" />
     </ItemGroup>
 
 </Project>
