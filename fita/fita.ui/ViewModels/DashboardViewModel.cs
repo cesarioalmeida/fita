@@ -56,7 +56,7 @@ namespace fita.ui.ViewModels
 
         public void Currencies()
         {
-            Messenger.Default.Send(new DisplayModelMessage(new ListCurrencies()));
+            
         }
 
         public void Settings()

@@ -3,7 +3,7 @@ using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
 using System.Collections.Generic;
 using System.Linq;
-using fita.ui.DisplayModels;
+using fita.ui.Views;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Interfaces;
 using twentySix.Framework.Core.UI.ViewModels;
@@ -19,10 +19,6 @@ namespace fita.ui.ViewModels
         }
 
         public IEnumerable<IIsModelView> AvailableDocumentViews { get; set; }
-
-        // public virtual ObservableCollection<Account> Accounts {get; set;}
-
-        // public Account SelectedAccount {get; set;}
 
         protected virtual IDocumentManagerService DocumentManagerService => this.GetRequiredService<IDocumentManagerService>();
 
@@ -40,21 +36,11 @@ namespace fita.ui.ViewModels
             }
         }
 
-        public async void AddAccount()
-        {
-            // var account = new Account();
-
-            //SelectedAccount = account;
-        }
-
-        public void Categories()
-        {
-            //Messenger.Default.Send(new DisplayModelMessage(new Categories()));
-        }
-
         public void Currencies()
         {
-            Messenger.Default.Send(new DisplayModelMessage(new ListCurrencies()));
+            var document = this.DocumentManagerService.CreateDocument(nameof(CurrenciesView), null, this);
+            document.DestroyOnClose = true;
+            document.Show();
         }
 
         public void Settings()
@@ -64,7 +50,7 @@ namespace fita.ui.ViewModels
 
         private void OnDisplayModelMessage(DisplayModelMessage obj)
         {
-            var documentViewType = this.AvailableDocumentViews.FirstOrDefault(x => x.ModelType == obj.Model.GetType());
+            var documentViewType = this.AvailableDocumentViews.FirstOrDefault(x => x.ModelType == obj.Model?.GetType());
 
             if (documentViewType == null)
             {

@@ -1,19 +1,10 @@
-﻿using fita.ui.Models;
-using System;
-using fita.ui.DisplayModels;
-using twentySix.Framework.Core.UI.Interfaces;
-
-namespace fita.ui.Views
+﻿namespace fita.ui.Views
 {
-    public partial class CurrenciesView : IIsModelView
+    public partial class CurrenciesView
     {
         public CurrenciesView()
         {
             InitializeComponent();
         }
-
-        public string View => nameof(CurrenciesView);
-
-        public Type ModelType => typeof(ListCurrencies);
     }
 }

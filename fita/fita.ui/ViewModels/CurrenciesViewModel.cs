@@ -85,8 +85,7 @@ namespace fita.ui.ViewModels
 
         public void Add()
         {
-            var currency = new Currency();
-            Currencies.Add(currency);
+            ;
         }
 
         public async Task SetBaseCurrency(Currency currency)

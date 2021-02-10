@@ -6,6 +6,8 @@ namespace fita.data.Models
     {
         public ObjectId FileSettingsId { get; set; }
 
+        public string Name { get; set; }
+
         [BsonRef("currency")]
         public Currency BaseCurrency { get; set; }
     }

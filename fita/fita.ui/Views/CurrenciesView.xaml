@@ -82,11 +82,15 @@
                 <StackPanel.Resources>
                     <Style TargetType="dxc:SimpleButton">
                         <Setter Property="Padding" Value="30,5" />
-                        <Setter Property="Margin" Value="7,0" />
+                        <Setter Property="Margin" Value="4,0" />
                     </Style>
                 </StackPanel.Resources>
-                <dxc:SimpleButton Command="{Binding CloseCommand}" Content="Update" />
-                <dxc:SimpleButton Command="{Binding CloseCommand}" Content="Close" />
+                <dxc:SimpleButton Command="{Binding AddCommand}" Content="Add" />
+                <dxc:SimpleButton Command="{Binding UpdateCommand}" Content="Update" />
+                <dxc:SimpleButton
+                    Margin="15,0,7,0"
+                    Command="{Binding CloseCommand}"
+                    Content="Close" />
             </StackPanel>
         </Grid>
     </dxc:LoadingDecorator>

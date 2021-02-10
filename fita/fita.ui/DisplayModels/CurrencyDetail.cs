@@ -2,7 +2,7 @@
 
 namespace fita.ui.DisplayModels
 {
-    public class ListCurrencies : BindableModel
+    public class CurrencyDetail : BindableModel
     {
     }
 }
