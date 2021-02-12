@@ -3,7 +3,7 @@ using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
 using System.Collections.Generic;
 using System.Linq;
-using fita.ui.Views;
+using fita.ui.Views.Currencies;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Interfaces;
 using twentySix.Framework.Core.UI.ViewModels;

@@ -11,9 +11,16 @@
       <Page Update="Views\CategoriesView.xaml">
         <SubType>Designer</SubType>
       </Page>
+      <Page Update="Views\Currencies\CurrencyDetailsView.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
       <Compile Update="Views\CategoriesView.xaml.cs">
         <SubType>Code</SubType>
         <DependentUpon>CategoriesView.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\Currencies\CurrencyDetailsView.xaml.cs">
+        <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
 
@@ -50,6 +57,10 @@
       <ProjectReference Include="..\fita.common\fita.common.csproj" />
       <ProjectReference Include="..\fita.data\fita.data.csproj" />
       <ProjectReference Include="..\fita.services\fita.services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Common\" />
     </ItemGroup>
 
 </Project>

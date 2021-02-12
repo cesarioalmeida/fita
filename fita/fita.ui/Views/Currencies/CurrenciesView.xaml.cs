@@ -1,4 +1,4 @@
-﻿namespace fita.ui.Views
+﻿namespace fita.ui.Views.Currencies
 {
     public partial class CurrenciesView
     {

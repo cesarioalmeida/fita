@@ -46,6 +46,8 @@
                     <Setter Property="ShowIcon" Value="False" />
                     <Setter Property="ShowInTaskbar" Value="False" />
                     <Setter Property="ControlBoxButtonSet" Value="MaximizeRestore,Close" />
+                    <Setter Property="Width" Value="{Binding Path=Width, FallbackValue=1024}" />
+                    <Setter Property="Height" Value="{Binding Path=Height, FallbackValue=600}" />
                 </Style>
             </dx:WindowedDocumentUIService.WindowStyle>
         </dx:WindowedDocumentUIService>
