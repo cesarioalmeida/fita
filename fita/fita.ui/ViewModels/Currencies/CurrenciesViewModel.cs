@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using DevExpress.Mvvm;
@@ -8,6 +9,7 @@ using DevExpress.Xpf.Core;
 using DevExpress.Xpf.WindowsUI;
 using fita.data.Models;
 using fita.services;
+using fita.services.External;
 using fita.services.Repositories;
 using fita.ui.Views.Currencies;
 using LiteDB;
@@ -31,10 +33,12 @@ namespace fita.ui.ViewModels.Currencies
 
         public ExchangeRateService ExchangeRateService { get; set; }
 
+        public IExchangeRateDownloadService ExchangeRateDownloadService { get; set; }
+
         protected virtual IDocumentManagerService DocumentManagerService =>
             this.GetRequiredService<IDocumentManagerService>();
 
-        public virtual LockableCollection<Currency> Currencies { get; set; } = new();
+        public virtual LockableCollection<CurrenciesModel> Data { get; set; } = new();
 
         public virtual FileSettings FileSettings { get; set; }
 
@@ -45,7 +49,7 @@ namespace fita.ui.ViewModels.Currencies
             {
             }
 
-            Currencies.Clear();
+            Data.Clear();
             DocumentOwner?.Close(this);
         }
 
@@ -53,20 +57,24 @@ namespace fita.ui.ViewModels.Currencies
         {
             IsBusy = true;
 
-            Currencies.BeginUpdate();
-            Currencies.Clear();
+            Data.BeginUpdate();
+            Data.Clear();
 
             try
             {
-
                 FileSettings = (await FileSettingsService.AllEnrichedAsync())?.FirstOrDefault();
 
                 var currencies = await CurrencyService.AllAsync();
-                Currencies.AddRange(currencies);
+                var exchangeRates = await ExchangeRateService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
+
+                var data = currencies.Select(c =>
+                    new CurrenciesModel(c, exchangeRates.FirstOrDefault(x => x.ToCurrency.CurrencyId == c.CurrencyId)));
+
+                Data.AddRange(data);
             }
             finally
             {
-                Currencies.EndUpdate();
+                Data.EndUpdate();
                 IsBusy = false;
             }
         }
@@ -83,10 +91,7 @@ namespace fita.ui.ViewModels.Currencies
 
             if (viewModel.Saved)
             {
-                if (FileSettings.BaseCurrency == currency)
-                {
-                    fireChangeNotification = true;
-                }
+                fireChangeNotification = true;
 
                 await RefreshData();
             }
@@ -139,7 +144,8 @@ namespace fita.ui.ViewModels.Currencies
 
                 Messenger.Default.Send(await FileSettingsService.SaveAsync(FileSettings) == Result.Fail
                     ? new NotificationMessage("Failed to save base currency.", NotificationStatusEnum.Error)
-                    : new NotificationMessage($"Base currency set to {currency.Name}.", NotificationStatusEnum.Success));
+                    : new NotificationMessage($"Base currency set to {currency.Name}.",
+                        NotificationStatusEnum.Success));
 
                 fireChangeNotification = true;
 
@@ -151,9 +157,51 @@ namespace fita.ui.ViewModels.Currencies
             }
         }
 
-        public void Update()
+        public async Task Update()
         {
-            fireChangeNotification = true;
+            IsBusy = true;
+
+            try
+            {
+                fireChangeNotification = true;
+
+                var currentExchangeRates = (await ExchangeRateService.AllFromCurrencyEnrichedAsync(FileSettings.BaseCurrency)).ToList();
+
+                foreach (var currency in Data.Select(x => x.Currency).Where(x => x.CurrencyId != FileSettings.BaseCurrency.CurrencyId))
+                {
+                    var exchangeRate = currentExchangeRates.SingleOrDefault(x => x.ToCurrency.CurrencyId == currency.CurrencyId) ??
+                                       new ExchangeRate
+                                       {
+                                           ExchangeRateId = ObjectId.NewObjectId(),
+                                           FromCurrency = FileSettings.BaseCurrency, ToCurrency = currency
+                                       };
+
+                    await ExchangeRateDownloadService.UpdateAsync(exchangeRate);
+                }
+
+                await RefreshData();
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        public class CurrenciesModel
+        {
+            public CurrenciesModel(Currency currency, ExchangeRate exchangeRate)
+            {
+                Currency = currency;
+                ExchangeRate = exchangeRate;
+            }
+
+            public Currency Currency { get; }
+
+            public ExchangeRate ExchangeRate { get; }
+
+            public DateTime? LatestDate => ExchangeRate?.HistoricalData?.OrderByDescending(x => x.Date).FirstOrDefault()?.Date;
+
+            public decimal? LatestValue => ExchangeRate?.HistoricalData?.OrderByDescending(x => x.Date).FirstOrDefault()?.Value;
         }
     }
 }

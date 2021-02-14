@@ -17,6 +17,7 @@ namespace fita.services.Repositories
         public sealed override void IndexData()
         {
             Collection.EnsureIndex(x => x.ExchangeRateId);
+            Collection.EnsureIndex(x => x.FromCurrency);
         }
         
         public override Task<ExchangeRate> DetailsEnrichedAsync(ObjectId id)
@@ -56,6 +57,32 @@ namespace fita.services.Repositories
                     catch (Exception ex)
                     {
                         LoggingService.Warn($"{nameof(AllEnrichedAsync)}: {ex}");
+                        return null;
+                    }
+                });
+        }
+
+        public Task<IEnumerable<ExchangeRate>> AllFromCurrencyEnrichedAsync(Currency fromCurrency)
+        {
+            if (fromCurrency == null)
+            {
+                return null;
+            }
+
+            return Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        return Collection
+                            .Include(x => x.FromCurrency)
+                            .Include(x => x.ToCurrency)
+                            .Include(x => x.HistoricalData)
+                            .Find(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId);
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Warn($"{nameof(AllFromCurrencyEnrichedAsync)}: {ex}");
                         return null;
                     }
                 });

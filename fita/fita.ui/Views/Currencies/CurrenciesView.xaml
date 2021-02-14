@@ -7,14 +7,9 @@
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-    xmlns:dxi="http://schemas.devexpress.com/winfx/2008/xaml/core/internal"
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-    xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:services="clr-namespace:fita.ui.Services"
-    xmlns:themeKeys="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/themekeys"
-    xmlns:viewModels="clr-namespace:fita.ui.ViewModels"
     d:DataContext="{d:DesignInstance currencies:CurrenciesViewModel}"
     DataContext="{dxmvvm:ViewModelSource Type=currencies:CurrenciesViewModel}"
     mc:Ignorable="d">
@@ -43,7 +38,7 @@
                         LabelPosition="Top">
                         <dxe:TextEdit EditValue="{Binding FileSettings.BaseCurrency.Name, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" />
                     </dxlc:LayoutItem>
-                    <dxg:GridControl ItemsSource="{Binding Currencies}">
+                    <dxg:GridControl ItemsSource="{Binding Data}">
                         <dxg:GridControl.Columns>
                             <dxg:GridColumn Width="Auto">
                                 <dxg:GridColumn.CellTemplate>
@@ -52,24 +47,24 @@
                                             <dxe:HyperlinkEdit EditValue="history" />
                                             <dxe:HyperlinkEdit
                                                 Command="{Binding View.DataContext.EditCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
+                                                CommandParameter="{Binding RowData.Row.Currency}"
                                                 EditValue="edit" />
                                             <dxe:HyperlinkEdit
                                                 Command="{Binding View.DataContext.SetBaseCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
+                                                CommandParameter="{Binding RowData.Row.Currency}"
                                                 EditValue="base" />
                                             <dxe:HyperlinkEdit
                                                 Command="{Binding View.DataContext.DeleteCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
+                                                CommandParameter="{Binding RowData.Row.Currency}"
                                                 EditValue="delete" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </dxg:GridColumn.CellTemplate>
                             </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="Name" Header="Name" />
-                            <dxg:GridColumn FieldName="Symbol" Header="Symbol" />
-                            <dxg:GridColumn Header="Last Date" />
-                            <dxg:GridColumn Header="Last Value" />
+                            <dxg:GridColumn FieldName="Currency.Name" Header="Name" />
+                            <dxg:GridColumn FieldName="Currency.Symbol" Header="Symbol" />
+                            <dxg:GridColumn FieldName="LatestDate" Header="Last Date" />
+                            <dxg:GridColumn FieldName="LatestValue" Header="Last Value" />
                         </dxg:GridControl.Columns>
                         <dxg:GridControl.View>
                             <dxg:TableView

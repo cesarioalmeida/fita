@@ -1,4 +1,5 @@
-﻿using fita.services.Repositories;
+﻿using fita.services.External;
+using fita.services.Repositories;
 using LightInject;
 
 namespace fita.services
@@ -11,6 +12,7 @@ namespace fita.services
             serviceRegistry.Register<CurrencyService>();
             serviceRegistry.Register<ExchangeRateService>();
             serviceRegistry.Register<FileSettingsService>();
+            serviceRegistry.Register<IExchangeRateDownloadService, ExchangeRateDownloadService>();
         }
     }
 }
