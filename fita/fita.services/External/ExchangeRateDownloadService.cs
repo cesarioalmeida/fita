@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using fita.data.Models;
 using fita.services.Repositories;
@@ -38,7 +38,7 @@ namespace fita.services.External
                     {
                         var requestUrl = $"{Properties.Resources.ExchangeRateApi}?base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}";
 
-                        using var client = new WebClientExtended();
+                        using var client = new WebClientExtended {Timeout = 5000};
 
                         var json = client.DownloadString(requestUrl);
                         dynamic parsedJson = JObject.Parse(json);
@@ -49,32 +49,26 @@ namespace fita.services.External
                             Value = (decimal)Convert.ToDecimal(parsedJson.rates[$"{exchangeRate.ToCurrency.Symbol}"])
                         };
 
-                        var latestHistoricalDataForDate =
-                            exchangeRate.HistoricalData.FirstOrDefault(x => x.Date.Date == data.Date.Date);
-
-                        if (latestHistoricalDataForDate != null)
+                        if (data.Date.Date == exchangeRate.Rate.LatestDate?.Date)
                         {
-                            latestHistoricalDataForDate.Date = data.Date;
-                            latestHistoricalDataForDate.Value = data.Value;
+                            exchangeRate.Rate.Data[data.Date.Date].Value = data.Value;
                         }
                         else
                         {
-                            latestHistoricalDataForDate = new HistoricalData
+                            var historicalData = new HistoricalData
                             {
                                 HistoricalDataId = ObjectId.NewObjectId(),
-                                Date = data.Date,
-                                Value = data.Value
+                                Name = $"Exchange rate {exchangeRate.FromCurrency.Name} => {exchangeRate.ToCurrency.Name}",
+                                Data = new SortedDictionary<DateTime, HistoricalPoint>
+                                {
+                                    {data.Date, new HistoricalPoint { Date = data.Date, Value = data.Value}}
+                                }
                             };
 
-                            exchangeRate.HistoricalData.Add(latestHistoricalDataForDate);
+                            exchangeRate.Rate = historicalData;
                         }
 
-                        if (await HistoricalDataService.SaveAsync(latestHistoricalDataForDate))
-                        {
-                            return await ExchangeRateService.SaveAsync(exchangeRate);
-                        }
-
-                        return Result.Fail;
+                        return await SaveDataAsync(exchangeRate);
                     }
                     catch (Exception ex)
                     {
@@ -82,6 +76,16 @@ namespace fita.services.External
                         return Result.Fail;
                     }
                 });
+        }
+
+        private async Task<Result> SaveDataAsync(ExchangeRate exchange)
+        {
+            if (await HistoricalDataService.SaveAsync(exchange.Rate))
+            {
+                return await ExchangeRateService.SaveAsync(exchange);
+            }
+
+            return Result.Fail;
         }
     }
 }

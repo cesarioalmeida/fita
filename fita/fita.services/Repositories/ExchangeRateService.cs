@@ -30,7 +30,7 @@ namespace fita.services.Repositories
                         return Collection
                             .Include(x => x.FromCurrency)
                             .Include(x => x.ToCurrency)
-                            .Include(x => x.HistoricalData)
+                            .Include(x => x.Rate)
                             .FindById(id);
                     }
                     catch (Exception ex)
@@ -51,7 +51,7 @@ namespace fita.services.Repositories
                         return Collection
                             .Include(x => x.FromCurrency)
                             .Include(x => x.ToCurrency)
-                            .Include(x => x.HistoricalData)
+                            .Include(x => x.Rate)
                             .FindAll();
                     }
                     catch (Exception ex)
@@ -77,7 +77,7 @@ namespace fita.services.Repositories
                         return Collection
                             .Include(x => x.FromCurrency)
                             .Include(x => x.ToCurrency)
-                            .Include(x => x.HistoricalData)
+                            .Include(x => x.Rate)
                             .Find(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId);
                     }
                     catch (Exception ex)
@@ -103,7 +103,7 @@ namespace fita.services.Repositories
                         return Collection
                             .Include(x => x.FromCurrency)
                             .Include(x => x.ToCurrency)
-                            .Include(x => x.HistoricalData)
+                            .Include(x => x.Rate)
                             .Find(x => x.FromCurrency.CurrencyId == currency.CurrencyId || x.ToCurrency.CurrencyId == currency.CurrencyId);
                     }
                     catch (Exception ex)

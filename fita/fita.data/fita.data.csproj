@@ -8,4 +8,10 @@
       <PackageReference Include="LiteDB" Version="5.0.10" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="DevExpress.RichEdit.v20.2.Core">
+        <HintPath>C:\Program Files (x86)\DevExpress 20.2\.NET Core Desktop Libraries\Offline Packages\devexpress.windowsdesktop.richedit.core\20.2.5\lib\netstandard2.0\DevExpress.RichEdit.v20.2.Core.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

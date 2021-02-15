@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using LiteDB;
+﻿using LiteDB;
 
 namespace fita.data.Models
 {
@@ -14,6 +13,6 @@ namespace fita.data.Models
         public Currency ToCurrency { get; set; }
 
         [BsonRef("historicaldata")]
-        public IList<HistoricalData> HistoricalData { get; set; } = new List<HistoricalData>();
+        public HistoricalData Rate { get; set; }
     }
 }

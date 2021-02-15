@@ -1,21 +1,17 @@
 ﻿<UserControl
-    x:Class="fita.ui.Views.Currencies.CurrenciesView"
+    x:Class="fita.ui.Views.HistoricalData.HistoricalDataView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:currencies="clr-namespace:fita.ui.ViewModels.Currencies"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:historicalData="clr-namespace:fita.ui.ViewModels.HistoricalData"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DataContext="{d:DesignInstance currencies:CurrenciesViewModel}"
-    DataContext="{dxmvvm:ViewModelSource Type=currencies:CurrenciesViewModel}"
+    d:DataContext="{d:DesignInstance historicalData:HistoricalDataViewModel}"
     mc:Ignorable="d">
-    <dxmvvm:Interaction.Behaviors>
-        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
-    </dxmvvm:Interaction.Behaviors>
 
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
         <Grid Margin="5">
@@ -28,56 +24,34 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 Style="{StaticResource H1}"
-                Text="Currencies" />
+                Text="{DXBinding '`Historical Data: ` + Model.Name'}" />
 
             <dxlc:LayoutControl Grid.Row="1">
                 <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
-                    <dxlc:LayoutItem
-                        AddColonToLabel="True"
-                        Label="Current Base Currency"
-                        LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding FileSettings.BaseCurrency.Name, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" />
-                    </dxlc:LayoutItem>
-                    <dxg:GridControl ItemsSource="{Binding Data}">
+                    <dxg:GridControl ItemsSource="{Binding Model.Data.Values}">
                         <dxg:GridControl.Columns>
                             <dxg:GridColumn Width="Auto">
                                 <dxg:GridColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <dxe:HyperlinkEdit
-                                                Command="{Binding View.DataContext.HistoryCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
-                                                EditValue="history" />
-                                            <dxe:HyperlinkEdit
                                                 Command="{Binding View.DataContext.EditCommand}"
-                                                CommandParameter="{Binding RowData.Row.Currency}"
+                                                CommandParameter="{Binding RowData.Row}"
                                                 EditValue="edit" />
                                             <dxe:HyperlinkEdit
-                                                Command="{Binding View.DataContext.SetBaseCommand}"
-                                                CommandParameter="{Binding RowData.Row.Currency}"
-                                                EditValue="base" />
-                                            <dxe:HyperlinkEdit
                                                 Command="{Binding View.DataContext.DeleteCommand}"
-                                                CommandParameter="{Binding RowData.Row.Currency}"
+                                                CommandParameter="{Binding RowData.Row}"
                                                 EditValue="delete" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </dxg:GridColumn.CellTemplate>
                             </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="Currency.Name" Header="Name" />
-                            <dxg:GridColumn FieldName="Currency.Symbol" Header="Symbol" />
-                            <dxg:GridColumn FieldName="LatestDate" Header="Last Date" />
-                            <dxg:GridColumn FieldName="LatestValue" Header="Last Value" />
-                            <dxg:GridColumn FieldName="History" Header="History">
-                                <dxg:GridColumn.EditSettings>
-                                    <dxe:SparklineEditSettings>
-                                        <dxe:SparklineEditSettings.StyleSettings>
-                                            <dxe:LineSparklineStyleSettings Brush="BlueViolet" LineWidth="1" />
-                                        </dxe:SparklineEditSettings.StyleSettings>
-                                    </dxe:SparklineEditSettings>
-                                </dxg:GridColumn.EditSettings>
-                            </dxg:GridColumn>
+                            <dxg:GridColumn FieldName="Date" Header="Date" />
+                            <dxg:GridColumn FieldName="Value" Header="Value" />
                         </dxg:GridControl.Columns>
+                        <!--<dxg:GridControl.SortInfo>
+                            <dxg:GridSortInfo FieldName="Date" SortOrder="Descending" />
+                        </dxg:GridControl.SortInfo>-->
                         <dxg:GridControl.View>
                             <dxg:TableView
                                 AllowEditing="False"
@@ -100,13 +74,13 @@
                         <Setter Property="Margin" Value="4,0" />
                     </Style>
                 </StackPanel.Resources>
-                <dxc:SimpleButton Command="{Binding EditCommand}" Content="Add" />
-                <dxc:SimpleButton Command="{Binding UpdateCommand}" Content="Update" />
+                <dxc:SimpleButton Command="{Binding AddCommand}" Content="Add" />
+                <dxc:SimpleButton Command="{Binding SaveCommand}" Content="Save" />
                 <dxc:SimpleButton
                     Margin="15,0,7,0"
-                    Command="{Binding CloseCommand}"
-                    Content="Close"
-                    IsDefault="True" />
+                    Command="{Binding CancelCommand}"
+                    Content="Cancel"
+                    IsCancel="True" />
             </StackPanel>
         </Grid>
     </dxc:LoadingDecorator>

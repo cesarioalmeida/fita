@@ -6,12 +6,12 @@ namespace fita.services
 {
     public class Result
     {
-        private readonly List<string> errors;
+        private readonly List<string> _errors;
 
         internal Result(bool succeeded, List<string> errors)
         {
             this.Succeeded = succeeded;
-            this.errors = errors;
+            this._errors = errors;
         }
 
         public bool Succeeded { get; }
@@ -19,13 +19,11 @@ namespace fita.services
         public List<string> Errors
             => this.Succeeded
                 ? new List<string>()
-                : this.errors;
+                : this._errors;
 
-        public static Result Success
-            => new(true, new List<string>());
+        public static Result Success { get; } = new(true, new List<string>());
         
-        public static Result Fail
-            => new(false, new List<string>() {"An error occurred."});
+        public static Result Fail { get; } = new(false, new List<string> {"An error occurred."});
 
         public static Result Failure(IEnumerable<string> errors)
             => new Result(false, errors.ToList());

@@ -15,11 +15,18 @@
         <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
         <SubType>Designer</SubType>
       </Page>
+      <Page Update="Views\HistoricalData\HistoricalDataView.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
       <Compile Update="Views\CategoriesView.xaml.cs">
         <SubType>Code</SubType>
         <DependentUpon>CategoriesView.xaml</DependentUpon>
       </Compile>
       <Compile Update="Views\Currencies\CurrencyDetailsView.xaml.cs">
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\HistoricalData\HistoricalDataView.xaml.cs">
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>

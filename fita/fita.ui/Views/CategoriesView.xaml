@@ -139,7 +139,7 @@
                         <dxlc:LayoutItem Label="Symbol">
                             <dxe:TextEdit EditValue="{Binding SelectedCurrency.Symbol, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
                         </dxlc:LayoutItem>
-                        <dxlc:LayoutItem VerticalAlignment="Stretch" Label="Historical Data">
+                        <dxlc:LayoutItem VerticalAlignment="Stretch" Label="Historical Rate">
                             <dxg:GridControl
                                 MaxHeight="600"
                                 VerticalAlignment="Stretch"

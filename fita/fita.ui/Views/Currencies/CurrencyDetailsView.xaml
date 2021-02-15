@@ -11,9 +11,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DataContext="{d:DesignInstance currencies:CurrencyDetailsViewModel}"
     mc:Ignorable="d">
-    <dxmvvm:Interaction.Behaviors>
-        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
-    </dxmvvm:Interaction.Behaviors>
 
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
         <Grid Margin="5">

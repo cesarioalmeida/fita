@@ -12,7 +12,9 @@ using fita.data.Models;
 using fita.services;
 using fita.services.External;
 using fita.services.Repositories;
+using fita.ui.ViewModels.HistoricalData;
 using fita.ui.Views.Currencies;
+using fita.ui.Views.HistoricalData;
 using LiteDB;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
@@ -124,11 +126,7 @@ namespace fita.ui.ViewModels.Currencies
 
                 foreach (var rate in exchangeRatesToDelete)
                 {
-                    foreach (var historicalData in rate.HistoricalData)
-                    {
-                        await HistoricalDataService.DeleteAsync(historicalData.HistoricalDataId);
-                    }
-
+                    await HistoricalDataService.DeleteAsync(rate.Rate.HistoricalDataId);
                     await ExchangeRateService.DeleteAsync(rate.ExchangeRateId);
                 }
 
@@ -142,6 +140,11 @@ namespace fita.ui.ViewModels.Currencies
             {
                 IsBusy = false;
             }
+        }
+
+        public bool CanDelete(Currency currency)
+        {
+            return currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
         }
 
         public async Task SetBase(Currency currency)
@@ -172,6 +175,11 @@ namespace fita.ui.ViewModels.Currencies
             }
         }
 
+        public bool CanSetBase(Currency currency)
+        {
+            return currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
+        }
+
         public async Task Update()
         {
             IsBusy = true;
@@ -180,20 +188,32 @@ namespace fita.ui.ViewModels.Currencies
             {
                 fireChangeNotification = true;
 
-                var currentExchangeRates = (await ExchangeRateService.AllFromCurrencyEnrichedAsync(FileSettings.BaseCurrency)).ToList();
+                var currentExchangeRates =
+                    (await ExchangeRateService.AllFromCurrencyEnrichedAsync(FileSettings.BaseCurrency)).ToList();
 
-                foreach (var currency in Data.Select(x => x.Currency).Where(x => x.CurrencyId != FileSettings.BaseCurrency.CurrencyId))
+                foreach (var currency in Data.Select(x => x.Currency)
+                    .Where(x => x.CurrencyId != FileSettings.BaseCurrency.CurrencyId))
                 {
-                    var exchangeRate = currentExchangeRates.SingleOrDefault(x => x.ToCurrency.CurrencyId == currency.CurrencyId) ??
-                                       new ExchangeRate
-                                       {
-                                           ExchangeRateId = ObjectId.NewObjectId(),
-                                           FromCurrency = FileSettings.BaseCurrency, ToCurrency = currency
-                                       };
+                    var exchangeRate =
+                        currentExchangeRates.SingleOrDefault(x => x.ToCurrency.CurrencyId == currency.CurrencyId) ??
+                        new ExchangeRate
+                        {
+                            ExchangeRateId = ObjectId.NewObjectId(),
+                            FromCurrency = FileSettings.BaseCurrency, ToCurrency = currency,
+                            Rate = new data.Models.HistoricalData
+                            {
+                                HistoricalDataId = ObjectId.NewObjectId(),
+                                Name = $"Exchange rate {FileSettings.BaseCurrency.Name} => {currency.Name}"
+                            }
+                        };
 
                     Messenger.Default.Send(new NotificationMessage($"Updating currency {currency.Name}..."));
 
-                    await ExchangeRateDownloadService.UpdateAsync(exchangeRate);
+                    if (await ExchangeRateDownloadService.UpdateAsync(exchangeRate) == Result.Fail)
+                    {
+                        Messenger.Default.Send(new NotificationMessage($"Could not update currency {currency.Name}",
+                            NotificationStatusEnum.Error));
+                    }
                 }
 
                 await RefreshData();
@@ -202,6 +222,28 @@ namespace fita.ui.ViewModels.Currencies
             {
                 IsBusy = false;
             }
+        }
+
+        public async Task History(CurrenciesModel model)
+        {
+            var viewModel = ViewModelSource.Create<HistoricalDataViewModel>();
+            viewModel.Model = model.ExchangeRate.Rate;
+
+            var document = this.DocumentManagerService.CreateDocument(nameof(HistoricalDataView), viewModel, null, this);
+            document.DestroyOnClose = true;
+            document.Show();
+
+            if (viewModel.Saved)
+            {
+                fireChangeNotification = true;
+
+                await RefreshData();
+            }
+        }
+
+        public bool CanHistory(CurrenciesModel model)
+        {
+            return model?.Currency.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
         }
 
         public class CurrenciesModel
@@ -216,11 +258,11 @@ namespace fita.ui.ViewModels.Currencies
 
             public ExchangeRate ExchangeRate { get; }
 
-            public DateTime? LatestDate => ExchangeRate?.HistoricalData?.OrderByDescending(x => x.Date).FirstOrDefault()?.Date;
+            public DateTime? LatestDate => ExchangeRate?.Rate.LatestDate;
 
-            public decimal? LatestValue => ExchangeRate?.HistoricalData?.OrderByDescending(x => x.Date).FirstOrDefault()?.Value;
+            public decimal? LatestValue => ExchangeRate?.Rate.LatestValue;
 
-            public IEnumerable<decimal> History => ExchangeRate?.HistoricalData?.OrderByDescending(x => x.Date)?.Select(x => x.Value);
+            public IEnumerable<decimal> History => ExchangeRate?.Rate.Data.Values.Select(x => x.Value);
         }
     }
 }
