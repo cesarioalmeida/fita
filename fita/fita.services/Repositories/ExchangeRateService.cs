@@ -87,5 +87,31 @@ namespace fita.services.Repositories
                     }
                 });
         }
+
+        public Task<IEnumerable<ExchangeRate>> AllWithCurrencyEnrichedAsync(Currency currency)
+        {
+            if (currency == null)
+            {
+                return null;
+            }
+
+            return Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        return Collection
+                            .Include(x => x.FromCurrency)
+                            .Include(x => x.ToCurrency)
+                            .Include(x => x.HistoricalData)
+                            .Find(x => x.FromCurrency.CurrencyId == currency.CurrencyId || x.ToCurrency.CurrencyId == currency.CurrencyId);
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Warn($"{nameof(AllWithCurrencyEnrichedAsync)}: {ex}");
+                        return null;
+                    }
+                });
+        }
     }
 }

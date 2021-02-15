@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,6 +33,8 @@ namespace fita.ui.ViewModels.Currencies
         public CurrencyService CurrencyService { get; set; }
 
         public ExchangeRateService ExchangeRateService { get; set; }
+
+        public HistoricalDataService HistoricalDataService { get; set; }
 
         public IExchangeRateDownloadService ExchangeRateDownloadService { get; set; }
 
@@ -117,6 +120,18 @@ namespace fita.ui.ViewModels.Currencies
 
             try
             {
+                var exchangeRatesToDelete = await ExchangeRateService.AllWithCurrencyEnrichedAsync(currency);
+
+                foreach (var rate in exchangeRatesToDelete)
+                {
+                    foreach (var historicalData in rate.HistoricalData)
+                    {
+                        await HistoricalDataService.DeleteAsync(historicalData.HistoricalDataId);
+                    }
+
+                    await ExchangeRateService.DeleteAsync(rate.ExchangeRateId);
+                }
+
                 Messenger.Default.Send(await CurrencyService.DeleteAsync(currency.CurrencyId) == Result.Fail
                     ? new NotificationMessage("Failed to delete currency.", NotificationStatusEnum.Error)
                     : new NotificationMessage($"Currency {currency.Name} deleted.", NotificationStatusEnum.Success));
@@ -202,6 +217,8 @@ namespace fita.ui.ViewModels.Currencies
             public DateTime? LatestDate => ExchangeRate?.HistoricalData?.OrderByDescending(x => x.Date).FirstOrDefault()?.Date;
 
             public decimal? LatestValue => ExchangeRate?.HistoricalData?.OrderByDescending(x => x.Date).FirstOrDefault()?.Value;
+
+            public IEnumerable<decimal> History => ExchangeRate?.HistoricalData?.OrderByDescending(x => x.Date)?.Select(x => x.Value);
         }
     }
 }

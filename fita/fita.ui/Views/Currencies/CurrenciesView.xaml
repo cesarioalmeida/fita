@@ -65,6 +65,11 @@
                             <dxg:GridColumn FieldName="Currency.Symbol" Header="Symbol" />
                             <dxg:GridColumn FieldName="LatestDate" Header="Last Date" />
                             <dxg:GridColumn FieldName="LatestValue" Header="Last Value" />
+                            <dxg:GridColumn FieldName="History" Header="History">
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:SparklineEditSettings />
+                                </dxg:GridColumn.EditSettings>
+                            </dxg:GridColumn>
                         </dxg:GridControl.Columns>
                         <dxg:GridControl.View>
                             <dxg:TableView
