@@ -67,7 +67,11 @@
                             <dxg:GridColumn FieldName="LatestValue" Header="Last Value" />
                             <dxg:GridColumn FieldName="History" Header="History">
                                 <dxg:GridColumn.EditSettings>
-                                    <dxe:SparklineEditSettings />
+                                    <dxe:SparklineEditSettings>
+                                        <dxe:SparklineEditSettings.StyleSettings>
+                                            <dxe:LineSparklineStyleSettings Brush="BlueViolet" LineWidth="1" />
+                                        </dxe:SparklineEditSettings.StyleSettings>
+                                    </dxe:SparklineEditSettings>
                                 </dxg:GridColumn.EditSettings>
                             </dxg:GridColumn>
                         </dxg:GridControl.Columns>

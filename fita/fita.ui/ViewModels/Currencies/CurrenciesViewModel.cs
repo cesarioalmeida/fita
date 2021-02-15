@@ -24,7 +24,7 @@ namespace fita.ui.ViewModels.Currencies
     [POCOViewModel]
     public class CurrenciesViewModel : ComposedDocumentViewModelBase
     {
-        private bool fireChangeNotification = false;
+        private bool fireChangeNotification;
 
         public override object Title { get; set; } = "Currencies";
 
@@ -190,6 +190,8 @@ namespace fita.ui.ViewModels.Currencies
                                            ExchangeRateId = ObjectId.NewObjectId(),
                                            FromCurrency = FileSettings.BaseCurrency, ToCurrency = currency
                                        };
+
+                    Messenger.Default.Send(new NotificationMessage($"Updating currency {currency.Name}..."));
 
                     await ExchangeRateDownloadService.UpdateAsync(exchangeRate);
                 }

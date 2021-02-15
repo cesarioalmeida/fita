@@ -6,6 +6,7 @@
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:enums="clr-namespace:twentySix.Framework.Core.UI.Enums;assembly=twentySix.Framework.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:fita.ui.ViewModels"
     Title="fita"
@@ -18,6 +19,13 @@
     WindowStartupLocation="CenterOwner"
     WindowState="Maximized"
     mc:Ignorable="d">
+    <dx:ThemedWindow.Resources>
+        <dxmvvm:ObjectToObjectConverter x:Key="MessageStateToColourConverter" DefaultTarget="Black">
+            <dxmvvm:MapItem Source="{x:Static enums:NotificationStatusEnum.Error}" Target="Red" />
+            <dxmvvm:MapItem Source="{x:Static enums:NotificationStatusEnum.Success}" Target="Green" />
+        </dxmvvm:ObjectToObjectConverter>
+    </dx:ThemedWindow.Resources>
+
     <dx:ThemedWindow.ToolbarItems>
         <dxb:MainMenuControl VerticalAlignment="Center" ShowBackground="False">
             <dxb:BarSubItem Content="File">
@@ -40,6 +48,7 @@
     </dx:ThemedWindow.ToolbarItems>
 
     <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:DispatcherService />
         <dx:WindowedDocumentUIService DocumentShowMode="Dialog" WindowStartupLocation="CenterScreen">
             <dx:WindowedDocumentUIService.WindowStyle>
                 <Style TargetType="dx:ThemedWindow">
@@ -61,8 +70,9 @@
 
         <dxb:StatusBarControl Grid.Row="1" Caption="Status Bar">
             <dxb:BarStaticItem
-                Content="Ratos"
+                Content="{Binding Message.Message}"
                 CustomizationContent="Caret Position"
+                Foreground="{Binding Message.Status, Converter={StaticResource MessageStateToColourConverter}}"
                 ShowBorder="False" />
         </dxb:StatusBarControl>
     </Grid>
