@@ -46,7 +46,7 @@ namespace fita.services.External
                                 new HistoricalPoint {Date = data.Date, Value = data.Value});
                         }
 
-                        if(await HistoricalDataService.SaveAsync(exchangeRate.Rate))
+                        if (await HistoricalDataService.SaveAsync(exchangeRate.Rate))
                         {
                             return await ExchangeRateService.SaveAsync(exchangeRate);
                         }

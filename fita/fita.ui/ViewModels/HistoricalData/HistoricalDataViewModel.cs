@@ -1,7 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
+using DevExpress.Xpf.WindowsUI;
+using fita.data.Models;
+using fita.services;
 using fita.services.Repositories;
 using fita.ui.Common;
+using fita.ui.Services;
+using twentySix.Framework.Core.Messages;
+using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.HistoricalData
@@ -15,24 +24,58 @@ namespace fita.ui.ViewModels.HistoricalData
 
         public override object Title { get; set; }
 
-        public data.Models.HistoricalData Model { get; set; }
+        public virtual data.Models.HistoricalData Model { get; set; }
 
         public bool Saved { get; private set; }
 
         public HistoricalDataService HistoricalDataService { get; set; }
 
-        public void Cancel()
+        protected virtual IGridControlService GridControlService => null;
+
+        public void Close()
         {
             DocumentOwner?.Close(this);
         }
 
-        public void Edit(data.Models.HistoricalPoint historical)
+        public void Edit(HistoricalPoint historical)
         {
 
         }
 
-        public void Delete()
+        public async Task Delete(HistoricalPoint historical)
         {
+            if (historical == null)
+            {
+                return;
+            }
+
+            if (WinUIMessageBox.Show(
+                $"Are you sure you want to delete the date {historical.Date.ToShortDateString()}?",
+                "Delete Date",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Question) != MessageBoxResult.OK)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                Model.Data.Remove(historical.Date);
+
+                Messenger.Default.Send(await HistoricalDataService.SaveAsync(Model) == Result.Fail
+                    ? new NotificationMessage("Failed to delete historical point.", NotificationStatusEnum.Error)
+                    : new NotificationMessage($"Historical point {historical.Date.ToShortDateString()} deleted.", NotificationStatusEnum.Success));
+
+                Saved = true;
+
+                RefreshData();
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
         
         public async Task Save()
@@ -52,6 +95,11 @@ namespace fita.ui.ViewModels.HistoricalData
             {
                 IsBusy = false;
             }
+        }
+
+        private void RefreshData()
+        {
+            GridControlService?.Refresh();
         }
     }
 }

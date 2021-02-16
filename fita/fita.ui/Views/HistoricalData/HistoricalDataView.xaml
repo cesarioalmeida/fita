@@ -10,6 +10,7 @@
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:historicalData="clr-namespace:fita.ui.ViewModels.HistoricalData"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:services="clr-namespace:fita.ui.Services"
     d:DataContext="{d:DesignInstance historicalData:HistoricalDataViewModel}"
     mc:Ignorable="d">
 
@@ -59,6 +60,9 @@
                                 ShowGroupPanel="False"
                                 ShowSearchPanelMode="Always" />
                         </dxg:GridControl.View>
+                        <dxmvvm:Interaction.Behaviors>
+                            <services:GridControlService />
+                        </dxmvvm:Interaction.Behaviors>
                     </dxg:GridControl>
                 </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
@@ -75,11 +79,10 @@
                     </Style>
                 </StackPanel.Resources>
                 <dxc:SimpleButton Command="{Binding AddCommand}" Content="Add" />
-                <dxc:SimpleButton Command="{Binding SaveCommand}" Content="Save" />
                 <dxc:SimpleButton
                     Margin="15,0,7,0"
-                    Command="{Binding CancelCommand}"
-                    Content="Cancel"
+                    Command="{Binding CloseCommand}"
+                    Content="Close"
                     IsCancel="True" />
             </StackPanel>
         </Grid>

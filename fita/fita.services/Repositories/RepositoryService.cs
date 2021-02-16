@@ -36,7 +36,8 @@ namespace fita.services.Repositories
 
                     try
                     {
-                        return Collection.Upsert(model) ? Result.Success : Result.Fail;
+                        Collection.Upsert(model);
+                        return Result.Success;
                     }
                     catch (Exception ex)
                     {
