@@ -87,7 +87,7 @@ namespace fita.ui.ViewModels.Currencies
         public async Task Edit(Currency currency)
         {
             var viewModel = ViewModelSource.Create<CurrencyDetailsViewModel>();
-            viewModel.Currency = currency ?? new Currency {CurrencyId = ObjectId.NewObjectId()};
+            viewModel.Currency = currency ?? new Currency();
 
             var document =
                 this.DocumentManagerService.CreateDocument(nameof(CurrencyDetailsView), viewModel, null, this);
@@ -198,11 +198,9 @@ namespace fita.ui.ViewModels.Currencies
                         currentExchangeRates.SingleOrDefault(x => x.ToCurrency.CurrencyId == currency.CurrencyId) ??
                         new ExchangeRate
                         {
-                            ExchangeRateId = ObjectId.NewObjectId(),
                             FromCurrency = FileSettings.BaseCurrency, ToCurrency = currency,
                             Rate = new data.Models.HistoricalData
                             {
-                                HistoricalDataId = ObjectId.NewObjectId(),
                                 Name = $"Exchange rate {FileSettings.BaseCurrency.Name} => {currency.Name}"
                             }
                         };

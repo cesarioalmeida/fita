@@ -4,7 +4,7 @@ namespace fita.data.Models
 {
     public class ExchangeRate
     {
-        public ObjectId ExchangeRateId { get; set; }
+        public ObjectId ExchangeRateId { get; set; } = ObjectId.NewObjectId();
 
         [BsonRef("currency")]
         public Currency FromCurrency { get; set; }

@@ -25,7 +25,6 @@ namespace fita.services.Repositories
             {
                 var file = new FileSettings
                 {
-                    FileSettingsId= ObjectId.NewObjectId(),
                     Name = "New File"
                 };
 

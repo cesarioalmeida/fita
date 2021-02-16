@@ -5,8 +5,6 @@ namespace fita.services.External
 {
     public interface IExchangeRateDownloadService
     {
-        Task<Result> UpdateAllAsync();
-
         Task<Result> UpdateAsync(ExchangeRate exchangeRate);
     }
 }

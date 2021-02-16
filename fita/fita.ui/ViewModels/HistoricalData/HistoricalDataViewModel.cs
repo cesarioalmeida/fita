@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DevExpress.Mvvm.DataAnnotations;
 using fita.services.Repositories;
 using fita.ui.Common;

@@ -4,7 +4,7 @@ namespace fita.data.Models
 {
     public class Currency
     {
-        public ObjectId CurrencyId { get; set; }
+        public ObjectId CurrencyId { get; set; } = ObjectId.NewObjectId();
 
         public string Name { get; set; }
 
