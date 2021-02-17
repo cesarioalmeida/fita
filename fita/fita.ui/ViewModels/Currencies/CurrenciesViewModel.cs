@@ -10,7 +10,7 @@ using DevExpress.Xpf.Core;
 using DevExpress.Xpf.WindowsUI;
 using fita.data.Models;
 using fita.services;
-using fita.services.External;
+using fita.services.Core;
 using fita.services.Repositories;
 using fita.ui.ViewModels.HistoricalData;
 using fita.ui.Views.Currencies;
@@ -29,15 +29,15 @@ namespace fita.ui.ViewModels.Currencies
 
         public override object Title { get; set; } = "Currencies";
 
-        public FileSettingsService FileSettingsService { get; set; }
+        public FileSettingsRepoService FileSettingsRepoService { get; set; }
 
-        public CurrencyService CurrencyService { get; set; }
+        public CurrencyRepoService CurrencyRepoService { get; set; }
 
-        public ExchangeRateService ExchangeRateService { get; set; }
+        public ExchangeRateRepoService ExchangeRateRepoService { get; set; }
 
-        public HistoricalDataService HistoricalDataService { get; set; }
+        public HistoricalDataRepoService HistoricalDataRepoService { get; set; }
 
-        public IExchangeRateDownloadService ExchangeRateDownloadService { get; set; }
+        public IExchangeRateService ExchangeRateService { get; set; }
 
         protected virtual IDocumentManagerService DocumentManagerService => null;
 
@@ -64,10 +64,10 @@ namespace fita.ui.ViewModels.Currencies
 
             try
             {
-                FileSettings = (await FileSettingsService.AllEnrichedAsync())?.FirstOrDefault();
+                FileSettings = (await FileSettingsRepoService.AllEnrichedAsync())?.FirstOrDefault();
 
-                var currencies = await CurrencyService.AllAsync();
-                var exchangeRates = await ExchangeRateService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
+                var currencies = await CurrencyRepoService.AllAsync();
+                var exchangeRates = await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
 
                 var data = currencies.Select(c =>
                     new CurrenciesModel(c, exchangeRates.FirstOrDefault(x => x.ToCurrency.CurrencyId == c.CurrencyId)));
@@ -119,15 +119,15 @@ namespace fita.ui.ViewModels.Currencies
 
             try
             {
-                var exchangeRatesToDelete = await ExchangeRateService.AllWithCurrencyEnrichedAsync(currency);
+                var exchangeRatesToDelete = await ExchangeRateRepoService.AllWithCurrencyEnrichedAsync(currency);
 
                 foreach (var rate in exchangeRatesToDelete)
                 {
-                    await HistoricalDataService.DeleteAsync(rate.Rate.HistoricalDataId);
-                    await ExchangeRateService.DeleteAsync(rate.ExchangeRateId);
+                    await HistoricalDataRepoService.DeleteAsync(rate.Rate.HistoricalDataId);
+                    await ExchangeRateRepoService.DeleteAsync(rate.ExchangeRateId);
                 }
 
-                Messenger.Default.Send(await CurrencyService.DeleteAsync(currency.CurrencyId) == Result.Fail
+                Messenger.Default.Send(await CurrencyRepoService.DeleteAsync(currency.CurrencyId) == Result.Fail
                     ? new NotificationMessage("Failed to delete currency.", NotificationStatusEnum.Error)
                     : new NotificationMessage($"Currency {currency.Name} deleted.", NotificationStatusEnum.Success));
 
@@ -157,7 +157,7 @@ namespace fita.ui.ViewModels.Currencies
             {
                 FileSettings.BaseCurrency = currency;
 
-                Messenger.Default.Send(await FileSettingsService.SaveAsync(FileSettings) == Result.Fail
+                Messenger.Default.Send(await FileSettingsRepoService.SaveAsync(FileSettings) == Result.Fail
                     ? new NotificationMessage("Failed to save base currency.", NotificationStatusEnum.Error)
                     : new NotificationMessage($"Base currency set to {currency.Name}.",
                         NotificationStatusEnum.Success));
@@ -186,7 +186,7 @@ namespace fita.ui.ViewModels.Currencies
                 fireChangeNotification = true;
 
                 var currentExchangeRates =
-                    (await ExchangeRateService.AllFromCurrencyEnrichedAsync(FileSettings.BaseCurrency)).ToList();
+                    (await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings.BaseCurrency)).ToList();
 
                 foreach (var currency in Data.Select(x => x.Currency)
                     .Where(x => x.CurrencyId != FileSettings.BaseCurrency.CurrencyId))
@@ -204,7 +204,7 @@ namespace fita.ui.ViewModels.Currencies
 
                     Messenger.Default.Send(new NotificationMessage($"Updating currency {currency.Name}..."));
 
-                    if (await ExchangeRateDownloadService.UpdateAsync(exchangeRate) == Result.Fail)
+                    if (await ExchangeRateService.UpdateAsync(exchangeRate) == Result.Fail)
                     {
                         Messenger.Default.Send(new NotificationMessage($"Could not update currency {currency.Name}",
                             NotificationStatusEnum.Error));

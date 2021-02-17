@@ -5,9 +5,9 @@ using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.Repositories
 {
-    public class CurrencyService : RepositoryService<Currency>, ISeedData
+    public class CurrencyRepoService : RepositoryService<Currency>, ISeedData
     {
-        public CurrencyService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(dbHelperService, loggingService)
+        public CurrencyRepoService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(dbHelperService, loggingService)
         {
             IndexData();
         }

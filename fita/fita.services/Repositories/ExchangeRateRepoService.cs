@@ -7,19 +7,21 @@ using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.Repositories
 {
-    public class ExchangeRateService : RepositoryService<ExchangeRate>
+    public class ExchangeRateRepoService : RepositoryService<ExchangeRate>
     {
-        public ExchangeRateService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(dbHelperService, loggingService)
+        public ExchangeRateRepoService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(
+            dbHelperService, loggingService)
         {
             IndexData();
         }
-        
+
         public sealed override void IndexData()
         {
             Collection.EnsureIndex(x => x.ExchangeRateId);
             Collection.EnsureIndex(x => x.FromCurrency);
+            Collection.EnsureIndex(x => x.ToCurrency);
         }
-        
+
         public override Task<ExchangeRate> DetailsEnrichedAsync(ObjectId id)
         {
             return Task.Run(
@@ -104,11 +106,39 @@ namespace fita.services.Repositories
                             .Include(x => x.FromCurrency)
                             .Include(x => x.ToCurrency)
                             .Include(x => x.Rate)
-                            .Find(x => x.FromCurrency.CurrencyId == currency.CurrencyId || x.ToCurrency.CurrencyId == currency.CurrencyId);
+                            .Find(x => x.FromCurrency.CurrencyId == currency.CurrencyId ||
+                                       x.ToCurrency.CurrencyId == currency.CurrencyId);
                     }
                     catch (Exception ex)
                     {
                         LoggingService.Warn($"{nameof(AllWithCurrencyEnrichedAsync)}: {ex}");
+                        return null;
+                    }
+                });
+        }
+
+        public Task<ExchangeRate> FromToCurrencyEnrichedAsync(Currency fromCurrency, Currency toCurrency)
+        {
+            if (fromCurrency == null || toCurrency == null)
+            {
+                return null;
+            }
+
+            return Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        return Collection
+                            .Include(x => x.FromCurrency)
+                            .Include(x => x.ToCurrency)
+                            .Include(x => x.Rate)
+                            .FindOne(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId &&
+                                       x.ToCurrency.CurrencyId == toCurrency.CurrencyId);
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Warn($"{nameof(FromToCurrencyEnrichedAsync)}: {ex}");
                         return null;
                     }
                 });

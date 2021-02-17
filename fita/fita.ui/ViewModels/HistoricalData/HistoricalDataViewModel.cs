@@ -30,7 +30,7 @@ namespace fita.ui.ViewModels.HistoricalData
 
         public bool Saved { get; private set; }
 
-        public HistoricalDataService HistoricalDataService { get; set; }
+        public HistoricalDataRepoService HistoricalDataRepoService { get; set; }
 
         protected virtual IGridControlService GridControlService => null;
 
@@ -58,7 +58,7 @@ namespace fita.ui.ViewModels.HistoricalData
 
             if (viewModel.Saved)
             {
-                Messenger.Default.Send(await HistoricalDataService.SaveAsync(Model) == Result.Fail
+                Messenger.Default.Send(await HistoricalDataRepoService.SaveAsync(Model) == Result.Fail
                     ? new NotificationMessage("Failed to edit historical point.", NotificationStatusEnum.Error)
                     : new NotificationMessage($"Historical point {historical.Date.ToShortDateString()} edited.", NotificationStatusEnum.Success));
 
@@ -85,7 +85,7 @@ namespace fita.ui.ViewModels.HistoricalData
             {
                 Model.DataPoints.Remove(historical);
 
-                Messenger.Default.Send(await HistoricalDataService.SaveAsync(Model) == Result.Fail
+                Messenger.Default.Send(await HistoricalDataRepoService.SaveAsync(Model) == Result.Fail
                     ? new NotificationMessage("Failed to delete historical point.", NotificationStatusEnum.Error)
                     : new NotificationMessage($"Historical point {historical.Date.ToShortDateString()} deleted.", NotificationStatusEnum.Success));
 

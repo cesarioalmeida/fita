@@ -7,13 +7,13 @@ using Newtonsoft.Json.Linq;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Services.Interfaces;
 
-namespace fita.services.External
+namespace fita.services.Core
 {
-    public class ExchangeRateDownloadService : IExchangeRateDownloadService
+    public class ExchangeRateService : IExchangeRateService
     {
-        public ExchangeRateService ExchangeRateService { get; set; }
+        public ExchangeRateRepoService ExchangeRateRepoService { get; set; }
 
-        public HistoricalDataService HistoricalDataService { get; set; }
+        public HistoricalDataRepoService HistoricalDataRepoService { get; set; }
 
         public ILoggingService LoggingService { get; set; }
 
@@ -48,9 +48,9 @@ namespace fita.services.External
                                 {Date = data.Date.Date, Value = data.Value});
                         }
 
-                        if (await HistoricalDataService.SaveAsync(exchangeRate.Rate))
+                        if (await HistoricalDataRepoService.SaveAsync(exchangeRate.Rate))
                         {
-                            return await ExchangeRateService.SaveAsync(exchangeRate);
+                            return await ExchangeRateRepoService.SaveAsync(exchangeRate);
                         }
 
                         return Result.Success;
@@ -61,6 +61,20 @@ namespace fita.services.External
                         return Result.Fail;
                     }
                 });
+        }
+
+        public async Task<decimal> Exchange(Currency fromCurrency, Currency toCurrency, decimal value)
+        {
+            try
+            {
+                var exchangeRate = await ExchangeRateRepoService.FromToCurrencyEnrichedAsync(fromCurrency, toCurrency);
+                return exchangeRate == null ? 1m : exchangeRate.Rate.LatestValue ?? 1m;
+            }
+            catch (Exception ex)
+            {
+                LoggingService.Warn($"{nameof(Convert)}: {ex}");
+                return 1m;
+            }
         }
 
         private static HistoricalElement DownloadData(ExchangeRate exchangeRate)

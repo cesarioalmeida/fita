@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace fita.core.Common
+namespace fita.data.Enums
 {
     public enum CategoryGroupEnum
     {
@@ -20,7 +20,6 @@ namespace fita.core.Common
         BusinessExpenses,
         
         [Display(Name = "Business Income")]
-        BusinessIncome,
-        
+        BusinessIncome
     }
 }

@@ -7,9 +7,9 @@ using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.Repositories
 {
-    public class FileSettingsService : RepositoryService<FileSettings>, ISeedData
+    public class FileSettingsRepoService : RepositoryService<FileSettings>, ISeedData
     {
-        public FileSettingsService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(dbHelperService, loggingService)
+        public FileSettingsRepoService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(dbHelperService, loggingService)
         {
             IndexData();
         }

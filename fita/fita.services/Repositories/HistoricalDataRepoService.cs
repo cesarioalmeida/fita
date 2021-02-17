@@ -3,9 +3,9 @@ using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.Repositories
 {
-    public class HistoricalDataService : RepositoryService<HistoricalData>
+    public class HistoricalDataRepoService : RepositoryService<HistoricalData>
     {
-        public HistoricalDataService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(
+        public HistoricalDataRepoService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(
             dbHelperService, loggingService)
         {
             IndexData();

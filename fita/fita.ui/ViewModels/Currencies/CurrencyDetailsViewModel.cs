@@ -21,7 +21,7 @@ namespace fita.ui.ViewModels.Currencies
 
         public override object Title { get; set; }
 
-        public CurrencyService CurrencyService { get; set; }
+        public CurrencyRepoService CurrencyRepoService { get; set; }
 
         public Currency Currency { get; set; }
 
@@ -38,7 +38,7 @@ namespace fita.ui.ViewModels.Currencies
 
             try
             {
-                Messenger.Default.Send(await CurrencyService.SaveAsync(Currency) == Result.Fail
+                Messenger.Default.Send(await CurrencyRepoService.SaveAsync(Currency) == Result.Fail
                     ? new NotificationMessage("Failed to save currency.", NotificationStatusEnum.Error)
                     : new NotificationMessage($"Currency {Currency.Name} saved.", NotificationStatusEnum.Success));
 
