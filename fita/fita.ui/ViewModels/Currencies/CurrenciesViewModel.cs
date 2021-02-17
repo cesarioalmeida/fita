@@ -15,7 +15,6 @@ using fita.services.Repositories;
 using fita.ui.ViewModels.HistoricalData;
 using fita.ui.Views.Currencies;
 using fita.ui.Views.HistoricalData;
-using LiteDB;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -40,8 +39,7 @@ namespace fita.ui.ViewModels.Currencies
 
         public IExchangeRateDownloadService ExchangeRateDownloadService { get; set; }
 
-        protected virtual IDocumentManagerService DocumentManagerService =>
-            this.GetRequiredService<IDocumentManagerService>();
+        protected virtual IDocumentManagerService DocumentManagerService => null;
 
         public virtual LockableCollection<CurrenciesModel> Data { get; set; } = new();
 
@@ -49,7 +47,6 @@ namespace fita.ui.ViewModels.Currencies
 
         public void Close()
         {
-            // notify update of currency if there was a change in the base currency
             if (fireChangeNotification)
             {
             }
@@ -227,7 +224,7 @@ namespace fita.ui.ViewModels.Currencies
             var viewModel = ViewModelSource.Create<HistoricalDataViewModel>();
             viewModel.Model = model.ExchangeRate.Rate;
 
-            var document = this.DocumentManagerService.CreateDocument(nameof(HistoricalDataView), viewModel, null, this);
+            var document = DocumentManagerService.CreateDocument(nameof(HistoricalDataView), viewModel, null, this);
             document.DestroyOnClose = true;
             document.Show();
 
@@ -260,7 +257,7 @@ namespace fita.ui.ViewModels.Currencies
 
             public decimal? LatestValue => ExchangeRate?.Rate.LatestValue;
 
-            public IEnumerable<decimal> History => ExchangeRate?.Rate.Data.Values.Select(x => x.Value);
+            public IEnumerable<decimal> History => ExchangeRate?.Rate.DataPoints.OrderByDescending(x => x.Date).Select(x => x.Value);
         }
     }
 }

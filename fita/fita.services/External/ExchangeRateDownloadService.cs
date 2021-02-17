@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using fita.services.Repositories;
@@ -36,14 +37,15 @@ namespace fita.services.External
                             PrepareHistoricalData(exchangeRate);
                         }
 
-                        if (data.Date.Date == exchangeRate.Rate?.LatestDate?.Date)
+                        if (exchangeRate.Rate?.DataPoints.SingleOrDefault(x => x.Date.Date == data.Date.Date) is var
+                            existingDataPoint and { })
                         {
-                            exchangeRate.Rate.Data[data.Date.Date].Value = data.Value;
+                            existingDataPoint.Value = data.Value;
                         }
                         else
                         {
-                            exchangeRate.Rate?.Data.Add(data.Date,
-                                new HistoricalPoint {Date = data.Date, Value = data.Value});
+                            exchangeRate.Rate?.DataPoints.Add(new HistoricalDataPoint
+                                {Date = data.Date.Date, Value = data.Value});
                         }
 
                         if (await HistoricalDataService.SaveAsync(exchangeRate.Rate))
@@ -79,7 +81,7 @@ namespace fita.services.External
         {
             var historicalData = new HistoricalData
             {
-                Name = $"Exchange rate {rate.FromCurrency.Name} => {rate.ToCurrency.Name}",
+                Name = $"Exchange rate {rate.FromCurrency.Name} => {rate.ToCurrency.Name}"
             };
 
             rate.Rate = historicalData;

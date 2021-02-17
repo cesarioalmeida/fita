@@ -29,7 +29,7 @@
 
             <dxlc:LayoutControl Grid.Row="1">
                 <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
-                    <dxg:GridControl ItemsSource="{Binding Model.Data.Values}">
+                    <dxg:GridControl ItemsSource="{Binding Model.DataPoints}">
                         <dxg:GridControl.Columns>
                             <dxg:GridColumn Width="Auto">
                                 <dxg:GridColumn.CellTemplate>
@@ -50,9 +50,9 @@
                             <dxg:GridColumn FieldName="Date" Header="Date" />
                             <dxg:GridColumn FieldName="Value" Header="Value" />
                         </dxg:GridControl.Columns>
-                        <!--<dxg:GridControl.SortInfo>
+                        <dxg:GridControl.SortInfo>
                             <dxg:GridSortInfo FieldName="Date" SortOrder="Descending" />
-                        </dxg:GridControl.SortInfo>-->
+                        </dxg:GridControl.SortInfo>
                         <dxg:GridControl.View>
                             <dxg:TableView
                                 AllowEditing="False"
@@ -78,7 +78,7 @@
                         <Setter Property="Margin" Value="4,0" />
                     </Style>
                 </StackPanel.Resources>
-                <dxc:SimpleButton Command="{Binding AddCommand}" Content="Add" />
+                <dxc:SimpleButton Command="{Binding EditCommand}" Content="Add" />
                 <dxc:SimpleButton
                     Margin="15,0,7,0"
                     Command="{Binding CloseCommand}"

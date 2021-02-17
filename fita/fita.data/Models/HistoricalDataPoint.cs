@@ -2,10 +2,10 @@
 
 namespace fita.data.Models
 {
-    public class HistoricalPoint
+    public class HistoricalDataPoint
     {
         public DateTime Date { get; set; }
-        
+
         public decimal Value { get; set; }
     }
 }

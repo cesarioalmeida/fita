@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
+using DevExpress.Mvvm.POCO;
 using DevExpress.Xpf.WindowsUI;
 using fita.data.Models;
 using fita.services;
 using fita.services.Repositories;
 using fita.ui.Common;
 using fita.ui.Services;
+using fita.ui.Views.HistoricalData;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
@@ -32,23 +34,42 @@ namespace fita.ui.ViewModels.HistoricalData
 
         protected virtual IGridControlService GridControlService => null;
 
+        protected virtual IDocumentManagerService DocumentManagerService => null;
+
         public void Close()
         {
             DocumentOwner?.Close(this);
         }
 
-        public void Edit(HistoricalPoint historical)
-        {
-
-        }
-
-        public async Task Delete(HistoricalPoint historical)
+        public async Task Edit(HistoricalDataPoint historical)
         {
             if (historical == null)
             {
-                return;
+                historical = new HistoricalDataPoint {Date = DateTime.Now, Value = 0m};
+                Model.DataPoints.Add(historical);
             }
 
+            var viewModel = ViewModelSource.Create<HistoricalPointViewModel>();
+            viewModel.Point = historical;
+
+            var document = this.DocumentManagerService.CreateDocument(nameof(HistoricalPointView), viewModel, null, this);
+            document.DestroyOnClose = true;
+            document.Show();
+
+            if (viewModel.Saved)
+            {
+                Messenger.Default.Send(await HistoricalDataService.SaveAsync(Model) == Result.Fail
+                    ? new NotificationMessage("Failed to edit historical point.", NotificationStatusEnum.Error)
+                    : new NotificationMessage($"Historical point {historical.Date.ToShortDateString()} edited.", NotificationStatusEnum.Success));
+
+                Saved = true;
+
+                RefreshData();
+            }
+        }
+
+        public async Task Delete(HistoricalDataPoint historical)
+        {
             if (WinUIMessageBox.Show(
                 $"Are you sure you want to delete the date {historical.Date.ToShortDateString()}?",
                 "Delete Date",
@@ -62,7 +83,7 @@ namespace fita.ui.ViewModels.HistoricalData
 
             try
             {
-                Model.Data.Remove(historical.Date);
+                Model.DataPoints.Remove(historical);
 
                 Messenger.Default.Send(await HistoricalDataService.SaveAsync(Model) == Result.Fail
                     ? new NotificationMessage("Failed to delete historical point.", NotificationStatusEnum.Error)
@@ -78,25 +99,6 @@ namespace fita.ui.ViewModels.HistoricalData
             }
         }
         
-        public async Task Save()
-        {
-            IsBusy = true;
-
-            try
-            {
-                //Messenger.Default.Send(await CurrencyService.SaveAsync(Currency) == Result.Fail
-                //    ? new NotificationMessage("Failed to save currency.", NotificationStatusEnum.Error)
-                //    : new NotificationMessage($"Currency {Currency.Name} saved.", NotificationStatusEnum.Success));
-
-                Saved = true;
-                DocumentOwner?.Close(this);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
-
         private void RefreshData()
         {
             GridControlService?.Refresh();

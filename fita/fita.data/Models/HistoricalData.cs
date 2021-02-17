@@ -11,12 +11,12 @@ namespace fita.data.Models
 
         public string Name { get; set; }
 
-        public Dictionary<DateTime, HistoricalPoint> Data { get; set; } = new();
+        public List<HistoricalDataPoint> DataPoints { get; set; } = new();
 
         [BsonIgnore]
-        public DateTime? LatestDate => Data.Any() ? Data.OrderByDescending(x => x.Key).First().Key : null;
+        public DateTime? LatestDate => DataPoints.Any() ? DataPoints.OrderByDescending(x => x.Date).First().Date : null;
 
         [BsonIgnore]
-        public decimal? LatestValue => Data.Any() ? Data.OrderByDescending(x => x.Key).First().Value.Value : null;
+        public decimal? LatestValue => DataPoints.Any() ? DataPoints.OrderByDescending(x => x.Date).First().Value : null;
     }
 }
