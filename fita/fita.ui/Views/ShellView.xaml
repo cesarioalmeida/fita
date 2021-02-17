@@ -39,9 +39,13 @@
             </dxb:BarSubItem>
             <dxb:BarSubItem Content="Tools">
                 <dxb:BarButtonItem
+                    Command="{Binding CategoriesCommand}"
+                    Content="Categories"
+                    Glyph="../Resources/Icons/Categories_24x24.png" />
+                <dxb:BarButtonItem
                     Command="{Binding CurrenciesCommand}"
                     Content="Currencies"
-                    Glyph="../Resources/Icons/Currency_32x32.png" />
+                    Glyph="../Resources/Icons/Currency_24x24.png" />
             </dxb:BarSubItem>
             <dxb:BarButtonItem Content="Help" />
         </dxb:MainMenuControl>

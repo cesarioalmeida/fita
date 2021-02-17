@@ -1,0 +1,59 @@
+﻿<UserControl
+    x:Class="fita.ui.Views.Categories.CategoriesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:categories="clr-namespace:fita.ui.ViewModels.Categories"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignInstance categories:CategoriesViewModel}"
+    DataContext="{dxmvvm:ViewModelSource Type=categories:CategoriesViewModel}"
+    mc:Ignorable="d">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
+    </dxmvvm:Interaction.Behaviors>
+
+    <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                HorizontalAlignment="Center"
+                Style="{StaticResource H1}"
+                Text="Categories" />
+
+            <dxlc:LayoutControl Grid.Row="1">
+                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical" />
+            </dxlc:LayoutControl>
+
+            <StackPanel
+                Grid.Row="2"
+                Margin="4"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="dxc:SimpleButton">
+                        <Setter Property="Padding" Value="30,5" />
+                        <Setter Property="Margin" Value="4,0" />
+                    </Style>
+                </StackPanel.Resources>
+                <dxc:SimpleButton Content="Add" />
+                <dxc:SimpleButton Content="Update" />
+                <dxc:SimpleButton
+                    Margin="15,0,7,0"
+                    Command="{Binding CloseCommand}"
+                    Content="Close"
+                    IsDefault="True" />
+            </StackPanel>
+        </Grid>
+    </dxc:LoadingDecorator>
+
+</UserControl>

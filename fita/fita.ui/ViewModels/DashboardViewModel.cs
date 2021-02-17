@@ -1,10 +1,8 @@
 ﻿using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
-using fita.ui.Models;
 using System.Collections.Generic;
 using System.Linq;
-using fita.ui.DisplayModels;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Interfaces;
 using twentySix.Framework.Core.UI.ViewModels;
@@ -40,23 +38,6 @@ namespace fita.ui.ViewModels
             {
                 IsBusy = false;
             }
-        }
-
-        public async void AddAccount()
-        {
-            // var account = new Account();
-
-            //SelectedAccount = account;
-        }
-
-        public void Categories()
-        {
-            Messenger.Default.Send(new DisplayModelMessage(new Categories()));
-        }
-
-        public void Currencies()
-        {
-            
         }
 
         public void Settings()

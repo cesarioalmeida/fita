@@ -4,6 +4,7 @@ using DevExpress.Mvvm.POCO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
+using fita.ui.Views.Categories;
 using fita.ui.Views.Currencies;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -13,9 +14,9 @@ using twentySix.Framework.Core.UI.ViewModels;
 namespace fita.ui.ViewModels
 {
     [POCOViewModel]
-    public class ShellViewModel : ComposedViewModelBase
+    public class ShellViewModel : ComposedViewModelBase, IDependsOnClose
     {
-        private readonly Timer _messageTimer = new();
+        private Timer _messageTimer = new();
 
         public virtual NotificationMessage Message { get; set; }
 
@@ -55,9 +56,22 @@ namespace fita.ui.ViewModels
             document.Show();
         }
 
+        public void Categories()
+        {
+            var document = this.DocumentManagerService.CreateDocument(nameof(CategoriesView), null, this);
+            document.DestroyOnClose = true;
+            document.Show();
+        }
+
         public void Settings()
         {
             //Messenger.Default.Send(new DisplayModelMessage(new ListCurrencies()));
+        }
+
+        public void OnClose()
+        {
+            _messageTimer?.Stop();
+            _messageTimer = null;
         }
 
         private void OnDisplayModelMessage(DisplayModelMessage obj)
