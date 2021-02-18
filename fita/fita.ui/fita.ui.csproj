@@ -63,6 +63,7 @@
       <None Remove="Resources\Delete_32x32.png" />
       <None Remove="Resources\Icons\Categories_24x24.png" />
       <None Remove="Resources\Icons\Currency_24x24.png" />
+      <None Remove="Resources\Icons\Stocks_24x24.png" />
       <None Remove="Resources\Refresh_32x32.png" />
       <None Remove="Resources\Settings_32x32.png" />
       <Resource Include="fita.ico" />
@@ -73,6 +74,7 @@
       <Resource Include="Resources\Icons\Delete_32x32.png" />
       <Resource Include="Resources\Icons\Refresh_32x32.png" />
       <Resource Include="Resources\Icons\Settings_32x32.png" />
+      <Resource Include="Resources\Icons\Stocks_24x24.png" />
       <None Remove="Resources\Currency_16x16.png" />
     </ItemGroup>
 
