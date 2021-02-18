@@ -9,6 +9,7 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DataContext="{d:DesignInstance categories:CategoriesViewModel}"
     DataContext="{dxmvvm:ViewModelSource Type=categories:CategoriesViewModel}"
@@ -31,7 +32,53 @@
                 Text="Categories" />
 
             <dxlc:LayoutControl Grid.Row="1">
-                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical" />
+                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
+                    <dxg:GridControl ItemsSource="{Binding Data}">
+                        <dxg:GridControl.Columns>
+                            <dxg:GridColumn Width="Auto">
+                                <dxg:GridColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <dxe:HyperlinkEdit
+                                                Command="{Binding View.DataContext.EditCommand}"
+                                                CommandParameter="{Binding RowData.Row}"
+                                                EditValue="edit" />
+                                            <dxe:HyperlinkEdit
+                                                Command="{Binding View.DataContext.DeleteCommand}"
+                                                CommandParameter="{Binding RowData.Row}"
+                                                EditValue="delete" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </dxg:GridColumn.CellTemplate>
+                            </dxg:GridColumn>
+                            <dxg:GridColumn
+                                Width="Auto"
+                                FieldName="Name"
+                                Header="Name" />
+                            <dxg:GridColumn FieldName="Group" Header="Group">
+                                <dxg:GridColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <dxe:ComboBoxEdit
+                                            Name="PART_Editor"
+                                            ApplyItemTemplateToSelectedItem="True"
+                                            IsTextEditable="False">
+                                            <dxmvvm:Interaction.Behaviors>
+                                                <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type enums:CategoryGroupEnum}" />
+                                            </dxmvvm:Interaction.Behaviors>
+                                        </dxe:ComboBoxEdit>
+                                    </DataTemplate>
+                                </dxg:GridColumn.CellTemplate>
+                            </dxg:GridColumn>
+                        </dxg:GridControl.Columns>
+                        <dxg:GridControl.View>
+                            <dxg:TableView
+                                AllowEditing="False"
+                                RowMinHeight="24"
+                                ShowGroupPanel="False"
+                                ShowSearchPanelMode="Always" />
+                        </dxg:GridControl.View>
+                    </dxg:GridControl>
+                </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
 
             <StackPanel
@@ -45,8 +92,7 @@
                         <Setter Property="Margin" Value="4,0" />
                     </Style>
                 </StackPanel.Resources>
-                <dxc:SimpleButton Content="Add" />
-                <dxc:SimpleButton Content="Update" />
+                <dxc:SimpleButton Command="{Binding EditCommand}" Content="Add" />
                 <dxc:SimpleButton
                     Margin="15,0,7,0"
                     Command="{Binding CloseCommand}"

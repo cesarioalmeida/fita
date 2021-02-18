@@ -24,8 +24,6 @@ namespace fita.ui.ViewModels.HistoricalData
 
         public int Height => 600;
 
-        public override object Title { get; set; }
-
         public virtual data.Models.HistoricalData Model { get; set; }
 
         public bool Saved { get; private set; }

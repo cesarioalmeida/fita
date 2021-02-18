@@ -53,7 +53,7 @@
 
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:DispatcherService />
-        <dx:WindowedDocumentUIService DocumentShowMode="Dialog" WindowStartupLocation="CenterScreen">
+        <dx:WindowedDocumentUIService DocumentShowMode="Dialog" WindowStartupLocation="CenterOwner">
             <dx:WindowedDocumentUIService.WindowStyle>
                 <Style TargetType="dx:ThemedWindow">
                     <Setter Property="ShowIcon" Value="False" />

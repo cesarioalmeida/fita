@@ -27,8 +27,6 @@ namespace fita.ui.ViewModels.Currencies
     {
         private bool fireChangeNotification;
 
-        public override object Title { get; set; } = "Currencies";
-
         public FileSettingsRepoService FileSettingsRepoService { get; set; }
 
         public CurrencyRepoService CurrencyRepoService { get; set; }

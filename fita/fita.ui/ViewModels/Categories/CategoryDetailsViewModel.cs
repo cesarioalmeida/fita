@@ -9,18 +9,18 @@ using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
 
-namespace fita.ui.ViewModels.Currencies
+namespace fita.ui.ViewModels.Categories
 {
     [POCOViewModel]
-    public class CurrencyDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize
+    public class CategoryDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize
     {
-        public int Width => 400;
+        public int Width => 300;
 
-        public int Height => 600;
+        public int Height => 300;
 
-        public CurrencyRepoService CurrencyRepoService { get; set; }
+        public CategoryRepoService RepoService { get; set; }
 
-        public Currency Currency { get; set; }
+        public Category Entity { get; set; }
 
         public bool Saved { get; private set; }
 
@@ -35,9 +35,9 @@ namespace fita.ui.ViewModels.Currencies
 
             try
             {
-                Messenger.Default.Send(await CurrencyRepoService.SaveAsync(Currency) == Result.Fail
-                    ? new NotificationMessage("Failed to save currency.", NotificationStatusEnum.Error)
-                    : new NotificationMessage($"Currency {Currency.Name} saved.", NotificationStatusEnum.Success));
+                Messenger.Default.Send(await RepoService.SaveAsync(Entity) == Result.Fail
+                    ? new NotificationMessage("Failed to save category.", NotificationStatusEnum.Error)
+                    : new NotificationMessage($"Category {Entity.Name} saved.", NotificationStatusEnum.Success));
 
                 Saved = true;
                 DocumentOwner?.Close(this);
