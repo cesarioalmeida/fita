@@ -17,7 +17,7 @@ namespace fita.services.Core
 
         public ILoggingService LoggingService { get; set; }
 
-        public Task<Result> UpdateAsync(ExchangeRate exchangeRate)
+        public Task<Result> UpdateAsync(ExchangeRate exchangeRate, DateTime? date = null)
         {
             return Task.Run(
                 async () =>
@@ -30,7 +30,7 @@ namespace fita.services.Core
 
                     try
                     {
-                        var data = DownloadData(exchangeRate);
+                        var data = DownloadData(exchangeRate, date);
 
                         if (exchangeRate.Rate == null)
                         {
@@ -63,12 +63,28 @@ namespace fita.services.Core
                 });
         }
 
-        public async Task<decimal> Exchange(Currency fromCurrency, Currency toCurrency, decimal value)
+        public async Task<decimal> Exchange(Currency fromCurrency, Currency toCurrency, decimal value, DateTime? date = null)
         {
             try
             {
                 var exchangeRate = await ExchangeRateRepoService.FromToCurrencyEnrichedAsync(fromCurrency, toCurrency);
-                return exchangeRate == null ? 1m : exchangeRate.Rate.LatestValue ?? 1m;
+
+                if (date == null)
+                {
+                    return exchangeRate == null ? 1m : exchangeRate.Rate.LatestValue ?? 1m;
+                }
+
+                if (exchangeRate == null)
+                {
+                    return 1m;
+                }
+
+                if (!exchangeRate.Rate.DataPoints.Select(x => x.Date.Date).Contains(date.Value.Date))
+                {
+                    await UpdateAsync(exchangeRate, date);
+                }
+
+                return exchangeRate.Rate.DataPoints.SingleOrDefault(x => x.Date.Date == date.Value.Date)?.Value ?? 1m;
             }
             catch (Exception ex)
             {
@@ -77,10 +93,11 @@ namespace fita.services.Core
             }
         }
 
-        private static HistoricalElement DownloadData(ExchangeRate exchangeRate)
+        private static HistoricalElement DownloadData(ExchangeRate exchangeRate, DateTime? date = null)
         {
-            var requestUrl =
-                $"{Properties.Resources.ExchangeRateApi}?base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}";
+            var requestUrl = date == null
+                ? $"{Properties.Resources.ExchangeRateApi}?base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}"
+                : $"{Properties.Resources.ExchangeRateApi}?start_at={date.Value:YYYY-MM-dd}&end_at={date.Value:YYYY-MM-dd}&base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}";
 
             using var client = new WebClientExtended {Timeout = 5000};
 
