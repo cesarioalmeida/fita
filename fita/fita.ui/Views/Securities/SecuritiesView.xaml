@@ -1,0 +1,105 @@
+﻿<UserControl
+    x:Class="fita.ui.Views.Securities.SecuritiesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:securities="clr-namespace:fita.ui.ViewModels.Securities"
+    d:DataContext="{d:DesignInstance securities:SecuritiesViewModel}"
+    DataContext="{dxmvvm:ViewModelSource Type=securities:SecuritiesViewModel}"
+    mc:Ignorable="d">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
+    </dxmvvm:Interaction.Behaviors>
+
+    <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                HorizontalAlignment="Center"
+                Style="{StaticResource H1}"
+                Text="Securities" />
+
+            <dxlc:LayoutControl Grid.Row="1">
+                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
+                    <dxg:GridControl ItemsSource="{Binding Data}">
+                        <dxg:GridControl.Columns>
+                            <dxg:GridColumn Width="Auto">
+                                <dxg:GridColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <dxe:HyperlinkEdit
+                                                Command="{Binding View.DataContext.HistoryCommand}"
+                                                CommandParameter="{Binding RowData.Row}"
+                                                EditValue="history" />
+                                            <dxe:HyperlinkEdit
+                                                Command="{Binding View.DataContext.EditCommand}"
+                                                CommandParameter="{Binding RowData.Row.Entity}"
+                                                EditValue="edit" />
+                                            <dxe:HyperlinkEdit
+                                                Command="{Binding View.DataContext.DeleteCommand}"
+                                                CommandParameter="{Binding RowData.Row.Entity}"
+                                                EditValue="delete" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </dxg:GridColumn.CellTemplate>
+                            </dxg:GridColumn>
+                            <dxg:GridColumn FieldName="Entity.Name" Header="Name" />
+                            <dxg:GridColumn FieldName="Entity.Symbol" Header="Symbol" />
+                            <dxg:GridColumn FieldName="LatestDate" Header="Last Date" />
+                            <dxg:GridColumn FieldName="LatestValue" Header="Last Value" />
+                            <dxg:GridColumn FieldName="Entity.Currency.Symbol" Header="Currency" />
+                            <dxg:GridColumn FieldName="History" Header="History">
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:SparklineEditSettings>
+                                        <dxe:SparklineEditSettings.StyleSettings>
+                                            <dxe:LineSparklineStyleSettings Brush="BlueViolet" LineWidth="1" />
+                                        </dxe:SparklineEditSettings.StyleSettings>
+                                    </dxe:SparklineEditSettings>
+                                </dxg:GridColumn.EditSettings>
+                            </dxg:GridColumn>
+                        </dxg:GridControl.Columns>
+                        <dxg:GridControl.View>
+                            <dxg:TableView
+                                AllowEditing="False"
+                                RowMinHeight="24"
+                                ShowGroupPanel="False"
+                                ShowSearchPanelMode="Always" />
+                        </dxg:GridControl.View>
+                    </dxg:GridControl>
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutControl>
+
+            <StackPanel
+                Grid.Row="2"
+                Margin="4"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="dxc:SimpleButton">
+                        <Setter Property="Padding" Value="30,5" />
+                        <Setter Property="Margin" Value="4,0" />
+                    </Style>
+                </StackPanel.Resources>
+                <dxc:SimpleButton Command="{Binding EditCommand}" Content="Add" />
+                <dxc:SimpleButton Command="{Binding UpdateCommand}" Content="Update" />
+                <dxc:SimpleButton
+                    Margin="15,0,7,0"
+                    Command="{Binding CloseCommand}"
+                    Content="Close"
+                    IsDefault="True" />
+            </StackPanel>
+        </Grid>
+    </dxc:LoadingDecorator>
+
+</UserControl>

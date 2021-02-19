@@ -39,14 +39,20 @@
             </dxb:BarSubItem>
             <dxb:BarSubItem Content="Tools">
                 <dxb:BarButtonItem
-                    Command="{Binding CategoriesCommand}"
+                    Command="{Binding ShowViewCommand}"
+                    CommandParameter="CategoriesView"
                     Content="Categories"
                     Glyph="../Resources/Icons/Categories_24x24.png" />
                 <dxb:BarButtonItem
-                    Command="{Binding CurrenciesCommand}"
+                    Command="{Binding ShowViewCommand}"
+                    CommandParameter="CurrenciesView"
                     Content="Currencies"
                     Glyph="../Resources/Icons/Currency_24x24.png" />
-                <dxb:BarButtonItem Content="Securities" Glyph="../Resources/Icons/Stocks_24x24.png" />
+                <dxb:BarButtonItem
+                    Command="{Binding ShowViewCommand}"
+                    CommandParameter="SecuritiesView"
+                    Content="Securities"
+                    Glyph="../Resources/Icons/Stocks_24x24.png" />
             </dxb:BarSubItem>
             <dxb:BarButtonItem Content="Help" />
         </dxb:MainMenuControl>

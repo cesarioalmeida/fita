@@ -49,16 +49,9 @@ namespace fita.ui.ViewModels
             }
         }
 
-        public void Currencies()
+        public void ShowView(string view)
         {
-            var document = this.DocumentManagerService.CreateDocument(nameof(CurrenciesView), null, this);
-            document.DestroyOnClose = true;
-            document.Show();
-        }
-
-        public void Categories()
-        {
-            var document = this.DocumentManagerService.CreateDocument(nameof(CategoriesView), null, this);
+            var document = this.DocumentManagerService.CreateDocument(view, null, this);
             document.DestroyOnClose = true;
             document.Show();
         }

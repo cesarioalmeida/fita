@@ -1,5 +1,4 @@
-﻿using fita.data.Models;
-using fita.services.Core;
+﻿using fita.services.Core;
 using fita.services.Repositories;
 using LightInject;
 
@@ -15,8 +14,10 @@ namespace fita.services
             serviceRegistry.Register<FileSettingsRepoService>();
             serviceRegistry.Register<CategoryRepoService>();
             serviceRegistry.Register<SecurityRepoService>();
+            serviceRegistry.Register<SecurityHistoryRepoService>();
 
             serviceRegistry.Register<IExchangeRateService, ExchangeRateService>();
+            serviceRegistry.Register<ISecurityService, SecurityService>();
         }
     }
 }

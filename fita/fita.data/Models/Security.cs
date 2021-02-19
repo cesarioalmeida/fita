@@ -14,5 +14,8 @@ namespace fita.data.Models
         public SecurityTypeEnum Type { get; set; }
 
         public string Suffix { get; set; }
+
+        [BsonRef("currency")]
+        public Currency Currency { get; set; }
     }
 }

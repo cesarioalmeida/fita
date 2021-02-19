@@ -38,7 +38,7 @@ namespace fita.ui.ViewModels.Categories
             {
             }
 
-            //Data.Clear();
+            Data.Clear();
             DocumentOwner?.Close(this);
         }
 

@@ -28,6 +28,14 @@
         <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
         <SubType>Designer</SubType>
       </Page>
+      <Page Update="Views\Securities\SecurityDetailsView.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Securities\SecuritiesView.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
       <Compile Update="Views\Categories\CategoriesView.xaml.cs">
         <SubType>Code</SubType>
       </Compile>
@@ -41,6 +49,12 @@
         <SubType>Code</SubType>
       </Compile>
       <Compile Update="Views\HistoricalData\HistoricalDataView.xaml.cs">
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Securities\SecurityDetailsView.xaml.cs">
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Securities\SecuritiesView.xaml.cs">
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>

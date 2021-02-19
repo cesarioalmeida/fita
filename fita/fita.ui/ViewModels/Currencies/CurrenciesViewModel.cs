@@ -65,7 +65,8 @@ namespace fita.ui.ViewModels.Currencies
                 FileSettings = (await FileSettingsRepoService.AllEnrichedAsync())?.FirstOrDefault();
 
                 var currencies = await CurrencyRepoService.AllAsync();
-                var exchangeRates = await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
+                var exchangeRates =
+                    await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
 
                 var data = currencies.Select(c =>
                     new CurrenciesModel(c, exchangeRates.FirstOrDefault(x => x.ToCurrency.CurrencyId == c.CurrencyId)));
@@ -119,10 +120,13 @@ namespace fita.ui.ViewModels.Currencies
             {
                 var exchangeRatesToDelete = await ExchangeRateRepoService.AllWithCurrencyEnrichedAsync(currency);
 
-                foreach (var rate in exchangeRatesToDelete)
+                if (exchangeRatesToDelete != null)
                 {
-                    await HistoricalDataRepoService.DeleteAsync(rate.Rate.HistoricalDataId);
-                    await ExchangeRateRepoService.DeleteAsync(rate.ExchangeRateId);
+                    foreach (var rate in exchangeRatesToDelete)
+                    {
+                        await HistoricalDataRepoService.DeleteAsync(rate.Rate.HistoricalDataId);
+                        await ExchangeRateRepoService.DeleteAsync(rate.ExchangeRateId);
+                    }
                 }
 
                 Messenger.Default.Send(await CurrencyRepoService.DeleteAsync(currency.CurrencyId) == Result.Fail
@@ -191,14 +195,7 @@ namespace fita.ui.ViewModels.Currencies
                 {
                     var exchangeRate =
                         currentExchangeRates.SingleOrDefault(x => x.ToCurrency.CurrencyId == currency.CurrencyId) ??
-                        new ExchangeRate
-                        {
-                            FromCurrency = FileSettings.BaseCurrency, ToCurrency = currency,
-                            Rate = new data.Models.HistoricalData
-                            {
-                                Name = $"Exchange rate {FileSettings.BaseCurrency.Name} => {currency.Name}"
-                            }
-                        };
+                        GetNewExchangeRate(currency);
 
                     Messenger.Default.Send(new NotificationMessage($"Updating currency {currency.Name}..."));
 
@@ -220,7 +217,7 @@ namespace fita.ui.ViewModels.Currencies
         public async Task History(CurrenciesModel model)
         {
             var viewModel = ViewModelSource.Create<HistoricalDataViewModel>();
-            viewModel.Model = model.ExchangeRate.Rate;
+            viewModel.Model = model.ExchangeRate?.Rate ?? GetNewExchangeRate(model.Currency).Rate;
 
             var document = DocumentManagerService.CreateDocument(nameof(HistoricalDataView), viewModel, null, this);
             document.DestroyOnClose = true;
@@ -239,6 +236,18 @@ namespace fita.ui.ViewModels.Currencies
             return model?.Currency.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
         }
 
+        private ExchangeRate GetNewExchangeRate(Currency currency)
+        {
+            return new()
+            {
+                FromCurrency = FileSettings.BaseCurrency, ToCurrency = currency,
+                Rate = new data.Models.HistoricalData
+                {
+                    Name = $"Exchange rate {FileSettings.BaseCurrency.Name} => {currency.Name}"
+                }
+            };
+        }
+
         public class CurrenciesModel
         {
             public CurrenciesModel(Currency currency, ExchangeRate exchangeRate)
@@ -255,7 +264,8 @@ namespace fita.ui.ViewModels.Currencies
 
             public decimal? LatestValue => ExchangeRate?.Rate.LatestValue;
 
-            public IEnumerable<decimal> History => ExchangeRate?.Rate.DataPoints.OrderByDescending(x => x.Date).Select(x => x.Value);
+            public IEnumerable<decimal> History =>
+                ExchangeRate?.Rate.DataPoints.OrderByDescending(x => x.Date).Select(x => x.Value);
         }
     }
 }
