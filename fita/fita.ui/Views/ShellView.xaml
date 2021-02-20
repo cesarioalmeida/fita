@@ -33,11 +33,12 @@
                 <dxb:BarButtonItem Content="Open" />
                 <dxb:BarButtonItem Content="Exit" />
             </dxb:BarSubItem>
-            <dxb:BarSubItem Content="Edit">
-                <dxb:BarButtonItem Content="Copy" />
-                <dxb:BarButtonItem Content="Paste" />
-            </dxb:BarSubItem>
             <dxb:BarSubItem Content="Tools">
+                <dxb:BarButtonItem
+                    Command="{Binding ShowViewCommand}"
+                    CommandParameter="AccountsView"
+                    Content="Accounts"
+                    Glyph="../Resources/Icons/Accounts_24x24.png" />
                 <dxb:BarButtonItem
                     Command="{Binding ShowViewCommand}"
                     CommandParameter="CategoriesView"
