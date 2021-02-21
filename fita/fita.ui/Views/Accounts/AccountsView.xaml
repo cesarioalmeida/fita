@@ -1,17 +1,18 @@
 ﻿<UserControl
-    x:Class="fita.ui.Views.Currencies.CurrenciesView"
+    x:Class="fita.ui.Views.Accounts.AccountsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:currencies="clr-namespace:fita.ui.ViewModels.Currencies"
+    xmlns:accounts="clr-namespace:fita.ui.ViewModels.Accounts"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DataContext="{d:DesignInstance currencies:CurrenciesViewModel}"
-    DataContext="{dxmvvm:ViewModelSource Type=currencies:CurrenciesViewModel}"
+    d:DataContext="{d:DesignInstance accounts:AccountsViewModel}"
+    DataContext="{dxmvvm:ViewModelSource Type=accounts:AccountsViewModel}"
     mc:Ignorable="d">
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
@@ -28,16 +29,10 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 Style="{StaticResource H1}"
-                Text="Currencies" />
+                Text="Accounts" />
 
             <dxlc:LayoutControl Grid.Row="1">
                 <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
-                    <dxlc:LayoutItem
-                        AddColonToLabel="True"
-                        Label="Current Base Currency"
-                        LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding FileSettings.BaseCurrency.Name, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" />
-                    </dxlc:LayoutItem>
                     <dxg:GridControl x:Name="grid" ItemsSource="{Binding Data}">
                         <dxg:GridControl.Columns>
                             <dxg:GridColumn Width="Auto">
@@ -45,39 +40,38 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <dxe:HyperlinkEdit
-                                                Command="{Binding View.DataContext.HistoryCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
-                                                EditValue="history" />
-                                            <dxe:HyperlinkEdit
                                                 Command="{Binding View.DataContext.EditCommand}"
-                                                CommandParameter="{Binding RowData.Row.Currency}"
+                                                CommandParameter="{Binding RowData.Row}"
                                                 EditValue="edit" />
                                             <dxe:HyperlinkEdit
-                                                Command="{Binding View.DataContext.SetBaseCommand}"
-                                                CommandParameter="{Binding RowData.Row.Currency}"
-                                                EditValue="base" />
-                                            <dxe:HyperlinkEdit
                                                 Command="{Binding View.DataContext.DeleteCommand}"
-                                                CommandParameter="{Binding RowData.Row.Currency}"
+                                                CommandParameter="{Binding RowData.Row}"
                                                 EditValue="delete" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </dxg:GridColumn.CellTemplate>
                             </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="Currency.Name" Header="Name" />
-                            <dxg:GridColumn FieldName="Currency.Symbol" Header="Symbol" />
-                            <dxg:GridColumn FieldName="LatestDate" Header="Last Date" />
-                            <dxg:GridColumn FieldName="LatestValue" Header="Last Value" />
-                            <dxg:GridColumn FieldName="History" Header="History">
-                                <dxg:GridColumn.EditSettings>
-                                    <dxe:SparklineEditSettings>
-                                        <dxe:SparklineEditSettings.StyleSettings>
-                                            <dxe:LineSparklineStyleSettings Brush="BlueViolet" LineWidth="1" />
-                                        </dxe:SparklineEditSettings.StyleSettings>
-                                    </dxe:SparklineEditSettings>
-                                </dxg:GridColumn.EditSettings>
+                            <dxg:GridColumn FieldName="Entity.Name" Header="Name" />
+                            <dxg:GridColumn FieldName="Entity.BankName" Header="Bank Name" />
+                            <dxg:GridColumn FieldName="Entity.Type" Header="Type">
+                                <dxg:GridColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <dxe:ComboBoxEdit
+                                            Name="PART_Editor"
+                                            ApplyItemTemplateToSelectedItem="True"
+                                            IsTextEditable="False">
+                                            <dxmvvm:Interaction.Behaviors>
+                                                <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type enums:AccountTypeEnum}" />
+                                            </dxmvvm:Interaction.Behaviors>
+                                        </dxe:ComboBoxEdit>
+                                    </DataTemplate>
+                                </dxg:GridColumn.CellTemplate>
                             </dxg:GridColumn>
+                            <dxg:GridColumn FieldName="Entity.Currency.Symbol" Header="Currency" />
                         </dxg:GridControl.Columns>
+                        <dxg:GridControl.SortInfo>
+                            <dxg:GridSortInfo FieldName="Entity.Type" />
+                        </dxg:GridControl.SortInfo>
                         <dxg:GridControl.View>
                             <dxg:TableView
                                 AllowEditing="False"
@@ -87,7 +81,7 @@
                                 <dxmvvm:Interaction.Behaviors>
                                     <dxmvvm:EventToCommand
                                         Command="{Binding EditCommand}"
-                                        CommandParameter="{Binding ElementName=grid, Path=CurrentItem.Currency}"
+                                        CommandParameter="{Binding ElementName=grid, Path=CurrentItem.Entity}"
                                         EventName="RowDoubleClick" />
                                 </dxmvvm:Interaction.Behaviors>
                             </dxg:TableView>
@@ -108,7 +102,6 @@
                     </Style>
                 </StackPanel.Resources>
                 <dxc:SimpleButton Command="{Binding EditCommand}" Content="Add" />
-                <dxc:SimpleButton Command="{Binding UpdateCommand}" Content="Update" />
                 <dxc:SimpleButton
                     Margin="15,0,7,0"
                     Command="{Binding CloseCommand}"

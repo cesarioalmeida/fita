@@ -8,6 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Page Update="Views\Accounts\AccountsView.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Accounts\AccountDetailsView.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
       <Page Update="Views\Categories\CategoriesView.xaml">
         <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
         <SubType>Designer</SubType>
@@ -36,6 +44,12 @@
         <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
         <SubType>Designer</SubType>
       </Page>
+      <Compile Update="Views\Accounts\AccountsView.xaml.cs">
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Accounts\AccountDetailsView.xaml.cs">
+        <SubType>Code</SubType>
+      </Compile>
       <Compile Update="Views\Categories\CategoriesView.xaml.cs">
         <SubType>Code</SubType>
       </Compile>

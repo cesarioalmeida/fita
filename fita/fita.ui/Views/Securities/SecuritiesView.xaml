@@ -32,7 +32,7 @@
 
             <dxlc:LayoutControl Grid.Row="1">
                 <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
-                    <dxg:GridControl ItemsSource="{Binding Data}">
+                    <dxg:GridControl x:Name="grid" ItemsSource="{Binding Data}">
                         <dxg:GridControl.Columns>
                             <dxg:GridColumn Width="Auto">
                                 <dxg:GridColumn.CellTemplate>
@@ -74,7 +74,14 @@
                                 AllowEditing="False"
                                 RowMinHeight="24"
                                 ShowGroupPanel="False"
-                                ShowSearchPanelMode="Always" />
+                                ShowSearchPanelMode="Always">
+                                <dxmvvm:Interaction.Behaviors>
+                                    <dxmvvm:EventToCommand
+                                        Command="{Binding EditCommand}"
+                                        CommandParameter="{Binding ElementName=grid, Path=CurrentItem.Entity}"
+                                        EventName="RowDoubleClick" />
+                                </dxmvvm:Interaction.Behaviors>
+                            </dxg:TableView>
                         </dxg:GridControl.View>
                     </dxg:GridControl>
                 </dxlc:LayoutGroup>

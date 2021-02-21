@@ -1,7 +1,8 @@
 ﻿<UserControl
-    x:Class="fita.ui.Views.Securities.SecurityDetailsView"
+    x:Class="fita.ui.Views.Accounts.AccountDetailsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:accounts="clr-namespace:fita.ui.ViewModels.Accounts"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
@@ -9,8 +10,7 @@
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:securities="clr-namespace:fita.ui.ViewModels.Securities"
-    d:DataContext="{d:DesignInstance securities:SecurityDetailsViewModel}"
+    d:DataContext="{d:DesignInstance accounts:AccountDetailsViewModel}"
     mc:Ignorable="d">
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
@@ -27,7 +27,7 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 Style="{StaticResource H1}"
-                Text="{DXBinding '`Security: ` + Entity.Name'}" />
+                Text="{DXBinding '`Account: ` + Entity.Name'}" />
 
             <dxlc:LayoutControl Grid.Row="1">
                 <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
@@ -43,9 +43,9 @@
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem
                         AddColonToLabel="True"
-                        Label="Symbol"
+                        Label="Bank Name"
                         LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding Entity.Symbol, UpdateSourceTrigger=PropertyChanged}" />
+                        <dxe:TextEdit EditValue="{Binding Entity.BankName, UpdateSourceTrigger=PropertyChanged}" />
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem
                         AddColonToLabel="True"
@@ -53,15 +53,9 @@
                         LabelPosition="Top">
                         <dxe:ComboBoxEdit EditValue="{Binding Entity.Type, UpdateSourceTrigger=PropertyChanged}">
                             <dxmvvm:Interaction.Behaviors>
-                                <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type enums:SecurityTypeEnum}" />
+                                <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type enums:AccountTypeEnum}" />
                             </dxmvvm:Interaction.Behaviors>
                         </dxe:ComboBoxEdit>
-                    </dxlc:LayoutItem>
-                    <dxlc:LayoutItem
-                        AddColonToLabel="True"
-                        Label="Suffix"
-                        LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding Entity.Suffix, UpdateSourceTrigger=PropertyChanged}" />
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem
                         AddColonToLabel="True"
@@ -71,6 +65,12 @@
                             DisplayMember="Name"
                             EditValue="{Binding SelectedCurrency, UpdateSourceTrigger=PropertyChanged}"
                             ItemsSource="{Binding Currencies}" />
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem
+                        AddColonToLabel="True"
+                        Label="Initial Balance"
+                        LabelPosition="Top">
+                        <dxe:TextEdit EditValue="{Binding Entity.InitialBalance, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" />
                     </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
