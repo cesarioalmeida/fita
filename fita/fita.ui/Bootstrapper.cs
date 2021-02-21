@@ -14,6 +14,8 @@ namespace fita.ui
 {
     public class Bootstrapper : LightInjectBootstrapper
     {
+        public string ApplicationName { get; set; } = "fita";
+
         public Bootstrapper(Application app) : base(app)
         {
         }
@@ -24,7 +26,7 @@ namespace fita.ui
 
         protected override void ConfigureApplication()
         {
-            ApplicationHelper.SetApplicationDetails("twentySix", "fita");
+            ApplicationHelper.SetApplicationDetails("twentySix", ApplicationName);
         }
 
         protected override void ConfigureServiceContainer()

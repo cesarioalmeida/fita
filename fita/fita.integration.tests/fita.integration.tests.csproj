@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0-windows</TargetFramework>
+
+        <IsPackable>false</IsPackable>
+
+        <AssemblyName>fita.integration.tests</AssemblyName>
+
+        <RootNamespace>fita.integration.tests</RootNamespace>
+
+        <PackageId>fita.integration.tests</PackageId>
+
+        <Authors>fita.integration.tests</Authors>
+
+        <Company>twentySix</Company>
+
+        <Product>fita</Product>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NUnit" Version="3.13.1" />
+        <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+        <PackageReference Include="twentySix.Framework.Core" Version="4.0.3" />
+        <PackageReference Include="twentySix.Framework.Theme" Version="4.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\fita.data\fita.data.csproj" />
+      <ProjectReference Include="..\fita.services\fita.services.csproj" />
+      <ProjectReference Include="..\fita.ui\fita.ui.csproj" />
+    </ItemGroup>
+
+</Project>

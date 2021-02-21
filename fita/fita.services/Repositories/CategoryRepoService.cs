@@ -127,10 +127,17 @@ namespace fita.services.Repositories
                 {"IT:Hardware", CategoryGroupEnum.BusinessExpenses}
             }.OrderBy(x => x.Key);
 
+            var transfers = new Dictionary<string, CategoryGroupEnum>
+            {
+                {"[TransfersIn]", CategoryGroupEnum.TransfersIn},
+                {"[TransfersOut]", CategoryGroupEnum.TransfersOut}
+            }.OrderBy(x => x.Key);
+
             return personalIncome
                 .Concat(personalExpenses)
                 .Concat(businessIncome)
                 .Concat(businessExpenses)
+                .Concat(transfers)
                 .Select(x => new Category {Name = x.Key, Group = x.Value});
         }
     }
