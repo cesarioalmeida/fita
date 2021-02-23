@@ -1,0 +1,11 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+
+    <ResourceDictionary.MergedDictionaries>
+
+        <ResourceDictionary Source="/fita.ui;component/Themes/ClickableMenuItem.xaml" />
+        <ResourceDictionary Source="/fita.ui;component/Themes/SeparatorMenuItem.xaml" />
+        <ResourceDictionary Source="/fita.ui;component/Themes/LabelMenuItem.xaml" />
+
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

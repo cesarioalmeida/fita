@@ -1,11 +1,13 @@
-﻿using DevExpress.Mvvm;
+﻿using System.Collections.Generic;
+using System.Linq;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
-using System.Collections.Generic;
-using System.Linq;
 using System.Timers;
-using fita.ui.Views.Categories;
-using fita.ui.Views.Currencies;
+using fita.data.Enums;
+using fita.data.Models;
+using fita.services.Repositories;
+using LiteDB;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.Interfaces;
@@ -16,19 +18,47 @@ namespace fita.ui.ViewModels
     [POCOViewModel]
     public class ShellViewModel : ComposedViewModelBase, IDependsOnClose
     {
+        private static readonly Dictionary<AccountTypeEnum, string> _accountToGlyphMapper =
+            new()
+            {
+                {AccountTypeEnum.Bank, "../Resources/Icons/Bank_24x24.png"},
+                {AccountTypeEnum.CreditCard, "../Resources/Icons/CreditCard_24x24.png"},
+                {AccountTypeEnum.Investment, "../Resources/Icons/Investment_24x24.png"},
+                {AccountTypeEnum.Asset, "../Resources/Icons/Asset_24x24.png"},
+            };
+
         private Timer _messageTimer = new();
 
-        public virtual NotificationMessage Message { get; set; }
+        private List<HamburgerMenuItemViewModel> _accountItems = new();
 
-        public virtual IEnumerable<IIsModelView> AvailableDocumentViews { get; set; }
+        public NotificationMessage Message { get; set; }
 
-        protected virtual IDocumentManagerService DocumentManagerService => this.GetRequiredService<IDocumentManagerService>();
+        public HamburgerMenuItemViewModel SelectedHamburgerItem { get; set; }
+
+        public IEnumerable<HamburgerMenuItemViewModel> BankHamburgerItems =>
+            _accountItems.Where(x => x.Account.Type == AccountTypeEnum.Bank);
+
+        public IEnumerable<HamburgerMenuItemViewModel> CreditCardHamburgerItems =>
+            _accountItems.Where(x => x.Account.Type == AccountTypeEnum.CreditCard);
+
+        public IEnumerable<HamburgerMenuItemViewModel> InvestmentHamburgerItems =>
+            _accountItems.Where(x => x.Account.Type == AccountTypeEnum.Investment);
+
+        public IEnumerable<HamburgerMenuItemViewModel> AssetHamburgerItems =>
+            _accountItems.Where(x => x.Account.Type == AccountTypeEnum.Asset);
+
+        protected IDocumentManagerService ModalDocumentService =>
+            this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
+
+        protected IDocumentManagerService FrameDocumentService =>
+            this.GetRequiredService<IDocumentManagerService>("FrameDocumentService");
 
         protected IDispatcherService DispatcherService => this.GetService<IDispatcherService>();
 
+        protected AccountRepoService AccountRepoService { get; set; }
+
         public ShellViewModel()
         {
-            Messenger.Default.Register<DisplayModelMessage>(this, this.OnDisplayModelMessage);
             Messenger.Default.Register<NotificationMessage>(this, this.OnNotificationMessage);
 
             _messageTimer.Interval = 5000;
@@ -41,7 +71,28 @@ namespace fita.ui.ViewModels
 
             try
             {
-                //var accounts = await this.PersistenceService.GetAllAsync<Account, AccountDTO>();
+                ObjectId selectedId = ObjectId.Empty;
+
+                if(SelectedHamburgerItem != null)
+                {
+                    selectedId = SelectedHamburgerItem.Account.AccountId;
+                }
+
+                var accounts = (await AccountRepoService.AllEnrichedAsync()).ToList();
+
+                if (accounts.Any())
+                {
+                    _accountItems = accounts.Select(_ => 
+                    new HamburgerMenuItemViewModel(_.Name, "AccountTransactionsView", _accountToGlyphMapper[_.Type], _)).ToList();
+
+                    RaisePropertiesChanged(
+                        () => BankHamburgerItems, 
+                        () => CreditCardHamburgerItems,
+                        () => InvestmentHamburgerItems,
+                        () => AssetHamburgerItems);
+
+                    SelectedHamburgerItem = _accountItems.SingleOrDefault(x => x.Account.AccountId == selectedId);
+                }
             }
             finally
             {
@@ -51,35 +102,15 @@ namespace fita.ui.ViewModels
 
         public void ShowView(string view)
         {
-            var document = this.DocumentManagerService.CreateDocument(view, null, this);
+            var document = ModalDocumentService.CreateDocument(view, null, this);
             document.DestroyOnClose = true;
             document.Show();
-        }
-
-        public void Settings()
-        {
-            //Messenger.Default.Send(new DisplayModelMessage(new ListCurrencies()));
         }
 
         public void OnClose()
         {
             _messageTimer?.Stop();
             _messageTimer = null;
-        }
-
-        private void OnDisplayModelMessage(DisplayModelMessage obj)
-        {
-            var documentViewType = this.AvailableDocumentViews.FirstOrDefault(x => x.ModelType == obj.Model?.GetType());
-
-            if (documentViewType == null)
-            {
-                return;
-            }
-
-            var document = this.DocumentManagerService.CreateDocument(documentViewType.View, obj.Model, this);
-            document.DestroyOnClose = true;
-
-            document.Show();
         }
 
         private void OnNotificationMessage(NotificationMessage obj)
@@ -93,6 +124,25 @@ namespace fita.ui.ViewModels
             else
             {
                 _messageTimer.Stop();
+            }
+        }
+
+        public class HamburgerMenuItemViewModel
+        {
+            public string Caption { get; set; }
+
+            public string Icon { get; set; }
+
+            public string View { get; set; }
+
+            public Account Account { get; set; }
+
+            public HamburgerMenuItemViewModel(string caption, string view, string icon = null, Account account = null)
+            {
+                Caption = caption;
+                View = view;
+                Icon = icon;
+                Account = account;
             }
         }
     }

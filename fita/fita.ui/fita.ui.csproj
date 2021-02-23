@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Page Update="Themes\LabelMenuItem.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
       <Page Update="Views\Accounts\AccountsView.xaml">
         <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
         <SubType>Designer</SubType>
@@ -74,7 +78,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Accordion" Version="20.2.5" />
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid" Version="20.2.5" />
+      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Navigation" Version="20.2.5" />
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.All" Version="20.2.5" />
       <PackageReference Include="twentySix.Framework.Core" Version="4.0.3" />
       <PackageReference Include="twentySix.Framework.Theme" Version="4.0.3" />
@@ -90,10 +96,15 @@
       <None Remove="Resources\Currency_32x32.png" />
       <None Remove="Resources\Delete_32x32.png" />
       <None Remove="Resources\Icons\Accounts_24x24.png" />
+      <None Remove="Resources\Icons\Asset_24x24.png" />
+      <None Remove="Resources\Icons\Bank_24x24.png" />
       <None Remove="Resources\Icons\Categories_24x24.png" />
+      <None Remove="Resources\Icons\CreditCard_24x24.png" />
       <None Remove="Resources\Icons\Currency_24x24.png" />
       <None Remove="Resources\Icons\DeleteAccount_24x24.png" />
       <None Remove="Resources\Icons\EditAccount_24x24.png" />
+      <None Remove="Resources\Icons\Home_24x24.png" />
+      <None Remove="Resources\Icons\Investment_24x24.png" />
       <None Remove="Resources\Icons\NewAccount_24x24.png" />
       <None Remove="Resources\Icons\Stocks_24x24.png" />
       <None Remove="Resources\Refresh_32x32.png" />
@@ -101,15 +112,16 @@
       <Resource Include="fita.ico" />
       <None Remove="Resources\Add_32x32.png" />
       <Resource Include="Resources\Icons\Accounts_24x24.png" />
-      <Resource Include="Resources\Icons\Add_32x32.png" />
+      <Resource Include="Resources\Icons\Asset_24x24.png" />
+      <Resource Include="Resources\Icons\Bank_24x24.png" />
       <Resource Include="Resources\Icons\Categories_24x24.png" />
+      <Resource Include="Resources\Icons\CreditCard_24x24.png" />
       <Resource Include="Resources\Icons\Currency_24x24.png" />
       <Resource Include="Resources\Icons\DeleteAccount_24x24.png" />
-      <Resource Include="Resources\Icons\Delete_32x32.png" />
       <Resource Include="Resources\Icons\EditAccount_24x24.png" />
+      <Resource Include="Resources\Icons\Home_24x24.png" />
+      <Resource Include="Resources\Icons\Investment_24x24.png" />
       <Resource Include="Resources\Icons\NewAccount_24x24.png" />
-      <Resource Include="Resources\Icons\Refresh_32x32.png" />
-      <Resource Include="Resources\Icons\Settings_32x32.png" />
       <Resource Include="Resources\Icons\Stocks_24x24.png" />
       <None Remove="Resources\Currency_16x16.png" />
     </ItemGroup>

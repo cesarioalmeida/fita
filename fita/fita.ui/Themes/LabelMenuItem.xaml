@@ -1,0 +1,42 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:fita.ui.Controls">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="{x:Type controls:LabelMenuItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:LabelMenuItem">
+                    <Grid Margin="15,5" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe UI"
+                            FontSize="13"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource Gray1Brush}"
+                            Opacity="0.5"
+                            Text="{TemplateBinding LeftCaption}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            FontFamily="Roboto Condensed"
+                            FontSize="14"
+                            Foreground="{StaticResource Yellow1Brush}"
+                            Opacity="0.8"
+                            Text="{TemplateBinding RightCaption}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+
+</ResourceDictionary>
