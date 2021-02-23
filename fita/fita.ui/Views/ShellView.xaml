@@ -5,11 +5,8 @@
     xmlns:controls="clr-namespace:fita.ui.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
-    xmlns:dxa="http://schemas.devexpress.com/winfx/2008/xaml/accordion"
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-    xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-    xmlns:dxnav="http://schemas.devexpress.com/winfx/2008/xaml/navigation"
     xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui"
     xmlns:enums="clr-namespace:twentySix.Framework.Core.UI.Enums;assembly=twentySix.Framework.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -99,7 +96,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Margin="5,10,5,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition
                     Width="250"
@@ -112,7 +109,12 @@
             <Border Grid.Column="0" Background="#FF40444D">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="0,5,0,0">
-                        <controls:ClickableMenuItem Icon="../Resources/Icons/Home_24x24.png" LeftCaption="Home" />
+                        <controls:ClickableMenuItem
+                            navigation:Navigation.NavigateTo="HomeView"
+                            navigation:Navigation.NavigationTarget="{Binding ElementName=MainNavigationFrame}"
+                            Icon="../Resources/Icons/Home_24x24.png"
+                            IsChecked="True"
+                            LeftCaption="Home" />
                         <controls:SeparatorMenuItem />
                         <controls:LabelMenuItem LeftCaption="Banks" />
                         <ItemsControl ItemsSource="{Binding BankHamburgerItems}">
@@ -179,7 +181,10 @@
                 HorizontalAlignment="Center"
                 ResizeDirection="Columns" />
 
-            <dxwui:NavigationFrame x:Name="MainNavigationFrame" Grid.Column="2">
+            <dxwui:NavigationFrame
+                x:Name="MainNavigationFrame"
+                Grid.Column="2"
+                Source="HomeView">
                 <dxmvvm:Interaction.Behaviors>
                     <navigation:FrameDocumentUIService
                         x:Name="FrameDocumentService"

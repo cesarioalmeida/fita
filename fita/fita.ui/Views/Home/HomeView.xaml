@@ -1,0 +1,39 @@
+﻿<UserControl
+    x:Class="fita.ui.Views.Home.HomeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:home="clr-namespace:fita.ui.ViewModels.Home"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignInstance home:HomeViewModel}"
+    DataContext="{dxmvvm:ViewModelSource Type=home:HomeViewModel}"
+    mc:Ignorable="d">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
+    </dxmvvm:Interaction.Behaviors>
+
+    <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                HorizontalAlignment="Center"
+                Style="{StaticResource H1}"
+                Text="Home" />
+
+            <dxlc:LayoutControl Grid.Row="1">
+                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical" />
+            </dxlc:LayoutControl>
+        </Grid>
+    </dxc:LoadingDecorator>
+
+</UserControl>
