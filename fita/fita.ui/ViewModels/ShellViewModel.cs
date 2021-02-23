@@ -71,7 +71,7 @@ namespace fita.ui.ViewModels
 
             try
             {
-                ObjectId selectedId = ObjectId.Empty;
+                var selectedId = ObjectId.Empty;
 
                 if(SelectedHamburgerItem != null)
                 {

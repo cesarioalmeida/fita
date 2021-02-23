@@ -23,25 +23,31 @@
     WindowState="Maximized"
     mc:Ignorable="d">
     <dx:ThemedWindow.Resources>
-        <dxmvvm:ObjectToObjectConverter x:Key="MessageStateToColourConverter" DefaultTarget="Black">
-            <dxmvvm:MapItem Source="{x:Static enums:NotificationStatusEnum.Error}" Target="Red" />
-            <dxmvvm:MapItem Source="{x:Static enums:NotificationStatusEnum.Success}" Target="Green" />
-        </dxmvvm:ObjectToObjectConverter>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <DataTemplate x:Key="waitIndicator">
-            <dx:WaitIndicator DeferedVisibility="True" />
-        </DataTemplate>
+            <dxmvvm:ObjectToObjectConverter x:Key="MessageStateToColourConverter" DefaultTarget="Black">
+                <dxmvvm:MapItem Source="{x:Static enums:NotificationStatusEnum.Error}" Target="Red" />
+                <dxmvvm:MapItem Source="{x:Static enums:NotificationStatusEnum.Success}" Target="Green" />
+            </dxmvvm:ObjectToObjectConverter>
 
-        <Style x:Key="adornerStyle" TargetType="dxwui:PageAdornerControl">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="dxwui:PageAdornerControl">
-                        <ContentPresenter />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <DataTemplate x:Key="waitIndicator">
+                <dx:WaitIndicator DeferedVisibility="True" />
+            </DataTemplate>
 
+            <Style x:Key="adornerStyle" TargetType="dxwui:PageAdornerControl">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="dxwui:PageAdornerControl">
+                            <ContentPresenter />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
     </dx:ThemedWindow.Resources>
 
     <dx:ThemedWindow.ToolbarItems>
@@ -102,11 +108,11 @@
                     Width="250"
                     MinWidth="200"
                     MaxWidth="400" />
-                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="0" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Background="#FF40444D">
+            <Border Grid.Column="0" Background="{StaticResource BgStartBrush}">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="0,5,0,0">
                         <controls:ClickableMenuItem
@@ -184,6 +190,8 @@
             <dxwui:NavigationFrame
                 x:Name="MainNavigationFrame"
                 Grid.Column="2"
+                AnimationSpeedRatio="2"
+                AnimationType="Fade"
                 Source="HomeView">
                 <dxmvvm:Interaction.Behaviors>
                     <navigation:FrameDocumentUIService

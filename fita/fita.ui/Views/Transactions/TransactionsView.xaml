@@ -13,26 +13,49 @@
     d:DataContext="{d:DesignInstance transactions:TransactionsViewModel}"
     DataContext="{dxmvvm:ViewModelSource Type=transactions:TransactionsViewModel}"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
     </dxmvvm:Interaction.Behaviors>
 
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
-        <Grid Margin="5">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock
-                HorizontalAlignment="Center"
-                Style="{StaticResource H1}"
-                Text="Transactions" />
+            <Border
+                Grid.Row="0"
+                Height="50"
+                Background="{StaticResource BgStartBrush}">
+
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource White1Brush}"
+                    Style="{StaticResource H1}"
+                    Text="{Binding Account.Name}" />
+
+            </Border>
 
             <dxlc:LayoutControl Grid.Row="1">
                 <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical" />
             </dxlc:LayoutControl>
+
+            <Border
+                Grid.Row="2"
+                Height="40"
+                Background="{StaticResource BgStartBrush}" />
+
         </Grid>
     </dxc:LoadingDecorator>
 
