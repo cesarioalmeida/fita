@@ -83,7 +83,7 @@ namespace fita.ui.ViewModels
                 if (accounts.Any())
                 {
                     _accountItems = accounts.Select(_ => 
-                    new HamburgerMenuItemViewModel(_.Name, "AccountTransactionsView", _accountToGlyphMapper[_.Type], _)).ToList();
+                    new HamburgerMenuItemViewModel(_.Name, "TransactionsView", _accountToGlyphMapper[_.Type], _)).ToList();
 
                     RaisePropertiesChanged(
                         () => BankHamburgerItems, 
