@@ -32,7 +32,8 @@ namespace fita.ui.ViewModels.HistoricalData
 
         protected virtual IGridControlService GridControlService => null;
 
-        protected virtual IDocumentManagerService DocumentManagerService => null;
+        protected IDocumentManagerService DocumentManagerService =>
+            this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
         public void Close()
         {

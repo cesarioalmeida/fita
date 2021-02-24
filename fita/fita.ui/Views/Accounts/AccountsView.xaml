@@ -41,11 +41,11 @@
                                         <StackPanel Orientation="Horizontal">
                                             <dxe:HyperlinkEdit
                                                 Command="{Binding View.DataContext.EditCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
+                                                CommandParameter="{Binding RowData.Row.Entity}"
                                                 EditValue="edit" />
                                             <dxe:HyperlinkEdit
                                                 Command="{Binding View.DataContext.DeleteCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
+                                                CommandParameter="{Binding RowData.Row.Entity}"
                                                 EditValue="delete" />
                                         </StackPanel>
                                     </DataTemplate>

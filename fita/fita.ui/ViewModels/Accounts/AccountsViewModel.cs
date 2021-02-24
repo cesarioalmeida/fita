@@ -24,7 +24,8 @@ namespace fita.ui.ViewModels.Accounts
 
         public AccountRepoService AccountRepoService { get; set; }
 
-        protected virtual IDocumentManagerService DocumentManagerService => null;
+        protected IDocumentManagerService DocumentManagerService =>
+            this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
         public virtual LockableCollection<EntityModel> Data { get; set; } = new();
 

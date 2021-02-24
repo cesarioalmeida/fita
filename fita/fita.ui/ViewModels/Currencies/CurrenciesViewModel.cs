@@ -37,7 +37,8 @@ namespace fita.ui.ViewModels.Currencies
 
         public IExchangeRateService ExchangeRateService { get; set; }
 
-        protected virtual IDocumentManagerService DocumentManagerService => null;
+        protected IDocumentManagerService DocumentManagerService =>
+            this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
         public virtual LockableCollection<CurrenciesModel> Data { get; set; } = new();
 

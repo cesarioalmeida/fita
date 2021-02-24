@@ -28,7 +28,8 @@ namespace fita.ui.ViewModels.Categories
 
         public CategoryRepoService CategoryRepoService { get; set; }
 
-        protected virtual IDocumentManagerService DocumentManagerService => null;
+        protected IDocumentManagerService DocumentManagerService =>
+            this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
         public virtual LockableCollection<Category> Data { get; set; } = new();
 

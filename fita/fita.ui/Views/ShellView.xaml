@@ -194,10 +194,7 @@
                 AnimationType="Fade"
                 Source="HomeView">
                 <dxmvvm:Interaction.Behaviors>
-                    <navigation:FrameDocumentUIService
-                        x:Name="FrameDocumentService"
-                        PageAdornerControlStyle="{StaticResource adornerStyle}"
-                        ShowSplashScreen="{Binding OnStartup, Converter={dxmvvm:BooleanNegationConverter}, FallbackValue=false}">
+                    <navigation:FrameDocumentUIService x:Name="FrameDocumentService" PageAdornerControlStyle="{StaticResource adornerStyle}">
                         <navigation:FrameDocumentUIService.SplashScreenService>
                             <dx:DXSplashScreenService SplashScreenStartupLocation="CenterOwner" ViewTemplate="{StaticResource waitIndicator}" />
                         </navigation:FrameDocumentUIService.SplashScreenService>

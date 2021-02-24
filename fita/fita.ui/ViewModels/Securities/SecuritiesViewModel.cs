@@ -35,7 +35,8 @@ namespace fita.ui.ViewModels.Securities
 
         public ISecurityService SecurityService { get; set; }
 
-        protected virtual IDocumentManagerService DocumentManagerService => null;
+        protected IDocumentManagerService DocumentManagerService =>
+            this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
         public virtual LockableCollection<EntityModel> Data { get; set; } = new();
 

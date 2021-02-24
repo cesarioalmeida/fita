@@ -7,7 +7,9 @@ namespace fita.data.Models
     {
         public ObjectId TransactionId { get; set; } = ObjectId.NewObjectId();
 
-        public DateTime Date { get; set; }
+        public ObjectId AccountId { get; set; }
+
+        public DateTime? Date { get; set; }
 
         public string Description { get; set; }
 
@@ -19,8 +21,8 @@ namespace fita.data.Models
         [BsonRef("account")]
         public Account TransferAccount { get; set; }
 
-        public decimal Payment { get; set; }
+        public decimal? Payment { get; set; }
 
-        public decimal Deposit { get; set; }
+        public decimal? Deposit { get; set; }
     }
 }
