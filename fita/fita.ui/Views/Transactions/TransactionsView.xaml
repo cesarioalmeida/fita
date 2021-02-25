@@ -71,8 +71,9 @@
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
                                 <dxe:TextEdit Name="PART_Editor"
-                                              Mask="{DXBinding '@e(this).DataContext.Account.Currency.Prefix + RowData.Row.Balance + @e(this).DataContext.Account.Currency.Suffix'}"
+                                              Mask="c2"
                                               MaskType="Numeric"
+                                              MaskCulture="{Binding RowData.Row.Account.Currency.Culture}"
                                               MaskUseAsDisplayFormat="True" />
                             </DataTemplate>
                         </dxg:GridColumn.CellTemplate>
@@ -83,8 +84,9 @@
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
                                 <dxe:TextEdit Name="PART_Editor"
-                                              Mask="{DXBinding '@e(this).DataContext.Account.Currency.Prefix + RowData.Row.Balance + @e(this).DataContext.Account.Currency.Suffix'}"
+                                              Mask="c2"
                                               MaskType="Numeric"
+                                              MaskCulture="{Binding RowData.Row.Account.Currency.Culture}"
                                               MaskUseAsDisplayFormat="True" />
                             </DataTemplate>
                         </dxg:GridColumn.CellTemplate>
@@ -97,7 +99,7 @@
                                 <dxe:TextEdit Name="PART_Editor"
                                               Mask="c2"
                                               MaskType="Numeric"
-                                              MaskCulture="pt-PT"
+                                              MaskCulture="{Binding RowData.Row.Account.Currency.Culture}"
                                               MaskUseAsDisplayFormat="True" />
                             </DataTemplate>
                         </dxg:GridColumn.CellTemplate>

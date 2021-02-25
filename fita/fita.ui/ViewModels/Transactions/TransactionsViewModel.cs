@@ -109,14 +109,13 @@ namespace fita.ui.ViewModels.Transactions
 
         public class EntityModel
         {
-            private readonly Account _account;
             private Transaction _transaction;
 
             public EntityModel(Account account, Transaction transaction, decimal balance)
             {
-                _account = account;
                 _transaction = transaction;
 
+                Account = account;
                 Date = _transaction.Date;
                 Description = _transaction.Description;
                 Notes = _transaction.Notes;
@@ -131,6 +130,8 @@ namespace fita.ui.ViewModels.Transactions
             {
             }
 
+            public Account Account { get; set; }
+            
             public DateTime? Date { get; set; }
 
             public string Description { get; set; }
@@ -157,7 +158,7 @@ namespace fita.ui.ViewModels.Transactions
             {
                 return new Transaction
                 {
-                    AccountId = model._account.AccountId,
+                    AccountId = model.Account.AccountId,
                     Date = model.Date.GetValueOrDefault(),
                     Description = model.Description,
                     Notes = model.Notes,
