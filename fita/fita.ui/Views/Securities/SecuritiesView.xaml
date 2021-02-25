@@ -57,8 +57,17 @@
                             <dxg:GridColumn FieldName="Entity.Name" Header="Name" />
                             <dxg:GridColumn FieldName="Entity.Symbol" Header="Symbol" />
                             <dxg:GridColumn FieldName="LatestDate" Header="Last Date" />
-                            <dxg:GridColumn FieldName="LatestValue" Header="Last Value" />
-                            <dxg:GridColumn FieldName="Entity.Currency.Symbol" Header="Currency" />
+                            <dxg:GridColumn FieldName="LatestValue" Header="Last Value">
+                                <dxg:GridColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <dxe:TextEdit Name="PART_Editor"
+                                                      Mask="c4"
+                                                      MaskType="Numeric"
+                                                      MaskCulture="{Binding RowData.Row.Entity.Currency.Culture}"
+                                                      MaskUseAsDisplayFormat="True" />
+                                    </DataTemplate>
+                                </dxg:GridColumn.CellTemplate>
+                            </dxg:GridColumn>
                             <dxg:GridColumn FieldName="History" Header="History">
                                 <dxg:GridColumn.EditSettings>
                                     <dxe:SparklineEditSettings>

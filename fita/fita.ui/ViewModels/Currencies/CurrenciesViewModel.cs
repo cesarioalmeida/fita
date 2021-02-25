@@ -70,7 +70,7 @@ namespace fita.ui.ViewModels.Currencies
                     await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
 
                 var data = currencies.Select(c =>
-                    new CurrenciesModel(c, exchangeRates.FirstOrDefault(x => x.ToCurrency.CurrencyId == c.CurrencyId)));
+                    new CurrenciesModel(FileSettings.BaseCurrency, c, exchangeRates.FirstOrDefault(x => x.ToCurrency.CurrencyId == c.CurrencyId)));
 
                 Data.AddRange(data);
             }
@@ -251,16 +251,19 @@ namespace fita.ui.ViewModels.Currencies
 
         public class CurrenciesModel
         {
-            public CurrenciesModel(Currency currency, ExchangeRate exchangeRate)
+            public CurrenciesModel(Currency baseCurrency, Currency currency, ExchangeRate exchangeRate)
             {
+                BaseCurrency = baseCurrency;
                 Currency = currency;
                 ExchangeRate = exchangeRate;
             }
 
+            public Currency BaseCurrency { get; }
+            
             public Currency Currency { get; }
 
             public ExchangeRate ExchangeRate { get; }
-
+            
             public DateTime? LatestDate => ExchangeRate?.Rate.LatestDate;
 
             public decimal? LatestValue => ExchangeRate?.Rate.LatestValue;

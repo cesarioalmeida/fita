@@ -21,8 +21,7 @@ namespace fita.services.Repositories
                     CurrencyId = ObjectId.NewObjectId(),
                     Name = "Euro",
                     Symbol = "EUR",
-                    Prefix = "€", 
-                    Suffix = string.Empty
+                    Culture = "pt-PT"
                 };
 
                 if (Collection.FindOne(x => x.Name == euro.Name) == null)

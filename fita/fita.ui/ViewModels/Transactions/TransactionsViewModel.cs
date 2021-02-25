@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm.DataAnnotations;
@@ -34,6 +35,7 @@ namespace fita.ui.ViewModels.Transactions
         public async Task RefreshData()
         {
             IsBusy = true;
+            Data.CollectionChanged -= OnTransactionsChanged;
 
             try
             {
@@ -41,7 +43,7 @@ namespace fita.ui.ViewModels.Transactions
                 {
                     return;
                 }
-
+                
                 Categories.Clear();
                 Categories.AddRange(await CategoryRepoService.AllAsync());
 
@@ -61,6 +63,7 @@ namespace fita.ui.ViewModels.Transactions
             }
             finally
             {
+                Data.CollectionChanged += OnTransactionsChanged;
                 IsBusy = false;
             }
         }
@@ -68,6 +71,38 @@ namespace fita.ui.ViewModels.Transactions
         protected override async void OnNavigatedTo()
         {
             Account = Parameter as Account;
+
+            await RefreshData();
+        }
+        
+        private async void OnTransactionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            var oldItems = e.OldItems;
+            var newItems = e.NewItems;
+            
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    if (newItems != null)
+                    { 
+                        foreach (EntityModel item in newItems)
+                        {
+                            _transactions.Add(EntityModel.ToTransaction(item));
+                        }
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             await RefreshData();
         }
@@ -92,6 +127,10 @@ namespace fita.ui.ViewModels.Transactions
                 Balance = balance;
             }
 
+            public EntityModel()
+            {
+            }
+
             public DateTime? Date { get; set; }
 
             public string Description { get; set; }
@@ -114,19 +153,19 @@ namespace fita.ui.ViewModels.Transactions
                     {Description = "Initial balance", Deposit = account.InitialBalance}, account.InitialBalance);
             }
 
-            public Transaction ToTransaction()
+            public static Transaction ToTransaction(EntityModel model)
             {
-                _transaction ??= new Transaction {AccountId = _account.AccountId};
-
-                _transaction.Date = Date.GetValueOrDefault();
-                _transaction.Description = Description;
-                _transaction.Notes = Notes;
-                _transaction.Category = Category;
-                _transaction.Payment = Payment;
-                _transaction.Deposit = Deposit;
-                _transaction.TransferAccount = TransferToAccount;
-
-                return _transaction;
+                return new Transaction
+                {
+                    AccountId = model._account.AccountId,
+                    Date = model.Date.GetValueOrDefault(),
+                    Description = model.Description,
+                    Notes = model.Notes,
+                    Category = model.Category,
+                    Payment = model.Payment,
+                    Deposit = model.Deposit,
+                    TransferAccount = model.TransferToAccount
+                };
             }
         }
     }

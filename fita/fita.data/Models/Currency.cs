@@ -10,8 +10,6 @@ namespace fita.data.Models
 
         public string Symbol { get; set; }
 
-        public string Prefix { get; set; }
-
-        public string Suffix { get; set; }
+        public string Culture { get; set; }
     }
 }

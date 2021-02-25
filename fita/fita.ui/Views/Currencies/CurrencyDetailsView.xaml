@@ -45,15 +45,9 @@
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem
                         AddColonToLabel="True"
-                        Label="Prefix"
+                        Label="Culture"
                         LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding Currency.Prefix, UpdateSourceTrigger=PropertyChanged}" />
-                    </dxlc:LayoutItem>
-                    <dxlc:LayoutItem
-                        AddColonToLabel="True"
-                        Label="Suffix"
-                        LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding Currency.Suffix, UpdateSourceTrigger=PropertyChanged}" />
+                        <dxe:TextEdit EditValue="{Binding Currency.Culture, UpdateSourceTrigger=PropertyChanged}" />
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem
                         Margin="0,20,0,0"
@@ -63,8 +57,11 @@
                         <dxe:TextEdit
                             Height="30"
                             Background="#EDFAFA"
-                            EditValue="{DXBinding 'Currency.Prefix + `108.3` + Currency.Suffix',
-                                                  Mode=OneWay}"
+                            Mask="c2"
+                            MaskCulture="{Binding Currency.Culture, UpdateSourceTrigger=PropertyChanged}"
+                            MaskType="Numeric"
+                            EditValue="108.3"
+                            MaskUseAsDisplayFormat="True"
                             FontSize="14"
                             IsReadOnly="True" />
                     </dxlc:LayoutItem>
