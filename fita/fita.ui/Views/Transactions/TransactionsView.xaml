@@ -62,7 +62,7 @@
                                     FieldName="Entity.Date"
                                     Header="Date">
                         <dxg:GridColumn.EditSettings>
-                            <dxe:TextEditSettings MaskType="DateTime" MaskUseAsDisplayFormat="True" />
+                            <dxe:DateEditSettings />
                         </dxg:GridColumn.EditSettings>
                         </dxg:GridColumn>
                     <dxg:GridColumn FieldName="Entity.Description"

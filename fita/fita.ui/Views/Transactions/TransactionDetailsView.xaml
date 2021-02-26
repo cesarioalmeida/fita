@@ -25,7 +25,7 @@
 
             <TextBlock HorizontalAlignment="Center"
                        Style="{StaticResource H1}"
-                       Text="{DXBinding 'Account.Name + ` - Transaction: ` + Entity.Description'}" />
+                       Text="{DXBinding 'Account.Name + ` - Transaction`'}" />
 
             <dxlc:LayoutControl Grid.Row="1">
                 <dxlc:LayoutGroup ItemSpace="15"
@@ -33,11 +33,11 @@
                     <dxlc:LayoutItem AddColonToLabel="True"
                                      Label="Date"
                                      LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding Entity.Date, UpdateSourceTrigger=PropertyChanged}">
+                        <dxe:DateEdit EditValue="{Binding Entity.Date, UpdateSourceTrigger=PropertyChanged}">
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:FocusBehavior />
                             </dxmvvm:Interaction.Behaviors>
-                        </dxe:TextEdit>
+                        </dxe:DateEdit>
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem AddColonToLabel="True"
                                      Label="Description"
@@ -53,6 +53,10 @@
                                      Label="Category"
                                      LabelPosition="Top">
                         <dxe:ComboBoxEdit DisplayMember="Name"
+                                          IncrementalFiltering="True"
+                                          IsTextEditable="True"
+                                          ImmediatePopup="True"
+                                          AutoComplete="True"
                                           EditValue="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
                                           ItemsSource="{Binding Categories}" />
                     </dxlc:LayoutItem>

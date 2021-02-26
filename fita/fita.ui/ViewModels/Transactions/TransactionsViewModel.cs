@@ -2,15 +2,20 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
 using DevExpress.Xpf.Core;
+using DevExpress.Xpf.WindowsUI;
 using fita.data.Models;
+using fita.services;
 using fita.services.Core;
 using fita.services.Repositories;
 using fita.ui.Views.Transactions;
 using twentySix.Framework.Core.Extensions;
+using twentySix.Framework.Core.Messages;
+using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.Transactions
@@ -48,9 +53,9 @@ namespace fita.ui.ViewModels.Transactions
 
                 Data.Clear();
 
-                var balance = 0m;
-
                 Data.Add(EntityModel.GetInitialBalance(Account));
+                
+                var balance = Account.InitialBalance;
 
                 foreach (var transaction in _transactions)
                 {
@@ -67,8 +72,8 @@ namespace fita.ui.ViewModels.Transactions
         public async Task Edit(EntityModel model)
         {
             var viewModel = ViewModelSource.Create<TransactionDetailsViewModel>();
-            viewModel.Entity = model.Entity ?? new Transaction { AccountId = Account.AccountId };
-            viewModel.Account = model.Account;
+            viewModel.Entity = model?.Entity ?? new Transaction { AccountId = Account.AccountId };
+            viewModel.Account = Account;
 
             var document = this.ModalDocumentManagerService.CreateDocument(nameof(TransactionDetailsView), viewModel, null, this);
             document.DestroyOnClose = true;
@@ -79,6 +84,38 @@ namespace fita.ui.ViewModels.Transactions
                 fireChangeNotification = true;
 
                 await RefreshData();
+            }
+        }
+        
+        public async Task Delete(EntityModel model)
+        {
+            if (model == null)
+            {
+                return;
+            }
+
+            if (WinUIMessageBox.Show(
+                $"Are you sure you want to delete the transaction {model.Entity}?",
+                "Delete transaction",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Question) != MessageBoxResult.OK)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                Messenger.Default.Send(await TransactionRepoService.DeleteAsync(model.Entity.TransactionId) == Result.Fail
+                    ? new NotificationMessage("Failed to delete transaction.", NotificationStatusEnum.Error)
+                    : new NotificationMessage($"Transaction {model.Entity} deleted.", NotificationStatusEnum.Success));
+
+                await RefreshData();
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 

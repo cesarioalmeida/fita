@@ -62,16 +62,16 @@
                 <dxb:BarButtonItem Content="Open" />
                 <dxb:BarButtonItem Content="Exit" />
             </dxb:BarSubItem>
-            <dxb:BarSubItem Command="{Binding ShowViewCommand}"
+            <dxb:BarSubItem Command="{Binding ShowModalViewCommand}"
                             CommandParameter="AccountsView"
                             Content="Accounts" />
-            <dxb:BarSubItem Command="{Binding ShowViewCommand}"
+            <dxb:BarSubItem Command="{Binding ShowModalViewCommand}"
                             CommandParameter="CategoriesView"
                             Content="Categories" />
-            <dxb:BarSubItem Command="{Binding ShowViewCommand}"
+            <dxb:BarSubItem Command="{Binding ShowModalViewCommand}"
                             CommandParameter="CurrenciesView"
                             Content="Currencies" />
-            <dxb:BarSubItem Command="{Binding ShowViewCommand}"
+            <dxb:BarSubItem Command="{Binding ShowModalViewCommand}"
                             CommandParameter="SecuritiesView"
                             Content="Securities" />
             <dxb:BarSubItem Content="Reports" />

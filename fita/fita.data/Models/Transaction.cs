@@ -23,5 +23,10 @@ namespace fita.data.Models
         public decimal? Payment { get; set; }
 
         public decimal? Deposit { get; set; }
+
+        public override string ToString()
+        {
+            return $"[{Date?.ToShortDateString()}] {Description}";
+        }
     }
 }

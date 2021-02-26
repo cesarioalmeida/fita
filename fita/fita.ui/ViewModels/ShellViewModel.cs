@@ -103,7 +103,7 @@ namespace fita.ui.ViewModels
             }
         }
 
-        public void ShowView(string view)
+        public void ShowModalView(string view)
         {
             var document = ModalDocumentService.CreateDocument(view, null, this);
             document.DestroyOnClose = true;
