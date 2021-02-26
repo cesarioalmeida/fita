@@ -17,7 +17,6 @@ namespace fita.services.Repositories
         public sealed override void IndexData()
         {
             Collection.EnsureIndex(x => x.TransactionId);
-            Collection.EnsureIndex(x => x.AssociatedTransactionId);
             Collection.EnsureIndex(x => x.AccountId);
             Collection.EnsureIndex(x => x.Date);
             Collection.EnsureIndex(x => x.Category);

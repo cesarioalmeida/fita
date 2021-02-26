@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
@@ -35,6 +36,9 @@ namespace fita.ui.ViewModels
 
         public HamburgerMenuItemViewModel SelectedHamburgerItem { get; set; }
 
+        public IEnumerable<HamburgerMenuItemViewModel> HomeHamburgerItem => new[]
+            {new HamburgerMenuItemViewModel("Home", "HomeView", "../Resources/Icons/Home_24x24.png")};
+
         public IEnumerable<HamburgerMenuItemViewModel> BankHamburgerItems =>
             _accountItems.Where(x => x.Account.Type == AccountTypeEnum.Bank);
 
@@ -50,11 +54,8 @@ namespace fita.ui.ViewModels
         protected IDocumentManagerService ModalDocumentService =>
             this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
-        protected IDocumentManagerService FrameDocumentService =>
-            this.GetRequiredService<IDocumentManagerService>("FrameDocumentService");
-
         protected IDispatcherService DispatcherService => this.GetService<IDispatcherService>();
-
+        
         protected AccountRepoService AccountRepoService { get; set; }
 
         public ShellViewModel()
@@ -65,7 +66,7 @@ namespace fita.ui.ViewModels
             _messageTimer.Elapsed += (_, _) => DispatcherService.BeginInvoke(() => Message = null);
         }
 
-        public async void RefreshData()
+        public async Task RefreshData()
         {
             IsBusy = true;
 
@@ -73,7 +74,7 @@ namespace fita.ui.ViewModels
             {
                 var selectedId = ObjectId.Empty;
 
-                if(SelectedHamburgerItem != null)
+                if (SelectedHamburgerItem != null)
                 {
                     selectedId = SelectedHamburgerItem.Account.AccountId;
                 }
@@ -82,11 +83,13 @@ namespace fita.ui.ViewModels
 
                 if (accounts.Any())
                 {
-                    _accountItems = accounts.Select(_ => 
-                    new HamburgerMenuItemViewModel(_.Name, "TransactionsView", _accountToGlyphMapper[_.Type], _)).ToList();
+                    _accountItems = accounts.Select(_ =>
+                            new HamburgerMenuItemViewModel(_.Name, "TransactionsView", _accountToGlyphMapper[_.Type],
+                                _))
+                        .ToList();
 
                     RaisePropertiesChanged(
-                        () => BankHamburgerItems, 
+                        () => BankHamburgerItems,
                         () => CreditCardHamburgerItems,
                         () => InvestmentHamburgerItems,
                         () => AssetHamburgerItems);
@@ -105,6 +108,18 @@ namespace fita.ui.ViewModels
             var document = ModalDocumentService.CreateDocument(view, null, this);
             document.DestroyOnClose = true;
             document.Show();
+        }
+
+        public async Task OnViewLoaded()
+        {
+            await RefreshData();
+
+            NavigationService?.Navigate("HomeView", null, this);
+        }
+
+        public void Navigate(HamburgerMenuItemViewModel hamburgerItem)
+        {
+            NavigationService?.Navigate(hamburgerItem.View, hamburgerItem.Account, this);
         }
 
         public void OnClose()

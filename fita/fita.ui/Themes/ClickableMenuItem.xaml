@@ -28,11 +28,11 @@
                             <ControlTemplate TargetType="{x:Type RadioButton}">
                                 <Border
                                     x:Name="Bd"
-                                    Margin="0,0"
+                                    Margin="4,0"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="10, 0, 0, 10">
+                                    CornerRadius="6">
                                     <Grid Margin="10,0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />

@@ -89,6 +89,13 @@
       <Compile Update="Views\Transactions\TransactionsView.xaml.cs">
         <SubType>Code</SubType>
       </Compile>
+      <Page Update="Views\Transactions\TransactionDetailsView.xaml">
+        <SubType>Designer</SubType>
+      </Page>
+      <Compile Update="Views\Transactions\TransactionDetailsView.xaml.cs">
+        <SubType>Code</SubType>
+        <DependentUpon>SecurityDetailsView.xaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
