@@ -5,9 +5,11 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm.DataAnnotations;
+using DevExpress.Xpf.Core;
 using fita.data.Models;
 using fita.services.Core;
 using fita.services.Repositories;
+using LiteDB;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.UI.ViewModels;
 
@@ -17,16 +19,20 @@ namespace fita.ui.ViewModels.Transactions
     public class TransactionsViewModel : ComposedViewModelBase
     {
         private List<Transaction> _transactions { get; set; }
-
+        
         public virtual Account Account { get; set; }
 
-        public virtual ObservableCollection<Category> Categories { get; set; } = new();
+        public virtual LockableCollection<Account> Accounts { get; set; } = new();
+        
+        public virtual LockableCollection<Category> Categories { get; set; } = new();
 
         public ObservableCollection<EntityModel> Data { get; set; } = new();
 
         public virtual EntityModel SelectedData { get; set; }
 
         public CategoryRepoService CategoryRepoService { get; set; }
+        
+        public AccountRepoService AccountRepoService { get; set; }
 
         public TransactionRepoService TransactionRepoService { get; set; }
 
@@ -35,7 +41,6 @@ namespace fita.ui.ViewModels.Transactions
         public async Task RefreshData()
         {
             IsBusy = true;
-            Data.CollectionChanged -= OnTransactionsChanged;
 
             try
             {
@@ -44,8 +49,14 @@ namespace fita.ui.ViewModels.Transactions
                     return;
                 }
                 
+                Categories.BeginUpdate();
+                Accounts.BeginUpdate();
+                
                 Categories.Clear();
                 Categories.AddRange(await CategoryRepoService.AllAsync());
+                
+                Accounts.Clear();
+                Accounts.AddRange((await AccountRepoService.AllAsync()).Where(x => x.AccountId != Account.AccountId));
 
                 _transactions = (await TransactionRepoService.AllEnrichedForAccountAsync(Account?.AccountId)).ToList();
 
@@ -63,7 +74,9 @@ namespace fita.ui.ViewModels.Transactions
             }
             finally
             {
-                Data.CollectionChanged += OnTransactionsChanged;
+                Categories.EndUpdate();
+                Accounts.EndUpdate();
+                
                 IsBusy = false;
             }
         }
@@ -116,13 +129,14 @@ namespace fita.ui.ViewModels.Transactions
                 _transaction = transaction;
 
                 Account = account;
+                
                 Date = _transaction.Date;
                 Description = _transaction.Description;
                 Notes = _transaction.Notes;
                 Category = _transaction.Category;
                 Payment = _transaction.Payment;
                 Deposit = _transaction.Deposit;
-                TransferToAccount = _transaction.TransferAccount;
+                AssociatedTransactionId = _transaction.AssociatedTransactionId;
                 Balance = balance;
             }
 
@@ -144,7 +158,7 @@ namespace fita.ui.ViewModels.Transactions
 
             public decimal? Deposit { get; set; }
 
-            public Account TransferToAccount { get; set; }
+            public ObjectId AssociatedTransactionId { get; set; }
 
             public decimal? Balance { get; set; }
 
@@ -165,7 +179,7 @@ namespace fita.ui.ViewModels.Transactions
                     Category = model.Category,
                     Payment = model.Payment,
                     Deposit = model.Deposit,
-                    TransferAccount = model.TransferToAccount
+                    AssociatedTransactionId = model.AssociatedTransactionId
                 };
             }
         }

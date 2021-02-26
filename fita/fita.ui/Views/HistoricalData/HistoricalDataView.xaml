@@ -1,18 +1,17 @@
-﻿<UserControl
-    x:Class="fita.ui.Views.HistoricalData.HistoricalDataView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
-    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
-    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-    xmlns:historicalData="clr-namespace:fita.ui.ViewModels.HistoricalData"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:services="clr-namespace:fita.ui.Services"
-    d:DataContext="{d:DesignInstance historicalData:HistoricalDataViewModel}"
-    mc:Ignorable="d">
+﻿<UserControl x:Class="fita.ui.Views.HistoricalData.HistoricalDataView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:historicalData="clr-namespace:fita.ui.ViewModels.HistoricalData"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:services="clr-namespace:fita.ui.Services"
+             d:DataContext="{d:DesignInstance historicalData:HistoricalDataViewModel}"
+             mc:Ignorable="d">
 
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
         <Grid Margin="5">
@@ -22,48 +21,48 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock
-                HorizontalAlignment="Center"
-                Style="{StaticResource H1}"
-                Text="{DXBinding '`Historical Data: ` + Model.Name'}" />
+            <TextBlock HorizontalAlignment="Center"
+                       Style="{StaticResource H1}"
+                       Text="{DXBinding '`Historical Data: ` + Model.Name'}" />
 
             <dxlc:LayoutControl Grid.Row="1">
-                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
-                    <dxg:GridControl x:Name="grid" ItemsSource="{Binding Model.DataPoints}">
+                <dxlc:LayoutGroup ItemSpace="15"
+                                  Orientation="Vertical">
+                    <dxg:GridControl x:Name="grid"
+                                     ItemsSource="{Binding Model.DataPoints}">
                         <dxg:GridControl.Columns>
                             <dxg:GridColumn Width="Auto">
                                 <dxg:GridColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <dxe:HyperlinkEdit
-                                                Command="{Binding View.DataContext.EditCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
-                                                EditValue="edit" />
-                                            <dxe:HyperlinkEdit
-                                                Command="{Binding View.DataContext.DeleteCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
-                                                EditValue="delete" />
+                                            <dxe:HyperlinkEdit Command="{Binding View.DataContext.EditCommand}"
+                                                               CommandParameter="{Binding RowData.Row}"
+                                                               EditValue="edit" />
+                                            <dxe:HyperlinkEdit Command="{Binding View.DataContext.DeleteCommand}"
+                                                               CommandParameter="{Binding RowData.Row}"
+                                                               EditValue="delete" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </dxg:GridColumn.CellTemplate>
                             </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="Date" Header="Date" />
-                            <dxg:GridColumn FieldName="Value" Header="Value" />
+                            <dxg:GridColumn FieldName="Date"
+                                            Header="Date" />
+                            <dxg:GridColumn FieldName="Value"
+                                            Header="Value" />
                         </dxg:GridControl.Columns>
                         <dxg:GridControl.SortInfo>
-                            <dxg:GridSortInfo FieldName="Date" SortOrder="Descending" />
+                            <dxg:GridSortInfo FieldName="Date"
+                                              SortOrder="Descending" />
                         </dxg:GridControl.SortInfo>
                         <dxg:GridControl.View>
-                            <dxg:TableView
-                                AllowEditing="False"
-                                RowMinHeight="24"
-                                ShowGroupPanel="False"
-                                ShowSearchPanelMode="Always">
+                            <dxg:TableView AllowEditing="False"
+                                           RowMinHeight="24"
+                                           ShowGroupPanel="False"
+                                           ShowSearchPanelMode="Always">
                                 <dxmvvm:Interaction.Behaviors>
-                                    <dxmvvm:EventToCommand
-                                        Command="{Binding EditCommand}"
-                                        CommandParameter="{Binding ElementName=grid, Path=CurrentItem}"
-                                        EventName="RowDoubleClick" />
+                                    <dxmvvm:EventToCommand Command="{Binding EditCommand}"
+                                                           CommandParameter="{Binding ElementName=grid, Path=CurrentItem}"
+                                                           EventName="RowDoubleClick" />
                                 </dxmvvm:Interaction.Behaviors>
                             </dxg:TableView>
                         </dxg:GridControl.View>
@@ -74,23 +73,18 @@
                 </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
 
-            <StackPanel
-                Grid.Row="2"
-                Margin="4"
-                HorizontalAlignment="Right"
-                Orientation="Horizontal">
-                <StackPanel.Resources>
-                    <Style TargetType="dxc:SimpleButton">
-                        <Setter Property="Padding" Value="30,5" />
-                        <Setter Property="Margin" Value="4,0" />
-                    </Style>
-                </StackPanel.Resources>
-                <dxc:SimpleButton Command="{Binding EditCommand}" Content="Add" />
-                <dxc:SimpleButton
-                    Margin="15,0,7,0"
-                    Command="{Binding CloseCommand}"
-                    Content="Close"
-                    IsCancel="True" />
+            <StackPanel Grid.Row="2"
+                        Margin="4"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <dxc:SimpleButton Command="{Binding EditCommand}"
+                                  Content="Add"
+                                  Style="{StaticResource ActionButton}" />
+                <dxc:SimpleButton Margin="15,0,7,0"
+                                  Command="{Binding CloseCommand}"
+                                  Content="Close"
+                                  IsCancel="True"
+                                  Style="{StaticResource ActionButton}" />
             </StackPanel>
         </Grid>
     </dxc:LoadingDecorator>

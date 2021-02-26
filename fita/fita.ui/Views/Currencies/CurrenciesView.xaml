@@ -112,20 +112,15 @@
                         Margin="4"
                         HorizontalAlignment="Right"
                         Orientation="Horizontal">
-                <StackPanel.Resources>
-                    <Style TargetType="dxc:SimpleButton">
-                        <Setter Property="Padding"
-                                Value="30,5" />
-                        <Setter Property="Margin"
-                                Value="4,0" />
-                    </Style>
-                </StackPanel.Resources>
                 <dxc:SimpleButton Command="{Binding EditCommand}"
+                                  Style="{StaticResource ActionButton}"
                                   Content="Add" />
                 <dxc:SimpleButton Command="{Binding UpdateCommand}"
+                                  Style="{StaticResource ActionButton}"
                                   Content="Update" />
                 <dxc:SimpleButton Margin="15,0,7,0"
                                   Command="{Binding CloseCommand}"
+                                  Style="{StaticResource ActionButton}"
                                   Content="Close"
                                   IsDefault="True" />
             </StackPanel>

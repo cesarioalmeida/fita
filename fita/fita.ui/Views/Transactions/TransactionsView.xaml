@@ -120,19 +120,7 @@
                 <StackPanel Margin="4"
                             HorizontalAlignment="Right"
                             Orientation="Horizontal">
-                    <StackPanel.Resources>
-                        <Style TargetType="dxc:SimpleButton">
-                            <Setter Property="Padding"
-                                    Value="20,0" />
-                            <Setter Property="Margin"
-                                    Value="4,0" />
-                            <Setter Property="Height"
-                                    Value="25" />
-                        </Style>
-                    </StackPanel.Resources>
-                    <dxc:SimpleButton Background="{StaticResource White1Brush}"
-                                      Content="Transfer"
-                                      CornerRadius="4" />
+                    <dxc:SimpleButton Content="Add" Style="{StaticResource ActionButton}" />
                 </StackPanel>
             </Border>
 

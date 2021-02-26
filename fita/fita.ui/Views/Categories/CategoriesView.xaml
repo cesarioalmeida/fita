@@ -1,21 +1,21 @@
-﻿<UserControl
-    x:Class="fita.ui.Views.Categories.CategoriesView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:categories="clr-namespace:fita.ui.ViewModels.Categories"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
-    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
-    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-    xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DataContext="{d:DesignInstance categories:CategoriesViewModel}"
-    DataContext="{dxmvvm:ViewModelSource Type=categories:CategoriesViewModel}"
-    mc:Ignorable="d">
+﻿<UserControl x:Class="fita.ui.Views.Categories.CategoriesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:categories="clr-namespace:fita.ui.ViewModels.Categories"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DataContext="{d:DesignInstance categories:CategoriesViewModel}"
+             DataContext="{dxmvvm:ViewModelSource Type=categories:CategoriesViewModel}"
+             mc:Ignorable="d">
     <dxmvvm:Interaction.Behaviors>
-        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
+        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}"
+                               EventName="Loaded" />
     </dxmvvm:Interaction.Behaviors>
 
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
@@ -26,44 +26,43 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock
-                HorizontalAlignment="Center"
-                Style="{StaticResource H1}"
-                Text="Categories" />
+            <TextBlock HorizontalAlignment="Center"
+                       Style="{StaticResource H1}"
+                       Text="Categories" />
 
             <dxlc:LayoutControl Grid.Row="1">
-                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
-                    <dxg:GridControl x:Name="grid" ItemsSource="{Binding Data}">
+                <dxlc:LayoutGroup ItemSpace="15"
+                                  Orientation="Vertical">
+                    <dxg:GridControl x:Name="grid"
+                                     ItemsSource="{Binding Data}">
                         <dxg:GridControl.Columns>
                             <dxg:GridColumn Width="Auto">
                                 <dxg:GridColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <dxe:HyperlinkEdit
-                                                Command="{Binding View.DataContext.EditCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
-                                                EditValue="edit" />
-                                            <dxe:HyperlinkEdit
-                                                Command="{Binding View.DataContext.DeleteCommand}"
-                                                CommandParameter="{Binding RowData.Row}"
-                                                EditValue="delete" />
+                                            <dxe:HyperlinkEdit Command="{Binding View.DataContext.EditCommand}"
+                                                               CommandParameter="{Binding RowData.Row}"
+                                                               EditValue="edit" />
+                                            <dxe:HyperlinkEdit Command="{Binding View.DataContext.DeleteCommand}"
+                                                               CommandParameter="{Binding RowData.Row}"
+                                                               EditValue="delete" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </dxg:GridColumn.CellTemplate>
                             </dxg:GridColumn>
-                            <dxg:GridColumn
-                                Width="Auto"
-                                FieldName="Name"
-                                Header="Name" />
-                            <dxg:GridColumn FieldName="Group" Header="Group">
+                            <dxg:GridColumn Width="Auto"
+                                            FieldName="Name"
+                                            Header="Name" />
+                            <dxg:GridColumn FieldName="Group"
+                                            Header="Group">
                                 <dxg:GridColumn.CellTemplate>
                                     <DataTemplate>
-                                        <dxe:ComboBoxEdit
-                                            Name="PART_Editor"
-                                            ApplyItemTemplateToSelectedItem="True"
-                                            IsTextEditable="False">
+                                        <dxe:ComboBoxEdit Name="PART_Editor"
+                                                          ApplyItemTemplateToSelectedItem="True"
+                                                          IsTextEditable="False">
                                             <dxmvvm:Interaction.Behaviors>
-                                                <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type enums:CategoryGroupEnum}" />
+                                                <dxmvvm:EnumItemsSourceBehavior
+                                                    EnumType="{x:Type enums:CategoryGroupEnum}" />
                                             </dxmvvm:Interaction.Behaviors>
                                         </dxe:ComboBoxEdit>
                                     </DataTemplate>
@@ -71,16 +70,14 @@
                             </dxg:GridColumn>
                         </dxg:GridControl.Columns>
                         <dxg:GridControl.View>
-                            <dxg:TableView
-                                AllowEditing="False"
-                                RowMinHeight="24"
-                                ShowGroupPanel="False"
-                                ShowSearchPanelMode="Always">
+                            <dxg:TableView AllowEditing="False"
+                                           RowMinHeight="24"
+                                           ShowGroupPanel="False"
+                                           ShowSearchPanelMode="Always">
                                 <dxmvvm:Interaction.Behaviors>
-                                    <dxmvvm:EventToCommand
-                                        Command="{Binding EditCommand}"
-                                        CommandParameter="{Binding ElementName=grid, Path=CurrentItem}"
-                                        EventName="RowDoubleClick" />
+                                    <dxmvvm:EventToCommand Command="{Binding EditCommand}"
+                                                           CommandParameter="{Binding ElementName=grid, Path=CurrentItem}"
+                                                           EventName="RowDoubleClick" />
                                 </dxmvvm:Interaction.Behaviors>
                             </dxg:TableView>
                         </dxg:GridControl.View>
@@ -88,23 +85,18 @@
                 </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
 
-            <StackPanel
-                Grid.Row="2"
-                Margin="4"
-                HorizontalAlignment="Right"
-                Orientation="Horizontal">
-                <StackPanel.Resources>
-                    <Style TargetType="dxc:SimpleButton">
-                        <Setter Property="Padding" Value="30,5" />
-                        <Setter Property="Margin" Value="4,0" />
-                    </Style>
-                </StackPanel.Resources>
-                <dxc:SimpleButton Command="{Binding EditCommand}" Content="Add" />
-                <dxc:SimpleButton
-                    Margin="15,0,7,0"
-                    Command="{Binding CloseCommand}"
-                    Content="Close"
-                    IsDefault="True" />
+            <StackPanel Grid.Row="2"
+                        Margin="4"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <dxc:SimpleButton Command="{Binding EditCommand}"
+                                  Content="Add"
+                                  Style="{StaticResource ActionButton}" />
+                <dxc:SimpleButton Margin="15,0,7,0"
+                                  Style="{StaticResource ActionButton}"
+                                  Command="{Binding CloseCommand}"
+                                  Content="Close"
+                                  IsDefault="True" />
             </StackPanel>
         </Grid>
     </dxc:LoadingDecorator>

@@ -17,6 +17,7 @@ namespace fita.services.Repositories
         public sealed override void IndexData()
         {
             Collection.EnsureIndex(x => x.TransactionId);
+            Collection.EnsureIndex(x => x.AssociatedTransactionId);
             Collection.EnsureIndex(x => x.AccountId);
             Collection.EnsureIndex(x => x.Date);
             Collection.EnsureIndex(x => x.Category);
@@ -31,7 +32,6 @@ namespace fita.services.Repositories
                     {
                         return Collection
                             .Include(x => x.Category)
-                            .Include(x => x.TransferAccount)
                             .FindById(id);
                     }
                     catch (Exception ex)
@@ -51,7 +51,6 @@ namespace fita.services.Repositories
                     {
                         return Collection
                             .Include(x => x.Category)
-                            .Include(x => x.TransferAccount)
                             .FindAll();
                     }
                     catch (Exception ex)
@@ -71,7 +70,6 @@ namespace fita.services.Repositories
                     {
                         return Collection
                             .Include(x => x.Category)
-                            .Include(x => x.TransferAccount)
                             .Find(x => x.AccountId == accountId);
                     }
                     catch (Exception ex)
