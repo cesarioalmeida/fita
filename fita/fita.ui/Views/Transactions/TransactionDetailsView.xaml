@@ -5,12 +5,48 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
     d:DataContext="{d:DesignInstance transactions:TransactionDetailsViewModel}"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="popupContentTemplate">
+            <dxg:GridControl x:Name="PART_GridControl" AutoExpandAllGroups="True">
+                <dxg:GridControl.Columns>
+                    <dxg:GridColumn FieldName="Name" />
+                    <dxg:GridColumn FieldName="Group">
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <dxe:ComboBoxEdit
+                                    Name="PART_Editor"
+                                    ApplyItemTemplateToSelectedItem="True"
+                                    IsTextEditable="False">
+                                    <dxmvvm:Interaction.Behaviors>
+                                        <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type enums:CategoryGroupEnum}" />
+                                    </dxmvvm:Interaction.Behaviors>
+                                </dxe:ComboBoxEdit>
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
+                    </dxg:GridColumn>
+                </dxg:GridControl.Columns>
+                <dxg:GridControl.View>
+                    <dxg:TableView
+                        AllowPerPixelScrolling="True"
+                        AutoWidth="True"
+                        IsSynchronizedWithCurrentItem="False"
+                        ScrollAnimationDuration="0"
+                        ShowAutoFilterRow="True"
+                        ShowGroupedColumns="True"
+                        ShowTotalSummary="True" />
+                </dxg:GridControl.View>
+            </dxg:GridControl>
+        </ControlTemplate>
+    </UserControl.Resources>
+
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
     </dxmvvm:Interaction.Behaviors>
@@ -56,7 +92,18 @@
                         AddColonToLabel="True"
                         Label="Category"
                         LabelPosition="Top">
-                        <dxe:ComboBoxEdit
+                        <dxg:LookUpEdit
+                            VerticalAlignment="Center"
+                            AutoPopulateColumns="False"
+                            DisplayMember="Name"
+                            EditValue="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
+                            FilterCondition="Contains"
+                            ImmediatePopup="True"
+                            IncrementalFiltering="True"
+                            IsTextEditable="True"
+                            ItemsSource="{Binding Categories}"
+                            PopupContentTemplate="{StaticResource popupContentTemplate}" />
+                        <!--<dxe:ComboBoxEdit
                             AllowNullInput="True"
                             AutoComplete="True"
                             DisplayMember="Name"
@@ -69,7 +116,7 @@
                             <dxe:ComboBoxEdit.StyleSettings>
                                 <dxe:ComboBoxStyleSettings />
                             </dxe:ComboBoxEdit.StyleSettings>
-                        </dxe:ComboBoxEdit>
+                        </dxe:ComboBoxEdit>-->
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem
                         AddColonToLabel="True"

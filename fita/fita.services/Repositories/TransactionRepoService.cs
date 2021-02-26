@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using LiteDB;
@@ -41,6 +42,13 @@ namespace fita.services.Repositories
                 });
         }
 
+        public override async Task<IEnumerable<Transaction>> AllAsync()
+        {
+            return (await base.AllAsync())
+                .OrderBy(x => x.Date)
+                .AsEnumerable();;
+        }
+
         public override Task<IEnumerable<Transaction>> AllEnrichedAsync()
         {
             return Task.Run(
@@ -50,7 +58,9 @@ namespace fita.services.Repositories
                     {
                         return Collection
                             .Include(x => x.Category)
-                            .FindAll();
+                            .FindAll()
+                            .OrderBy(x => x.Date)
+                            .AsEnumerable();
                     }
                     catch (Exception ex)
                     {
@@ -69,7 +79,9 @@ namespace fita.services.Repositories
                     {
                         return Collection
                             .Include(x => x.Category)
-                            .Find(x => x.AccountId == accountId);
+                            .Find(x => x.AccountId == accountId)
+                            .OrderBy(x => x.Date)
+                            .AsEnumerable();
                     }
                     catch (Exception ex)
                     {

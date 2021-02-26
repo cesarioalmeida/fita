@@ -26,7 +26,7 @@ namespace fita.ui.ViewModels.Transactions
         public Account Account { get; set; }
 
         public LockableCollection<Category> Categories { get; set; } = new();
-        
+
         public Category SelectedCategory { get; set; }
 
         public bool Saved { get; private set; }
