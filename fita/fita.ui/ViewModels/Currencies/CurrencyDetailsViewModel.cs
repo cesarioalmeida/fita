@@ -12,7 +12,7 @@ using twentySix.Framework.Core.UI.ViewModels;
 namespace fita.ui.ViewModels.Currencies
 {
     [POCOViewModel]
-    public class CurrencyDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize
+    public class CurrencyDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize, IHasSaved
     {
         public int Width => 400;
 

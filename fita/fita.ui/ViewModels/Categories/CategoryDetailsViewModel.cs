@@ -12,7 +12,7 @@ using twentySix.Framework.Core.UI.ViewModels;
 namespace fita.ui.ViewModels.Categories
 {
     [POCOViewModel]
-    public class CategoryDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize
+    public class CategoryDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize, IHasSaved
     {
         public int Width => 300;
 

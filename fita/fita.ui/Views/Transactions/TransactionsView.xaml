@@ -46,6 +46,7 @@
             <dxg:GridControl
                 x:Name="grid"
                 Grid.Row="1"
+                SelectionMode="Row"
                 ItemsSource="{Binding Data}">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn Width="Auto">
@@ -144,6 +145,10 @@
                     <dxc:SimpleButton
                         Command="{Binding EditCommand}"
                         Content="Add"
+                        Style="{StaticResource ActionButton}" />
+                    <dxc:SimpleButton
+                        Command="{Binding TransferCommand}"
+                        Content="Transfer"
                         Style="{StaticResource ActionButton}" />
                 </StackPanel>
             </Border>

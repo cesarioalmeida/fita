@@ -18,7 +18,7 @@ using twentySix.Framework.Core.UI.ViewModels;
 namespace fita.ui.ViewModels.HistoricalData
 {
     [POCOViewModel]
-    public class HistoricalDataViewModel : ComposedDocumentViewModelBase, IDesiredSize
+    public class HistoricalDataViewModel : ComposedDocumentViewModelBase, IDesiredSize, IHasSaved
     {
         public int Width => 400;
 

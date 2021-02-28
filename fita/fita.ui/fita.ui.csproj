@@ -96,6 +96,13 @@
         <SubType>Code</SubType>
         <DependentUpon>SecurityDetailsView.xaml</DependentUpon>
       </Compile>
+      <Page Update="Views\Transactions\TransferDetailsView.xaml">
+        <SubType>Designer</SubType>
+      </Page>
+      <Compile Update="Views\Transactions\TransferDetailsView.xaml.cs">
+        <SubType>Code</SubType>
+        <DependentUpon>TransferDetailsView.xaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

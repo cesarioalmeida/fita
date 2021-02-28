@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
+using fita.data.Enums;
 using fita.data.Models;
 using fita.services;
 using fita.services.Repositories;
@@ -15,7 +16,7 @@ using twentySix.Framework.Core.UI.ViewModels;
 namespace fita.ui.ViewModels.Transactions
 {
     [POCOViewModel]
-    public class TransactionDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize
+    public class TransactionDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize, IHasSaved
     {
         public int Width => 400;
 
@@ -45,7 +46,7 @@ namespace fita.ui.ViewModels.Transactions
             try
             {
                 var categories = await CategoryRepoService.AllAsync();
-                Categories.AddRange(categories);
+                Categories.AddRange(categories.Where(c => c.Group != CategoryGroupEnum.TransfersIn && c.Group != CategoryGroupEnum.TransfersOut));
 
                  SelectedCategory = Categories.SingleOrDefault(x => x.CategoryId == Entity.Category?.CategoryId);
             }

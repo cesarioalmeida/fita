@@ -15,7 +15,7 @@ using twentySix.Framework.Core.UI.ViewModels;
 namespace fita.ui.ViewModels.Securities
 {
     [POCOViewModel]
-    public class SecurityDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize
+    public class SecurityDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize, IHasSaved
     {
         public int Width => 400;
 

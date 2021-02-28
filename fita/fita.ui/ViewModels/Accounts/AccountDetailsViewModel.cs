@@ -15,7 +15,7 @@ using twentySix.Framework.Core.UI.ViewModels;
 namespace fita.ui.ViewModels.Accounts
 {
     [POCOViewModel]
-    public class AccountDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize
+    public class AccountDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize, IHasSaved
     {
         public int Width => 400;
 

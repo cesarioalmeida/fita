@@ -129,8 +129,8 @@ namespace fita.services.Repositories
 
             var transfers = new Dictionary<string, CategoryGroupEnum>
             {
-                {"[TransfersIn]", CategoryGroupEnum.TransfersIn},
-                {"[TransfersOut]", CategoryGroupEnum.TransfersOut}
+                {"Transfers In", CategoryGroupEnum.TransfersIn},
+                {"Transfers Out", CategoryGroupEnum.TransfersOut}
             }.OrderBy(x => x.Key);
 
             return personalIncome
