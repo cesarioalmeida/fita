@@ -39,7 +39,26 @@
                                    ScrollAnimationDuration="0"
                                    ShowAutoFilterRow="True"
                                    ShowGroupedColumns="True"
-                                   ShowTotalSummary="True" />
+                                   ShowTotalSummary="True">
+                        <dxg:TableView.FormatConditions>
+                            <dxg:FormatCondition ValueRule="Equal"
+                                                 Value1="{x:Static enums:CategoryGroupEnum.PersonalIncome}"
+                                                 FieldName="Group"
+                                                 PredefinedFormatName="GreenFillWithDarkGreenText" />
+                            <dxg:FormatCondition ValueRule="Equal"
+                                                 Value1="{x:Static enums:CategoryGroupEnum.PersonalExpenses}"
+                                                 FieldName="Group"
+                                                 PredefinedFormatName="LightRedFillWithDarkRedText" />
+                            <dxg:FormatCondition ValueRule="Equal"
+                                                 Value1="{x:Static enums:CategoryGroupEnum.BusinessExpenses}"
+                                                 FieldName="Group"
+                                                 PredefinedFormatName="YellowFillWithDarkYellowText" />
+                            <dxg:FormatCondition ValueRule="Equal"
+                                                 Value1="{x:Static enums:CategoryGroupEnum.BusinessIncome}"
+                                                 FieldName="Group"
+                                                 PredefinedFormatName="LightGreenFill" />
+                        </dxg:TableView.FormatConditions>
+                    </dxg:TableView>
                 </dxg:GridControl.View>
             </dxg:GridControl>
         </ControlTemplate>
@@ -103,6 +122,7 @@
                                      LabelPosition="Top">
                         <dxe:TextEdit EditValue="{Binding Entity.Payment, UpdateSourceTrigger=PropertyChanged}"
                                       Mask="c2"
+                                      Foreground="DarkRed"
                                       MaskCulture="{Binding Account.Currency.Culture}"
                                       MaskType="Numeric"
                                       MaskUseAsDisplayFormat="True" />
@@ -112,6 +132,7 @@
                                      LabelPosition="Top">
                         <dxe:TextEdit EditValue="{Binding Entity.Deposit, UpdateSourceTrigger=PropertyChanged}"
                                       Mask="c2"
+                                      Foreground="DarkGreen"
                                       MaskCulture="{Binding Account.Currency.Culture}"
                                       MaskType="Numeric"
                                       MaskUseAsDisplayFormat="True" />
