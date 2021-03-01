@@ -22,9 +22,9 @@ namespace fita.ui.ViewModels.Transactions
 
         public int Height => 600;
 
-        public virtual Transaction Entity { get; set; }
+        public virtual Transaction Transaction { get; set; }
         
-        public Transaction AssociatedTransaction { get; set; }
+        public Transaction OtherTransaction { get; set; }
         
         public Account Account { get; set; }
 
@@ -32,10 +32,18 @@ namespace fita.ui.ViewModels.Transactions
         
         public LockableCollection<Account> Accounts { get; set; } = new();
 
-        public virtual Account SelectedAccount { get; set; }
+        public virtual Account OtherAccount { get; set; }
         
-        public virtual decimal? OtherAccountAmount { get; set; }
+        public virtual decimal? PaymentAmount { get; set; }
+        
+        public virtual string PaymentCulture { get; set; }
+        
+        public virtual decimal? DepositAmount { get; set; }
+        
+        public virtual string DepositCulture { get; set; }
 
+        public virtual bool IsReadOnly => Transaction?.Category.Group == CategoryGroupEnum.TransfersIn;
+        
         public bool Saved { get; private set; }
         
         public CategoryRepoService CategoryRepoService { get; set; }
@@ -60,26 +68,27 @@ namespace fita.ui.ViewModels.Transactions
                 var accounts = await AccountRepoService.AllEnrichedAsync();
                 Accounts.AddRange(accounts.Where(x => x.AccountId != Account.AccountId));
 
-                if (Entity.AssociatedTransactionId != null)
+                if (Transaction.AssociatedTransactionId != null)
                 {
-                    AssociatedTransaction = await TransactionRepoService.DetailsEnrichedAsync(Entity.AssociatedTransactionId);
-                    OtherAccountAmount = AssociatedTransaction?.Category.Group == CategoryGroupEnum.TransfersIn
-                        ? AssociatedTransaction?.Deposit
-                        : AssociatedTransaction?.Payment;
-                    
-                    SelectedAccount = Accounts.SingleOrDefault(x => x.AccountId == AssociatedTransaction.AccountId);
+                    OtherTransaction = await TransactionRepoService.DetailsEnrichedAsync(Transaction.AssociatedTransactionId);
+                    OtherAccount = Accounts.SingleOrDefault(x => x.AccountId == OtherTransaction.AccountId);
+
+                    PaymentAmount = IsReadOnly ? OtherTransaction?.Payment : Transaction.Payment;
+                    DepositAmount = IsReadOnly ? Transaction?.Deposit : OtherTransaction?.Deposit;
+                    PaymentCulture = IsReadOnly ? OtherAccount?.Currency.Culture : Account.Currency.Culture;
+                    DepositCulture = IsReadOnly ? Account?.Currency.Culture : OtherAccount?.Currency.Culture;
                 }
                 else
                 {
                     // create new transaction and link both
-                    AssociatedTransaction = new Transaction
+                    OtherTransaction = new Transaction
                     {
-                        AssociatedTransactionId = Entity.TransactionId
+                        AssociatedTransactionId = Transaction.TransactionId
                     };
 
-                    Entity.AssociatedTransactionId = AssociatedTransaction.TransactionId;
+                    Transaction.AssociatedTransactionId = OtherTransaction.TransactionId;
 
-                    SelectedAccount = Accounts.FirstOrDefault();
+                    OtherAccount = Accounts.FirstOrDefault();
                 }
             }
             finally
@@ -102,31 +111,40 @@ namespace fita.ui.ViewModels.Transactions
 
             try
             {
-                if (SelectedAccount == null || Entity.Payment == null || OtherAccountAmount == null)
+                if (OtherAccount == null || PaymentAmount == null || DepositAmount == null)
                 {
-                    Saved = true;
                     DocumentOwner?.Close(this);
                     return;
                 }
-                
-                Entity.Description = $"Transfer to {SelectedAccount.Name}";
-                Entity.Category = Categories.First(x => x.Group == CategoryGroupEnum.TransfersOut);
 
-                AssociatedTransaction.AccountId = SelectedAccount.AccountId;
-                AssociatedTransaction.Date = Entity.Date;
-                AssociatedTransaction.Description = $"Transfer from {Account.Name}";
-                AssociatedTransaction.Category = Categories.First(x => x.Group == CategoryGroupEnum.TransfersIn);
-                AssociatedTransaction.Notes = Entity.Notes;
-                AssociatedTransaction.Deposit = OtherAccountAmount;
-
-                if (await TransactionRepoService.SaveAsync(Entity) == Result.Success &&
-                    await TransactionRepoService.SaveAsync(AssociatedTransaction) == Result.Success)
+                if (!IsReadOnly)
                 {
-                    Messenger.Default.Send(new NotificationMessage($"Transfer saved.", NotificationStatusEnum.Success));
+                    Transaction.Description = $"Transfer to {OtherAccount.Name}";
+                    Transaction.Category = Categories.First(x => x.Group == CategoryGroupEnum.TransfersOut);
+                    Transaction.Payment = PaymentAmount;
+                    
+                    OtherTransaction.AccountId = OtherAccount.AccountId;
+                    OtherTransaction.Description = $"Transfer from {Account.Name}";
+                    OtherTransaction.Category = Categories.First(x => x.Group == CategoryGroupEnum.TransfersIn);
+                    OtherTransaction.Deposit = DepositAmount;
                 }
                 else
                 {
-                    Messenger.Default.Send(new NotificationMessage($"Transfer failed.", NotificationStatusEnum.Error));
+                    OtherTransaction.Payment = PaymentAmount;
+                    Transaction.Deposit = DepositAmount;
+                }
+
+                OtherTransaction.Date = Transaction.Date;
+                OtherTransaction.Notes = Transaction.Notes;
+
+                if (await TransactionRepoService.SaveAsync(Transaction) == Result.Success &&
+                    await TransactionRepoService.SaveAsync(OtherTransaction) == Result.Success)
+                {
+                    Messenger.Default.Send(new NotificationMessage("Transfer saved.", NotificationStatusEnum.Success));
+                }
+                else
+                {
+                    Messenger.Default.Send(new NotificationMessage("Transfer failed.", NotificationStatusEnum.Error));
                 }
 
                 Saved = true;

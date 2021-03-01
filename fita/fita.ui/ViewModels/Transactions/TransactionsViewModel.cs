@@ -125,7 +125,7 @@ namespace fita.ui.ViewModels.Transactions
         private bool EditTransfer(EntityModel model)
         {
             var viewModel = ViewModelSource.Create<TransferDetailsViewModel>();
-            viewModel.Entity = model?.Entity ?? new Transaction { AccountId = Account.AccountId };
+            viewModel.Transaction = model?.Entity ?? new Transaction { AccountId = Account.AccountId };
             viewModel.Account = Account;
             
             var document = this.ModalDocumentManagerService.CreateDocument(nameof(TransferDetailsView), viewModel, null, this);

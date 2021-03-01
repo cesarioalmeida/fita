@@ -13,6 +13,11 @@
              d:DataContext="{d:DesignInstance transactions:TransferDetailsViewModel}"
              mc:Ignorable="d">
     <UserControl.Resources>
+
+        <dxmvvm:BooleanToObjectConverter x:Key="ReadOnlyToLabelAccountConverter"
+                                         TrueValue="From Account"
+                                         FalseValue="To Account" />
+
         <ControlTemplate x:Key="popupContentTemplate">
             <dxg:GridControl x:Name="PART_GridControl"
                              AutoExpandAllGroups="True">
@@ -68,19 +73,20 @@
                     <dxlc:LayoutItem AddColonToLabel="True"
                                      Label="Date"
                                      LabelPosition="Top">
-                        <dxe:DateEdit EditValue="{Binding Entity.Date, UpdateSourceTrigger=PropertyChanged}">
+                        <dxe:DateEdit EditValue="{Binding Transaction.Date, UpdateSourceTrigger=PropertyChanged}">
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:FocusBehavior />
                             </dxmvvm:Interaction.Behaviors>
                         </dxe:DateEdit>
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem AddColonToLabel="True"
-                                     Label="To Account"
+                                     Label="{Binding IsReadOnly, Converter={StaticResource ReadOnlyToLabelAccountConverter}}"
                                      LabelPosition="Top">
                         <dxg:LookUpEdit VerticalAlignment="Center"
+                                        IsReadOnly="{Binding IsReadOnly}"
                                         AutoPopulateColumns="False"
                                         DisplayMember="Name"
-                                        EditValue="{Binding SelectedAccount, UpdateSourceTrigger=PropertyChanged}"
+                                        EditValue="{Binding OtherAccount, UpdateSourceTrigger=PropertyChanged}"
                                         FilterCondition="Contains"
                                         ImmediatePopup="True"
                                         IncrementalFiltering="True"
@@ -91,25 +97,25 @@
                     <dxlc:LayoutItem AddColonToLabel="True"
                                      Label="Transfer Amount"
                                      LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding Entity.Payment, UpdateSourceTrigger=PropertyChanged}"
+                        <dxe:TextEdit EditValue="{Binding PaymentAmount, UpdateSourceTrigger=PropertyChanged}"
                                       Mask="c2"
-                                      MaskCulture="{Binding Account.Currency.Culture}"
+                                      MaskCulture="{Binding PaymentCulture}"
                                       MaskType="Numeric"
                                       MaskUseAsDisplayFormat="True" />
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem AddColonToLabel="True"
                                      Label="Received Amount"
                                      LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding OtherAccountAmount, UpdateSourceTrigger=PropertyChanged}"
+                        <dxe:TextEdit EditValue="{Binding DepositAmount, UpdateSourceTrigger=PropertyChanged}"
                                       Mask="c2"
-                                      MaskCulture="{Binding SelectedAccount.Currency.Culture, UpdateSourceTrigger=PropertyChanged}"
+                                      MaskCulture="{Binding DepositCulture, UpdateSourceTrigger=PropertyChanged}"
                                       MaskType="Numeric"
                                       MaskUseAsDisplayFormat="True" />
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem AddColonToLabel="True"
                                      Label="Notes"
                                      LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding Entity.Notes, UpdateSourceTrigger=PropertyChanged}" />
+                        <dxe:TextEdit EditValue="{Binding Transaction.Notes, UpdateSourceTrigger=PropertyChanged}" />
                     </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
