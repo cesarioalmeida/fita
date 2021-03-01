@@ -25,6 +25,8 @@
     <Style TargetType="dxg:GridControl">
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="13" />
+        <Setter Property="SelectionMode" Value="Cell" />
+        <Setter Property="ClipboardCopyMode" Value="ExcludeHeader" />
     </Style>
 
 </ResourceDictionary>
