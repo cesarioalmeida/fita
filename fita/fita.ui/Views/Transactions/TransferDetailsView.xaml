@@ -100,7 +100,7 @@
                         <dxe:TextEdit EditValue="{Binding PaymentAmount, UpdateSourceTrigger=PropertyChanged}"
                                       Mask="c2"
                                       Foreground="DarkRed"
-                                      MaskCulture="{Binding PaymentCulture}"
+                                      MaskCulture="{Binding PaymentCulture, UpdateSourceTrigger=PropertyChanged}"
                                       MaskType="Numeric"
                                       MaskUseAsDisplayFormat="True" />
                     </dxlc:LayoutItem>

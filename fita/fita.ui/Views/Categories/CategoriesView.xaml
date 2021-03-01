@@ -74,6 +74,24 @@
                                            RowMinHeight="24"
                                            ShowGroupPanel="False"
                                            ShowSearchPanelMode="Always">
+                                <dxg:TableView.FormatConditions>
+                                    <dxg:FormatCondition ValueRule="Equal"
+                                                         Value1="{x:Static enums:CategoryGroupEnum.PersonalIncome}"
+                                                         FieldName="Group"
+                                                         PredefinedFormatName="GreenFillWithDarkGreenText" />
+                                    <dxg:FormatCondition ValueRule="Equal"
+                                                         Value1="{x:Static enums:CategoryGroupEnum.PersonalExpenses}"
+                                                         FieldName="Group"
+                                                         PredefinedFormatName="LightRedFillWithDarkRedText" />
+                                    <dxg:FormatCondition ValueRule="Equal"
+                                                         Value1="{x:Static enums:CategoryGroupEnum.BusinessExpenses}"
+                                                         FieldName="Group"
+                                                         PredefinedFormatName="YellowFillWithDarkYellowText" />
+                                    <dxg:FormatCondition ValueRule="Equal"
+                                                         Value1="{x:Static enums:CategoryGroupEnum.BusinessIncome}"
+                                                         FieldName="Group"
+                                                         PredefinedFormatName="LightGreenFill" />
+                                </dxg:TableView.FormatConditions>
                                 <dxmvvm:Interaction.Behaviors>
                                     <dxmvvm:EventToCommand Command="{Binding EditCommand}"
                                                            CommandParameter="{Binding ElementName=grid, Path=CurrentItem}"

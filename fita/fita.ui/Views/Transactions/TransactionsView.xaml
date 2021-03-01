@@ -85,7 +85,7 @@
                                     Name="PART_Editor"
                                     Foreground="DarkRed"
                                     Mask="c2"
-                                    MaskCulture="{Binding RowData.Row.View.DataContext.Account.Currency.Culture}"
+                                    MaskCulture="{Binding View.DataContext.Account.Currency.Culture}"
                                     MaskType="Numeric"
                                     MaskUseAsDisplayFormat="True" />
                             </DataTemplate>
@@ -101,7 +101,7 @@
                                     Name="PART_Editor"
                                     Foreground="DarkGreen"
                                     Mask="c2"
-                                    MaskCulture="{Binding RowData.Row.View.DataContext.Account.Currency.Culture}"
+                                    MaskCulture="{Binding View.DataContext.Account.Currency.Culture}"
                                     MaskType="Numeric"
                                     MaskUseAsDisplayFormat="True" />
                             </DataTemplate>
@@ -116,7 +116,7 @@
                                 <dxe:TextEdit
                                     Name="PART_Editor"
                                     Mask="c2"
-                                    MaskCulture="{Binding RowData.Row.View.DataContext.Account.Currency.Culture}"
+                                    MaskCulture="{Binding View.DataContext.Account.Currency.Culture}"
                                     MaskType="Numeric"
                                     MaskUseAsDisplayFormat="True" />
                             </DataTemplate>

@@ -42,7 +42,7 @@ namespace fita.ui.ViewModels.Transactions
         
         public virtual string DepositCulture { get; set; }
 
-        public virtual bool IsReadOnly => Transaction?.Category.Group == CategoryGroupEnum.TransfersIn;
+        public virtual bool IsReadOnly => Transaction?.Category != null && Transaction?.Category.Group == CategoryGroupEnum.TransfersIn;
         
         public bool Saved { get; private set; }
         
@@ -60,6 +60,7 @@ namespace fita.ui.ViewModels.Transactions
             Categories.Clear();
             Accounts.BeginUpdate();
             Accounts.Clear();
+            
             try
             {
                 var categories = await CategoryRepoService.AllAsync();
@@ -87,8 +88,7 @@ namespace fita.ui.ViewModels.Transactions
                     };
 
                     Transaction.AssociatedTransactionId = OtherTransaction.TransactionId;
-
-                    OtherAccount = Accounts.FirstOrDefault();
+                    PaymentCulture = Account.Currency.Culture;
                 }
             }
             finally
@@ -117,7 +117,7 @@ namespace fita.ui.ViewModels.Transactions
                     return;
                 }
 
-                if (Transaction.Category == null || !IsReadOnly)
+                if (!IsReadOnly)
                 {
                     Transaction.Description = $"Transfer to {OtherAccount.Name}";
                     Transaction.Category = Categories.First(x => x.Group == CategoryGroupEnum.TransfersOut);
@@ -154,6 +154,11 @@ namespace fita.ui.ViewModels.Transactions
             {
                 IsBusy = false;
             }
+        }
+
+        protected void OnOtherAccountChanged(Account oldAccount)
+        {
+            DepositCulture = IsReadOnly ? Account?.Currency.Culture : OtherAccount?.Currency.Culture;
         }
     }
 }
