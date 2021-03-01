@@ -117,7 +117,7 @@ namespace fita.ui.ViewModels.Transactions
                     return;
                 }
 
-                if (!IsReadOnly)
+                if (Transaction.Category == null || !IsReadOnly)
                 {
                     Transaction.Description = $"Transfer to {OtherAccount.Name}";
                     Transaction.Category = Categories.First(x => x.Group == CategoryGroupEnum.TransfersOut);
