@@ -143,11 +143,11 @@
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
                     <dxc:SimpleButton
-                        Command="{Binding EditCommand}"
+                        Command="{Binding NewTransactionCommand}"
                         Content="Add"
                         Style="{StaticResource ActionButton}" />
                     <dxc:SimpleButton
-                        Command="{Binding TransferCommand}"
+                        Command="{Binding NewTransferCommand}"
                         Content="Transfer"
                         Style="{StaticResource ActionButton}" />
                 </StackPanel>

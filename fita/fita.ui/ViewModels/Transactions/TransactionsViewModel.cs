@@ -83,6 +83,30 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
         
+        public async Task NewTransaction()
+        {
+            var detailsSaved = EditTransaction(null);
+            
+            if (detailsSaved)
+            {
+                fireChangeNotification = true;
+
+                await RefreshData();
+            }
+        }
+        
+        public async Task NewTransfer()
+        {
+            var detailsSaved = EditTransfer(null);
+            
+            if (detailsSaved)
+            {
+                fireChangeNotification = true;
+
+                await RefreshData();
+            }
+        }
+        
         public async Task Delete(EntityModel model)
         {
             if (model == null)
