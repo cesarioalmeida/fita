@@ -10,6 +10,7 @@
              xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
+             xmlns:converters="clr-namespace:fita.ui.Converters"
              d:DataContext="{d:DesignInstance transactions:TransferDetailsViewModel}"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -20,31 +21,29 @@
 
         <ControlTemplate x:Key="popupContentTemplate">
             <dxg:GridControl x:Name="PART_GridControl"
-                             AutoExpandAllGroups="True">
+                             AutoGenerateColumns="None"
+                             IsFilterEnabled="False"
+                             ShowLoadingPanel="False"
+                             AllowColumnMRUFilterList="False"
+                             AllowMRUFilterList="False"
+                             ShowBorder="False">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="Name" />
-                    <dxg:GridColumn FieldName="Type">
-                        <dxg:GridColumn.CellTemplate>
-                            <DataTemplate>
-                                <dxe:ComboBoxEdit Name="PART_Editor"
-                                                  ApplyItemTemplateToSelectedItem="True"
-                                                  IsTextEditable="False">
-                                    <dxmvvm:Interaction.Behaviors>
-                                        <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type enums:AccountTypeEnum}" />
-                                    </dxmvvm:Interaction.Behaviors>
-                                </dxe:ComboBoxEdit>
-                            </DataTemplate>
-                        </dxg:GridColumn.CellTemplate>
-                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="Type"
+                                    Binding="{Binding Type, Converter={converters:EnumDisplayConverter}}" />
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
-                    <dxg:TableView AllowPerPixelScrolling="True"
+                    <dxg:TableView ScrollAnimationDuration="0"
+                                   HorizontalScrollbarVisibility="Hidden"
+                                   AllowFilterEditor="False"
                                    AutoWidth="True"
-                                   IsSynchronizedWithCurrentItem="False"
-                                   ScrollAnimationDuration="0"
-                                   ShowAutoFilterRow="True"
-                                   ShowGroupedColumns="True"
-                                   ShowTotalSummary="True" />
+                                   ShowColumnHeaders="False"
+                                   ShowHorizontalLines="False"
+                                   ShowIndicator="False"
+                                   ShowSearchPanelCloseButton="False"
+                                   ShowVerticalLines="False"
+                                   ShowValidationAttributeErrors="False"
+                                   ShowGroupPanel="False" />
                 </dxg:GridControl.View>
             </dxg:GridControl>
         </ControlTemplate>
@@ -85,6 +84,7 @@
                         <dxg:LookUpEdit VerticalAlignment="Center"
                                         IsReadOnly="{Binding IsReadOnly}"
                                         AutoPopulateColumns="False"
+                                        ShowSizeGrip="False"
                                         DisplayMember="Name"
                                         EditValue="{Binding OtherAccount, UpdateSourceTrigger=PropertyChanged}"
                                         FilterCondition="Contains"
@@ -92,6 +92,7 @@
                                         IncrementalFiltering="True"
                                         IsTextEditable="True"
                                         ItemsSource="{Binding Accounts}"
+                                        AllowRecreatePopupContent="False"
                                         PopupContentTemplate="{StaticResource popupContentTemplate}" />
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem AddColonToLabel="True"

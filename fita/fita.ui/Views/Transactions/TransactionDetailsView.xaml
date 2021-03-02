@@ -10,36 +10,35 @@
              xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
+             xmlns:converters="clr-namespace:fita.ui.Converters"
              d:DataContext="{d:DesignInstance transactions:TransactionDetailsViewModel}"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ControlTemplate x:Key="popupContentTemplate">
             <dxg:GridControl x:Name="PART_GridControl"
-                             AutoExpandAllGroups="True">
+                             AutoGenerateColumns="None"
+                             IsFilterEnabled="False"
+                             ShowLoadingPanel="False"
+                             AllowColumnMRUFilterList="False"
+                             AllowMRUFilterList="False"
+                             ShowBorder="False">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="Name" />
-                    <dxg:GridColumn FieldName="Group">
-                        <dxg:GridColumn.CellTemplate>
-                            <DataTemplate>
-                                <dxe:ComboBoxEdit Name="PART_Editor"
-                                                  ApplyItemTemplateToSelectedItem="True"
-                                                  IsTextEditable="False">
-                                    <dxmvvm:Interaction.Behaviors>
-                                        <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type enums:CategoryGroupEnum}" />
-                                    </dxmvvm:Interaction.Behaviors>
-                                </dxe:ComboBoxEdit>
-                            </DataTemplate>
-                        </dxg:GridColumn.CellTemplate>
-                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="Group"
+                                    Binding="{Binding Group, Converter={converters:EnumDisplayConverter}}" />
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
-                    <dxg:TableView AllowPerPixelScrolling="True"
+                    <dxg:TableView ScrollAnimationDuration="0"
+                                   HorizontalScrollbarVisibility="Hidden"
+                                   AllowFilterEditor="False"
                                    AutoWidth="True"
-                                   IsSynchronizedWithCurrentItem="False"
-                                   ScrollAnimationDuration="0"
-                                   ShowAutoFilterRow="True"
-                                   ShowGroupedColumns="True"
-                                   ShowTotalSummary="True">
+                                   ShowColumnHeaders="False"
+                                   ShowHorizontalLines="False"
+                                   ShowIndicator="False"
+                                   ShowSearchPanelCloseButton="False"
+                                   ShowVerticalLines="False"
+                                   ShowValidationAttributeErrors="False"
+                                   ShowGroupPanel="False">
                         <dxg:TableView.FormatConditions>
                             <dxg:FormatCondition ValueRule="Equal"
                                                  Value1="{x:Static enums:CategoryGroupEnum.PersonalIncome}"
@@ -108,6 +107,7 @@
                                      LabelPosition="Top">
                         <dxg:LookUpEdit VerticalAlignment="Center"
                                         AutoPopulateColumns="False"
+                                        ShowSizeGrip="False"
                                         DisplayMember="Name"
                                         EditValue="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
                                         FilterCondition="Contains"
@@ -115,6 +115,7 @@
                                         IncrementalFiltering="True"
                                         IsTextEditable="True"
                                         ItemsSource="{Binding Categories}"
+                                        AllowRecreatePopupContent="False"
                                         PopupContentTemplate="{StaticResource popupContentTemplate}" />
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem AddColonToLabel="True"

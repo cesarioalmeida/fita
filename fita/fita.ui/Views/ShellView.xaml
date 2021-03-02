@@ -194,13 +194,11 @@
                                ShowBorder="False" />
         </dxb:StatusBarControl>
 
+        <!-- Initial load of heavy dx controls -->
         <Grid Opacity="0"
               Height="1">
             <dxlc:LayoutControl>
                 <dxlc:LayoutGroup>
-                    <dxe:TextEdit />
-                    <dxe:ComboBoxEdit />
-                    <dxe:DateEdit />
                     <dxg:LookUpEdit />
                     <dxg:GridControl />
                 </dxlc:LayoutGroup>
