@@ -30,6 +30,8 @@ namespace fita.ui.ViewModels.Transactions
 
         public ObservableCollection<EntityModel> Data { get; set; } = new();
         
+        public AccountRepoService AccountRepoService { get; set; }
+        
         public TransactionRepoService TransactionRepoService { get; set; }
 
         public IAccountService AccountService { get; set; }
@@ -43,6 +45,13 @@ namespace fita.ui.ViewModels.Transactions
 
             try
             {
+                if (Account == null)
+                {
+                    return;
+                }
+                
+                // refresh account
+                Account = await AccountRepoService.DetailsEnrichedAsync(Account.AccountId);
                 if (Account == null)
                 {
                     return;
@@ -81,6 +90,11 @@ namespace fita.ui.ViewModels.Transactions
 
                 await RefreshData();
             }
+        }
+
+        public bool CanEdit(EntityModel model)
+        {
+            return model?.Entity.Category != null;
         }
         
         public async Task NewTransaction()
@@ -127,6 +141,11 @@ namespace fita.ui.ViewModels.Transactions
 
             try
             {
+                if (model.Entity.AssociatedTransactionId != null)
+                {
+                    await TransactionRepoService.DeleteAsync(model.Entity.AssociatedTransactionId);
+                }
+                
                 Messenger.Default.Send(await TransactionRepoService.DeleteAsync(model.Entity.TransactionId) == Result.Fail
                     ? new NotificationMessage("Failed to delete transaction.", NotificationStatusEnum.Error)
                     : new NotificationMessage($"Transaction {model.Entity} deleted.", NotificationStatusEnum.Success));
@@ -139,6 +158,11 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
 
+        public bool CanDelete(EntityModel model)
+        {
+            return model?.Entity.Category != null;
+        }
+        
         protected override async void OnNavigatedTo()
         {
             Account = Parameter as Account;
