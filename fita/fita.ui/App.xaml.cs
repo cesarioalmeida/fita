@@ -7,7 +7,7 @@ namespace fita.ui
 {
     public partial class App
     {
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
