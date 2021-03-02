@@ -1,23 +1,44 @@
-﻿<UserControl
-    x:Class="fita.ui.Views.Transactions.TransactionsView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
-    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
-    x:Name="this"
-    d:DataContext="{d:DesignInstance transactions:TransactionsViewModel}"
-    DataContext="{dxmvvm:ViewModelSource Type=transactions:TransactionsViewModel}"
-    mc:Ignorable="d">
+﻿<UserControl x:Class="fita.ui.Views.Transactions.TransactionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
+             xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
+             x:Name="this"
+             d:DataContext="{d:DesignInstance transactions:TransactionsViewModel}"
+             DataContext="{dxmvvm:ViewModelSource Type=transactions:TransactionsViewModel}"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <dxe:TextEditSettings Mask="c2"
+                                  x:Key="CurrencyEditSettings"
+                                  MaskCulture="{Binding Account.Currency.Culture}"
+                                  MaskType="Numeric"
+                                  MaskUseAsDisplayFormat="True" />
+
+            <Style TargetType="dxg:LightweightCellEditor"
+                   x:Key="RedForegroundCell"
+                   BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle, ThemeName=Win10Light}}">
+                <Setter Property="Foreground"
+                        Value="DarkRed" />
+            </Style>
+
+            <Style TargetType="dxg:LightweightCellEditor"
+                   x:Key="GreenForegroundCell"
+                   BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle, ThemeName=Win10Light}}">
+                <Setter Property="Foreground"
+                        Value="DarkGreen" />
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -29,126 +50,85 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Border
-                Grid.Row="0"
-                Height="50"
-                Background="{StaticResource BgStartBrush}">
+            <Border Grid.Row="0"
+                    Height="50"
+                    Background="{StaticResource BgStartBrush}">
 
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="{StaticResource White1Brush}"
-                    Style="{StaticResource H1}"
-                    Text="{Binding Account.Name}" />
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource White1Brush}"
+                           Style="{StaticResource H1}"
+                           Text="{Binding Account.Name}" />
 
             </Border>
 
-            <dxg:GridControl
-                x:Name="grid"
-                Grid.Row="1"
-                ItemsSource="{Binding Data}">
+            <dxg:GridControl x:Name="grid"
+                             Grid.Row="1"
+                             ItemsSource="{Binding Data}">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn Width="Auto">
                         <dxg:GridColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <dxe:HyperlinkEdit
-                                        Command="{Binding View.DataContext.EditCommand}"
-                                        CommandParameter="{Binding RowData.Row}"
-                                        EditValue="edit" />
-                                    <dxe:HyperlinkEdit
-                                        Command="{Binding View.DataContext.DeleteCommand}"
-                                        CommandParameter="{Binding RowData.Row}"
-                                        EditValue="delete" />
+                                    <dxe:HyperlinkEdit Command="{Binding View.DataContext.EditCommand}"
+                                                       CommandParameter="{Binding RowData.Row}"
+                                                       EditValue="edit" />
+                                    <dxe:HyperlinkEdit Command="{Binding View.DataContext.DeleteCommand}"
+                                                       CommandParameter="{Binding RowData.Row}"
+                                                       EditValue="delete" />
                                 </StackPanel>
                             </DataTemplate>
                         </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
-                    <dxg:GridColumn
-                        Width="50"
-                        FieldName="Entity.Date"
-                        Header="Date">
+                    <dxg:GridColumn Width="50"
+                                    FieldName="Entity.Date"
+                                    Header="Date">
                         <dxg:GridColumn.EditSettings>
                             <dxe:DateEditSettings />
                         </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="Entity.Description" Header="Description" />
-                    <dxg:GridColumn FieldName="Entity.Notes" Header="Notes" />
-                    <dxg:GridColumn FieldName="Entity.Category.Name" Header="Category" />
-                    <dxg:GridColumn
-                        Width="70"
-                        FieldName="Entity.Payment"
-                        Header="Payment">
-                        <dxg:GridColumn.CellTemplate>
-                            <DataTemplate>
-                                <dxe:TextEdit
-                                    Name="PART_Editor"
-                                    Foreground="DarkRed"
-                                    Mask="c2"
-                                    MaskCulture="{Binding View.DataContext.Account.Currency.Culture}"
-                                    MaskType="Numeric"
-                                    MaskUseAsDisplayFormat="True" />
-                            </DataTemplate>
-                        </dxg:GridColumn.CellTemplate>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn
-                        Width="70"
-                        FieldName="Entity.Deposit"
-                        Header="Deposit">
-                        <dxg:GridColumn.CellTemplate>
-                            <DataTemplate>
-                                <dxe:TextEdit
-                                    Name="PART_Editor"
-                                    Foreground="DarkGreen"
-                                    Mask="c2"
-                                    MaskCulture="{Binding View.DataContext.Account.Currency.Culture}"
-                                    MaskType="Numeric"
-                                    MaskUseAsDisplayFormat="True" />
-                            </DataTemplate>
-                        </dxg:GridColumn.CellTemplate>
-                    </dxg:GridColumn>
-                    <dxg:GridColumn
-                        Width="70"
-                        FieldName="Balance"
-                        Header="Balance">
-                        <dxg:GridColumn.CellTemplate>
-                            <DataTemplate>
-                                <dxe:TextEdit
-                                    Name="PART_Editor"
-                                    Mask="c2"
-                                    MaskCulture="{Binding View.DataContext.Account.Currency.Culture}"
-                                    MaskType="Numeric"
-                                    MaskUseAsDisplayFormat="True" />
-                            </DataTemplate>
-                        </dxg:GridColumn.CellTemplate>
-                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="Entity.Description"
+                                    Header="Description" />
+                    <dxg:GridColumn FieldName="Entity.Notes"
+                                    Header="Notes" />
+                    <dxg:GridColumn FieldName="Entity.Category.Name"
+                                    Header="Category" />
+                    <dxg:GridColumn Width="70"
+                                    FieldName="Entity.Payment"
+                                    Header="Payment"
+                                    EditSettings="{StaticResource CurrencyEditSettings}"
+                                    CellStyle="{StaticResource RedForegroundCell}" />
+                    <dxg:GridColumn Width="70"
+                                    FieldName="Entity.Deposit"
+                                    Header="Deposit"
+                                    EditSettings="{StaticResource CurrencyEditSettings}"
+                                    CellStyle="{StaticResource GreenForegroundCell}" />
+                    <dxg:GridColumn Width="70"
+                                    FieldName="Balance"
+                                    Header="Balance"
+                                    EditSettings="{StaticResource CurrencyEditSettings}" />
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
-                    <dxg:TableView
-                        AllowEditing="False"
-                        AutoWidth="True"
-                        RowMinHeight="24"
-                        ShowGroupPanel="False"
-                        ShowSearchPanelMode="Always" />
+                    <dxg:TableView AllowEditing="False"
+                                   AutoWidth="True"
+                                   RowMinHeight="24"
+                                   ShowGroupPanel="False"
+                                   ShowSearchPanelMode="Always" />
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
-            <Border
-                Grid.Row="2"
-                Height="40"
-                Background="{StaticResource BgStartBrush}">
-                <StackPanel
-                    Margin="4"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal">
-                    <dxc:SimpleButton
-                        Command="{Binding NewTransactionCommand}"
-                        Content="Add"
-                        Style="{StaticResource ActionButton}" />
-                    <dxc:SimpleButton
-                        Command="{Binding NewTransferCommand}"
-                        Content="Transfer"
-                        Style="{StaticResource ActionButton}" />
+            <Border Grid.Row="2"
+                    Height="40"
+                    Background="{StaticResource BgStartBrush}">
+                <StackPanel Margin="4"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                    <dxc:SimpleButton Command="{Binding NewTransactionCommand}"
+                                      Content="Add"
+                                      Style="{StaticResource ActionButton}" />
+                    <dxc:SimpleButton Command="{Binding NewTransferCommand}"
+                                      Content="Transfer"
+                                      Style="{StaticResource ActionButton}" />
                 </StackPanel>
             </Border>
 
