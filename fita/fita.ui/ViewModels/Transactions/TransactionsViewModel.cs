@@ -22,8 +22,6 @@ namespace fita.ui.ViewModels.Transactions
     [POCOViewModel]
     public class TransactionsViewModel : ComposedViewModelBase
     {
-        private bool fireChangeNotification;
-        
         private List<Transaction> _transactions { get; set; }
         
         public virtual Account Account { get; set; }
@@ -86,8 +84,6 @@ namespace fita.ui.ViewModels.Transactions
 
             if (detailsSaved)
             {
-                fireChangeNotification = true;
-
                 await RefreshData();
             }
         }
@@ -103,8 +99,6 @@ namespace fita.ui.ViewModels.Transactions
             
             if (detailsSaved)
             {
-                fireChangeNotification = true;
-
                 await RefreshData();
             }
         }
@@ -115,8 +109,6 @@ namespace fita.ui.ViewModels.Transactions
             
             if (detailsSaved)
             {
-                fireChangeNotification = true;
-
                 await RefreshData();
             }
         }
