@@ -10,6 +10,7 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:fita.ui.Converters"
              d:DataContext="{d:DesignInstance categories:CategoriesViewModel}"
              DataContext="{dxmvvm:ViewModelSource Type=categories:CategoriesViewModel}"
              mc:Ignorable="d">
@@ -54,20 +55,8 @@
                                             FieldName="Name"
                                             Header="Name" />
                             <dxg:GridColumn FieldName="Group"
-                                            Header="Group">
-                                <dxg:GridColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <dxe:ComboBoxEdit Name="PART_Editor"
-                                                          ApplyItemTemplateToSelectedItem="True"
-                                                          IsTextEditable="False">
-                                            <dxmvvm:Interaction.Behaviors>
-                                                <dxmvvm:EnumItemsSourceBehavior
-                                                    EnumType="{x:Type enums:CategoryGroupEnum}" />
-                                            </dxmvvm:Interaction.Behaviors>
-                                        </dxe:ComboBoxEdit>
-                                    </DataTemplate>
-                                </dxg:GridColumn.CellTemplate>
-                            </dxg:GridColumn>
+                                            Header="Group"
+                                            Binding="{Binding Group, Converter={converters:EnumDisplayConverter}}" />
                         </dxg:GridControl.Columns>
                         <dxg:GridControl.View>
                             <dxg:TableView AllowEditing="False"

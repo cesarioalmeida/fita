@@ -5,6 +5,7 @@
         <ResourceDictionary Source="/fita.ui;component/Themes/ClickableMenuItem.xaml" />
         <ResourceDictionary Source="/fita.ui;component/Themes/SeparatorMenuItem.xaml" />
         <ResourceDictionary Source="/fita.ui;component/Themes/LabelMenuItem.xaml" />
+        <ResourceDictionary Source="/fita.ui;component/Themes/ViewRadioButton.xaml" />
 
     </ResourceDictionary.MergedDictionaries>
 

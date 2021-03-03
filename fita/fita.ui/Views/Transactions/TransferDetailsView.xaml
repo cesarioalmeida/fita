@@ -7,7 +7,6 @@
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
              xmlns:converters="clr-namespace:fita.ui.Converters"

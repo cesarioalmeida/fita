@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Page Update="Themes\ViewRadioButton.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
       <Page Update="Themes\LabelMenuItem.xaml">
         <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
         <SubType>Designer</SubType>
@@ -134,7 +138,9 @@
       <None Remove="Resources\Icons\Home_24x24.png" />
       <None Remove="Resources\Icons\Investment_24x24.png" />
       <None Remove="Resources\Icons\NewAccount_24x24.png" />
+      <None Remove="Resources\Icons\Portfolio_24x24.png" />
       <None Remove="Resources\Icons\Stocks_24x24.png" />
+      <None Remove="Resources\Icons\Transactions_24x24.png" />
       <None Remove="Resources\Refresh_32x32.png" />
       <None Remove="Resources\Settings_32x32.png" />
       <Resource Include="fita.ico" />
@@ -150,7 +156,9 @@
       <Resource Include="Resources\Icons\Home_24x24.png" />
       <Resource Include="Resources\Icons\Investment_24x24.png" />
       <Resource Include="Resources\Icons\NewAccount_24x24.png" />
+      <Resource Include="Resources\Icons\Portfolio_24x24.png" />
       <Resource Include="Resources\Icons\Stocks_24x24.png" />
+      <Resource Include="Resources\Icons\Transactions_24x24.png" />
       <None Remove="Resources\Currency_16x16.png" />
     </ItemGroup>
 

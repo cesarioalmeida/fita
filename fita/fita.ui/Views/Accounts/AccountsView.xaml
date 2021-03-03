@@ -10,6 +10,7 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:fita.ui.Converters"
              d:DataContext="{d:DesignInstance accounts:AccountsViewModel}"
              DataContext="{dxmvvm:ViewModelSource Type=accounts:AccountsViewModel}"
              mc:Ignorable="d">
@@ -55,20 +56,8 @@
                             <dxg:GridColumn FieldName="Entity.BankName"
                                             Header="Bank Name" />
                             <dxg:GridColumn FieldName="Entity.Type"
-                                            Header="Type">
-                                <dxg:GridColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <dxe:ComboBoxEdit Name="PART_Editor"
-                                                          ApplyItemTemplateToSelectedItem="True"
-                                                          IsTextEditable="False">
-                                            <dxmvvm:Interaction.Behaviors>
-                                                <dxmvvm:EnumItemsSourceBehavior
-                                                    EnumType="{x:Type enums:AccountTypeEnum}" />
-                                            </dxmvvm:Interaction.Behaviors>
-                                        </dxe:ComboBoxEdit>
-                                    </DataTemplate>
-                                </dxg:GridColumn.CellTemplate>
-                            </dxg:GridColumn>
+                                            Header="Type"
+                                            Binding="{Binding Entity.Type, Converter={converters:EnumDisplayConverter}}" />
                             <dxg:GridColumn FieldName="Entity.Currency.Symbol"
                                             Header="Currency" />
                         </dxg:GridControl.Columns>
