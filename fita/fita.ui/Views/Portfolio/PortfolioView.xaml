@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="fita.ui.Views.Transactions.TransactionsView"
+    x:Class="fita.ui.Views.Portfolio.PortfolioView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:fita.ui.Controls"
@@ -80,7 +80,7 @@
                             FontSize="11"
                             Foreground="{StaticResource White1Brush}"
                             Opacity="0.6"
-                            Text="Transactions" />
+                            Text="Portfolio" />
                     </StackPanel>
                 </Grid>
 
@@ -154,39 +154,15 @@
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                         <controls:ViewRadioButton
                             Caption="Transactions"
-                            IsChecked="True"
                             GroupName="ViewGroup"
+                            navigation:Navigation.NavigateTo="TransactionsView"
+                            navigation:Navigation.NavigationParameter="{Binding Account}"
                             Icon="../../Resources/Icons/Transactions_24x24.png" />
                         <controls:ViewRadioButton
                             Caption="Portfolio"
+                            IsChecked="True"
                             GroupName="ViewGroup"
-                            navigation:Navigation.NavigateTo="PortfolioView"
-                            navigation:Navigation.NavigationParameter="{Binding Account}"
-                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}"
                             Icon="../../Resources/Icons/Portfolio_24x24.png" />
-                    </StackPanel>
-                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                        <dxc:SimpleButton
-                            Background="LightGreen"
-                            Command="{Binding NewTransactionCommand}"
-                            Content="Buy Security"
-                            Style="{StaticResource ActionButton}"
-                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}" />
-                        <dxc:SimpleButton
-                            Margin="4,0,14,0"
-                            Background="LightSalmon"
-                            Command="{Binding NewTransactionCommand}"
-                            Content="Sell Security"
-                            Style="{StaticResource ActionButton}"
-                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}" />
-                        <dxc:SimpleButton
-                            Command="{Binding NewTransactionCommand}"
-                            Content="Transaction"
-                            Style="{StaticResource ActionButton}" />
-                        <dxc:SimpleButton
-                            Command="{Binding NewTransferCommand}"
-                            Content="Transfer"
-                            Style="{StaticResource ActionButton}" />
                     </StackPanel>
                 </Grid>
             </Border>

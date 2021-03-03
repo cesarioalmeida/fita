@@ -107,6 +107,13 @@
         <SubType>Code</SubType>
         <DependentUpon>TransferDetailsView.xaml</DependentUpon>
       </Compile>
+      <Page Update="Views\Portfolio\PortfolioView.xaml">
+        <SubType>Designer</SubType>
+      </Page>
+      <Compile Update="Views\Portfolio\PortfolioView.xaml.cs">
+        <SubType>Code</SubType>
+        <DependentUpon>TransactionsView.xaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
