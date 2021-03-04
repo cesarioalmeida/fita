@@ -17,6 +17,7 @@ namespace fita.services
             serviceRegistry.Register<SecurityHistoryRepoService>();
             serviceRegistry.Register<AccountRepoService>();
             serviceRegistry.Register<TransactionRepoService>();
+            serviceRegistry.Register<TradeRepoService>();
 
             serviceRegistry.Register<IExchangeRateService, ExchangeRateService>();
             serviceRegistry.Register<ISecurityService, SecurityService>();

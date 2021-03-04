@@ -168,14 +168,16 @@
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                         <dxc:SimpleButton
                             Background="LightGreen"
-                            Command="{Binding NewTransactionCommand}"
+                            Command="{Binding TradeCommand}"
+                            CommandParameter="{x:Static enums:TradeActionEnum.Buy}"
                             Content="Buy Security"
                             Style="{StaticResource ActionButton}"
                             Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}" />
                         <dxc:SimpleButton
                             Margin="4,0,14,0"
                             Background="LightSalmon"
-                            Command="{Binding NewTransactionCommand}"
+                            Command="{Binding TradeCommand}"
+                            CommandParameter="{x:Static enums:TradeActionEnum.Sell}"
                             Content="Sell Security"
                             Style="{StaticResource ActionButton}"
                             Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}" />

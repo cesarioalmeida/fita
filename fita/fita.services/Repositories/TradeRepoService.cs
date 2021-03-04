@@ -8,22 +8,22 @@ using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.Repositories
 {
-    public class TransactionRepoService : RepositoryService<Transaction>
+    public class TradeRepoService : RepositoryService<Trade>
     {
-        public TransactionRepoService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(dbHelperService, loggingService)
+        public TradeRepoService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(dbHelperService, loggingService)
         {
             IndexData();
         }
 
         public sealed override void IndexData()
         {
-            Collection.EnsureIndex(x => x.TransactionId);
+            Collection.EnsureIndex(x => x.TradeId);
             Collection.EnsureIndex(x => x.AccountId);
             Collection.EnsureIndex(x => x.Date);
-            Collection.EnsureIndex(x => x.Category);
+            Collection.EnsureIndex(x => x.Action);
         }
 
-        public override Task<Transaction> DetailsEnrichedAsync(ObjectId id)
+        public override Task<Trade> DetailsEnrichedAsync(ObjectId id)
         {
             return Task.Run(
                 () =>
@@ -31,7 +31,7 @@ namespace fita.services.Repositories
                     try
                     {
                         return Collection
-                            .Include(x => x.Category)
+                            .Include(x => x.Security)
                             .FindById(id);
                     }
                     catch (Exception ex)
@@ -42,14 +42,14 @@ namespace fita.services.Repositories
                 });
         }
 
-        public override async Task<IEnumerable<Transaction>> AllAsync()
+        public override async Task<IEnumerable<Trade>> AllAsync()
         {
             return (await base.AllAsync())
                 .OrderBy(x => x.Date)
                 .AsEnumerable();
         }
 
-        public override Task<IEnumerable<Transaction>> AllEnrichedAsync()
+        public override Task<IEnumerable<Trade>> AllEnrichedAsync()
         {
             return Task.Run(
                 () =>
@@ -57,7 +57,7 @@ namespace fita.services.Repositories
                     try
                     {
                         return Collection
-                            .Include(x => x.Category)
+                            .Include(x => x.Security)
                             .FindAll()
                             .OrderBy(x => x.Date)
                             .AsEnumerable();
@@ -70,7 +70,7 @@ namespace fita.services.Repositories
                 });
         }
 
-        public Task<IEnumerable<Transaction>> AllEnrichedForAccountAsync(ObjectId accountId)
+        public Task<IEnumerable<Trade>> AllEnrichedForAccountAsync(ObjectId accountId)
         {
             return Task.Run(
                 () =>
@@ -78,7 +78,7 @@ namespace fita.services.Repositories
                     try
                     {
                         return Collection
-                            .Include(x => x.Category)
+                            .Include(x => x.Security)
                             .Find(x => x.AccountId == accountId)
                             .OrderBy(x => x.Date)
                             .AsEnumerable();

@@ -18,7 +18,9 @@ namespace fita.data.Models
         [BsonRef("category")]
         public Category Category { get; set; }
         
-        public ObjectId AssociatedTransactionId { get; set; }
+        public ObjectId TransferTransactionId { get; set; }
+        
+        public ObjectId TradeId { get; set; }
 
         public decimal? Payment { get; set; }
 

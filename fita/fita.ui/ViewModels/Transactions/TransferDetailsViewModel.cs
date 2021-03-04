@@ -69,9 +69,9 @@ namespace fita.ui.ViewModels.Transactions
                 var accounts = await AccountRepoService.AllEnrichedAsync();
                 Accounts.AddRange(accounts.Where(x => x.AccountId != Account.AccountId));
 
-                if (Transaction.AssociatedTransactionId != null)
+                if (Transaction.TransferTransactionId != null)
                 {
-                    OtherTransaction = await TransactionRepoService.DetailsEnrichedAsync(Transaction.AssociatedTransactionId);
+                    OtherTransaction = await TransactionRepoService.DetailsEnrichedAsync(Transaction.TransferTransactionId);
                     OtherAccount = Accounts.SingleOrDefault(x => x.AccountId == OtherTransaction.AccountId);
 
                     PaymentAmount = IsReadOnly ? OtherTransaction?.Payment : Transaction.Payment;
@@ -84,10 +84,10 @@ namespace fita.ui.ViewModels.Transactions
                     // create new transaction and link both
                     OtherTransaction = new Transaction
                     {
-                        AssociatedTransactionId = Transaction.TransactionId
+                        TransferTransactionId = Transaction.TransactionId
                     };
 
-                    Transaction.AssociatedTransactionId = OtherTransaction.TransactionId;
+                    Transaction.TransferTransactionId = OtherTransaction.TransactionId;
                     PaymentCulture = Account.Currency.Culture;
                 }
             }

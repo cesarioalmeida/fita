@@ -114,6 +114,13 @@
         <SubType>Code</SubType>
         <DependentUpon>TransactionsView.xaml</DependentUpon>
       </Compile>
+      <Page Update="Views\Transactions\TradeDetailsView.xaml">
+        <SubType>Designer</SubType>
+      </Page>
+      <Compile Update="Views\Transactions\TradeDetailsView.xaml.cs">
+        <SubType>Code</SubType>
+        <DependentUpon>TradeDetailsView.xaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

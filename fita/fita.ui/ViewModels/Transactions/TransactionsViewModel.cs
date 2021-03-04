@@ -133,9 +133,9 @@ namespace fita.ui.ViewModels.Transactions
 
             try
             {
-                if (model.Entity.AssociatedTransactionId != null)
+                if (model.Entity.TransferTransactionId != null)
                 {
-                    await TransactionRepoService.DeleteAsync(model.Entity.AssociatedTransactionId);
+                    await TransactionRepoService.DeleteAsync(model.Entity.TransferTransactionId);
                 }
                 
                 Messenger.Default.Send(await TransactionRepoService.DeleteAsync(model.Entity.TransactionId) == Result.Fail
@@ -153,6 +153,26 @@ namespace fita.ui.ViewModels.Transactions
         public bool CanDelete(EntityModel model)
         {
             return model?.Entity.Category != null;
+        }
+
+        public async Task Trade(TradeActionEnum action)
+        {
+            var viewModel = ViewModelSource.Create<TradeDetailsViewModel>();
+            viewModel.Trade = new Trade
+            {
+                Action = action,
+                AccountId = Account.AccountId
+            };
+            viewModel.Account = Account;
+
+            var document = ModalDocumentManagerService.CreateDocument(nameof(TradeDetailsView), viewModel, null, this);
+            document.DestroyOnClose = true;
+            document.Show();
+
+            if (viewModel.Saved)
+            {
+                await RefreshData();
+            }
         }
         
         protected override async void OnNavigatedTo()

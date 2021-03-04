@@ -11,11 +11,11 @@
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
     xmlns:navigation="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/navigation"
+    xmlns:portfolio="clr-namespace:fita.ui.ViewModels.Portfolio"
     x:Name="this"
-    d:DataContext="{d:DesignInstance transactions:TransactionsViewModel}"
-    DataContext="{dxmvvm:ViewModelSource Type=transactions:TransactionsViewModel}"
+    d:DataContext="{d:DesignInstance portfolio:PortfolioViewModel}"
+    DataContext="{dxmvvm:ViewModelSource Type=portfolio:PortfolioViewModel}"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -45,10 +45,6 @@
                 TargetType="dxg:LightweightCellEditor">
                 <Setter Property="Foreground" Value="DarkGreen" />
             </Style>
-
-            <dxmvvm:ObjectToObjectConverter x:Key="AccountTypeToVisibilityConverter" DefaultTarget="{x:Static Visibility.Hidden}">
-                <dxmvvm:MapItem Source="{x:Static enums:AccountTypeEnum.Investment}" Target="{x:Static Visibility.Visible}" />
-            </dxmvvm:ObjectToObjectConverter>
 
         </ResourceDictionary>
     </UserControl.Resources>
