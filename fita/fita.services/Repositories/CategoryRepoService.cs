@@ -132,12 +132,19 @@ namespace fita.services.Repositories
                 {"Transfers In", CategoryGroupEnum.TransfersIn},
                 {"Transfers Out", CategoryGroupEnum.TransfersOut}
             }.OrderBy(x => x.Key);
+            
+            var trades = new Dictionary<string, CategoryGroupEnum>
+            {
+                {"Trade Buy", CategoryGroupEnum.TradeBuy},
+                {"Trade Sell", CategoryGroupEnum.TradeSell}
+            }.OrderBy(x => x.Key);
 
             return personalIncome
                 .Concat(personalExpenses)
                 .Concat(businessIncome)
                 .Concat(businessExpenses)
                 .Concat(transfers)
+                .Concat(trades)
                 .Select(x => new Category {Name = x.Key, Group = x.Value});
         }
     }

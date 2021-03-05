@@ -20,6 +20,12 @@ namespace fita.data.Enums
         BusinessExpenses,
         
         [Display(Name = "Business Income")]
-        BusinessIncome
+        BusinessIncome,
+        
+        [Display(Name = "Trade Buy")]
+        TradeBuy,
+        
+        [Display(Name = "Trade Sell")]
+        TradeSell,
     }
 }

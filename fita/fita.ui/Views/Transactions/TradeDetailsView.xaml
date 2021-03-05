@@ -84,7 +84,7 @@
                     <dxlc:LayoutItem AddColonToLabel="True"
                                      Label="Date"
                                      LabelPosition="Top">
-                        <dxe:DateEdit EditValue="{Binding Transaction.Date, UpdateSourceTrigger=PropertyChanged}">
+                        <dxe:DateEdit EditValue="{Binding Trade.Date, UpdateSourceTrigger=PropertyChanged}">
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:FocusBehavior />
                             </dxmvvm:Interaction.Behaviors>
@@ -98,6 +98,7 @@
                                         AutoPopulateColumns="False"
                                         ShowSizeGrip="False"
                                         DisplayMember="Name"
+                                        AllowNullInput="True"
                                         EditValue="{Binding Security, UpdateSourceTrigger=PropertyChanged}"
                                         FilterCondition="Contains"
                                         ImmediatePopup="True"

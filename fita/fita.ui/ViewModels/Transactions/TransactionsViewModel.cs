@@ -23,17 +23,19 @@ namespace fita.ui.ViewModels.Transactions
     public class TransactionsViewModel : ComposedViewModelBase
     {
         private List<Transaction> _transactions { get; set; }
-        
+
         public virtual Account Account { get; set; }
 
         public ObservableCollection<EntityModel> Data { get; set; } = new();
-        
+
         public AccountRepoService AccountRepoService { get; set; }
-        
+
         public TransactionRepoService TransactionRepoService { get; set; }
 
+        public TradeRepoService TradeRepoService { get; set; }
+
         public IAccountService AccountService { get; set; }
-        
+
         protected IDocumentManagerService ModalDocumentManagerService =>
             this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
@@ -47,20 +49,20 @@ namespace fita.ui.ViewModels.Transactions
                 {
                     return;
                 }
-                
+
                 // refresh account
                 Account = await AccountRepoService.DetailsEnrichedAsync(Account.AccountId);
                 if (Account == null)
                 {
                     return;
                 }
-                
+
                 _transactions = (await TransactionRepoService.AllEnrichedForAccountAsync(Account?.AccountId)).ToList();
 
                 Data.Clear();
 
                 Data.Add(EntityModel.GetInitialBalance(Account));
-                
+
                 var balance = Account.InitialBalance;
 
                 foreach (var transaction in _transactions)
@@ -80,7 +82,10 @@ namespace fita.ui.ViewModels.Transactions
             var detailsSaved = model.Entity.Category.Group == CategoryGroupEnum.TransfersIn ||
                                model.Entity.Category.Group == CategoryGroupEnum.TransfersOut
                 ? EditTransfer(model)
-                : EditTransaction(model);
+                : model.Entity.Category.Group == CategoryGroupEnum.TradeBuy ||
+                  model.Entity.Category.Group == CategoryGroupEnum.TradeSell
+                    ? await EditTrade(model)
+                    : EditTransaction(model);
 
             if (detailsSaved)
             {
@@ -92,27 +97,27 @@ namespace fita.ui.ViewModels.Transactions
         {
             return model?.Entity.Category != null;
         }
-        
+
         public async Task NewTransaction()
         {
             var detailsSaved = EditTransaction(null);
-            
+
             if (detailsSaved)
             {
                 await RefreshData();
             }
         }
-        
+
         public async Task NewTransfer()
         {
             var detailsSaved = EditTransfer(null);
-            
+
             if (detailsSaved)
             {
                 await RefreshData();
             }
         }
-        
+
         public async Task Delete(EntityModel model)
         {
             if (model == null)
@@ -137,10 +142,17 @@ namespace fita.ui.ViewModels.Transactions
                 {
                     await TransactionRepoService.DeleteAsync(model.Entity.TransferTransactionId);
                 }
-                
-                Messenger.Default.Send(await TransactionRepoService.DeleteAsync(model.Entity.TransactionId) == Result.Fail
-                    ? new NotificationMessage("Failed to delete transaction.", NotificationStatusEnum.Error)
-                    : new NotificationMessage($"Transaction {model.Entity} deleted.", NotificationStatusEnum.Success));
+
+                if (model.Entity.TradeId != null)
+                {
+                    await TradeRepoService.DeleteAsync(model.Entity.TradeId);
+                }
+
+                Messenger.Default.Send(
+                    await TransactionRepoService.DeleteAsync(model.Entity.TransactionId) == Result.Fail
+                        ? new NotificationMessage("Failed to delete transaction.", NotificationStatusEnum.Error)
+                        : new NotificationMessage($"Transaction {model.Entity} deleted.",
+                            NotificationStatusEnum.Success));
 
                 await RefreshData();
             }
@@ -174,36 +186,54 @@ namespace fita.ui.ViewModels.Transactions
                 await RefreshData();
             }
         }
-        
+
         protected override async void OnNavigatedTo()
         {
             Account = Parameter as Account;
 
             await RefreshData();
         }
-        
-        private bool EditTransfer(EntityModel model)
+
+        private async Task<bool> EditTrade(EntityModel model)
         {
-            var viewModel = ViewModelSource.Create<TransferDetailsViewModel>();
-            viewModel.Transaction = model?.Entity ?? new Transaction { AccountId = Account.AccountId };
+            var viewModel = ViewModelSource.Create<TradeDetailsViewModel>();
+            viewModel.Trade = await TradeRepoService.DetailsEnrichedAsync(model.Entity.TradeId);
             viewModel.Account = Account;
-            
-            var document = this.ModalDocumentManagerService.CreateDocument(nameof(TransferDetailsView), viewModel, null, this);
-            
+            viewModel.Transaction = model.Entity;
+
+            var document =
+                this.ModalDocumentManagerService.CreateDocument(nameof(TradeDetailsView), viewModel, null, this);
+
             document.DestroyOnClose = true;
             document.Show();
 
             return viewModel.Saved;
         }
-        
+
+        private bool EditTransfer(EntityModel model)
+        {
+            var viewModel = ViewModelSource.Create<TransferDetailsViewModel>();
+            viewModel.Transaction = model?.Entity ?? new Transaction {AccountId = Account.AccountId};
+            viewModel.Account = Account;
+
+            var document =
+                this.ModalDocumentManagerService.CreateDocument(nameof(TransferDetailsView), viewModel, null, this);
+
+            document.DestroyOnClose = true;
+            document.Show();
+
+            return viewModel.Saved;
+        }
+
         private bool EditTransaction(EntityModel model)
         {
             var viewModel = ViewModelSource.Create<TransactionDetailsViewModel>();
-            viewModel.Entity = model?.Entity ?? new Transaction { AccountId = Account.AccountId };
+            viewModel.Entity = model?.Entity ?? new Transaction {AccountId = Account.AccountId};
             viewModel.Account = Account;
-            
-            var document = this.ModalDocumentManagerService.CreateDocument(nameof(TransactionDetailsView), viewModel, null, this);
-            
+
+            var document =
+                this.ModalDocumentManagerService.CreateDocument(nameof(TransactionDetailsView), viewModel, null, this);
+
             document.DestroyOnClose = true;
             document.Show();
 
@@ -220,15 +250,18 @@ namespace fita.ui.ViewModels.Transactions
             }
 
             public Transaction Entity { get; }
-            
+
             public Account Account { get; }
-            
+
             public decimal? Balance { get; }
 
             public static EntityModel GetInitialBalance(Account account)
             {
                 return new(account, new Transaction
-                    {AccountId = account.AccountId, Description = "Initial balance", Deposit = account.InitialBalance}, account.InitialBalance);
+                    {
+                        AccountId = account.AccountId, Description = "Initial balance", Deposit = account.InitialBalance
+                    },
+                    account.InitialBalance);
             }
         }
     }

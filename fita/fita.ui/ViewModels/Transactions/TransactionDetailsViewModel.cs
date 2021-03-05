@@ -46,7 +46,9 @@ namespace fita.ui.ViewModels.Transactions
             try
             {
                 var categories = await CategoryRepoService.AllAsync();
-                Categories.AddRange(categories.Where(c => c.Group != CategoryGroupEnum.TransfersIn && c.Group != CategoryGroupEnum.TransfersOut));
+                Categories.AddRange(categories.Where(c => 
+                    c.Group != CategoryGroupEnum.TransfersIn && c.Group != CategoryGroupEnum.TransfersOut
+                 && c.Group != CategoryGroupEnum.TradeBuy && c.Group != CategoryGroupEnum.TradeSell));
 
                  SelectedCategory = Categories.SingleOrDefault(x => x.CategoryId == Entity.Category?.CategoryId);
             }
