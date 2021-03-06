@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
 using fita.data.Models;
@@ -54,6 +55,11 @@ namespace fita.ui.ViewModels.Portfolio
                 Data.EndUpdate();
                 IsBusy = false;
             }
+        }
+
+        public void NavigateTo()
+        {
+            NavigationService?.Navigate("TransactionsView", Account, this);
         }
 
         protected override async void OnNavigatedTo()

@@ -187,6 +187,11 @@ namespace fita.ui.ViewModels.Transactions
                 await RefreshData();
             }
         }
+        
+        public void NavigateTo()
+        {
+            NavigationService?.Navigate("PortfolioView", Account, this);
+        }
 
         protected override async void OnNavigatedTo()
         {

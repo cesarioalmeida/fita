@@ -141,8 +141,7 @@
                                 Orientation="Horizontal">
                         <controls:ViewRadioButton Caption="Transactions"
                                                   GroupName="ViewGroup"
-                                                  navigation:Navigation.NavigateTo="TransactionsView"
-                                                  navigation:Navigation.NavigationParameter="{Binding Account}"
+                                                  Command="{Binding NavigateToCommand}"
                                                   Icon="../../Resources/Icons/Transactions_24x24.png" />
                         <controls:ViewRadioButton Caption="Portfolio"
                                                   IsChecked="True"

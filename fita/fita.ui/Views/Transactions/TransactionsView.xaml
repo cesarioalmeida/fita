@@ -160,8 +160,7 @@
                         <controls:ViewRadioButton
                             Caption="Portfolio"
                             GroupName="ViewGroup"
-                            navigation:Navigation.NavigateTo="PortfolioView"
-                            navigation:Navigation.NavigationParameter="{Binding Account}"
+                            Command="{Binding NavigateToCommand}"
                             Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}"
                             Icon="../../Resources/Icons/Portfolio_24x24.png" />
                     </StackPanel>
