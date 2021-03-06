@@ -26,7 +26,7 @@
                                   MaskCulture="{Binding Account.Currency.Culture}"
                                   MaskType="Numeric"
                                   MaskUseAsDisplayFormat="True" />
-            
+
             <dxe:TextEditSettings x:Key="Currency4EditSettings"
                                   Mask="c4"
                                   MaskCulture="{Binding Account.Currency.Culture}"
@@ -85,22 +85,52 @@
                              Grid.Row="1"
                              ItemsSource="{Binding Data}">
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="Security.Name"
+                    <dxg:GridColumn FieldName="Entity.Security.Name"
                                     Header="Security" />
-                    <dxg:GridColumn FieldName="Quantity"
+                    <dxg:GridColumn FieldName="Entity.Quantity"
                                     Header="Quantity" />
-                    <dxg:GridColumn FieldName="Value"
-                                    Header="Value" EditSettings="{StaticResource Currency2EditSettings}" />
-                    <dxg:GridColumn FieldName="BreakEvenPrice"
-                                    Header="BreakEvenPrice" EditSettings="{StaticResource Currency4EditSettings}" />
+                    <dxg:GridColumn FieldName="Entity.Value"
+                                    Header="Value"
+                                    EditSettings="{StaticResource Currency2EditSettings}" />
+                    <dxg:GridColumn FieldName="Entity.BreakEvenPrice"
+                                    Header="BreakEvenPrice"
+                                    EditSettings="{StaticResource Currency4EditSettings}" />
+                    <dxg:GridColumn FieldName="CurrentPrice"
+                                    Header="Latest Price"
+                                    EditSettings="{StaticResource Currency4EditSettings}" />
+                    <dxg:GridColumn FieldName="PL"
+                                    Header="PL"
+                                    EditSettings="{StaticResource Currency2EditSettings}" />
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
                     <dxg:TableView AllowEditing="False"
                                    AutoWidth="True"
                                    RowMinHeight="24"
                                    ShowGroupPanel="False"
-                                   ShowSearchPanelMode="Always" />
+                                   ShowSearchPanelMode="Always"
+                                   ShowTotalSummary="True">
+                        <dxg:TableView.FormatConditions>
+                            <dxg:FormatCondition ValueRule="GreaterOrEqual"
+                                                 Value1="0"
+                                                 FieldName="PL"
+                                                 PredefinedFormatName="LightGreenFill"
+                                                 ApplyToRow="True" />
+                            <dxg:FormatCondition ValueRule="Less"
+                                                 Value1="0"
+                                                 FieldName="PL"
+                                                 PredefinedFormatName="LightRedFill"
+                                                 ApplyToRow="True" />
+                        </dxg:TableView.FormatConditions>
+                    </dxg:TableView>
                 </dxg:GridControl.View>
+                <dxg:GridControl.TotalSummary>
+                    <dxg:GridSummaryItem FieldName="Entity.Value"
+                                         SummaryType="Sum"
+                                         DisplayFormat="{}{0:c2}" />
+                    <dxg:GridSummaryItem FieldName="PL"
+                                         SummaryType="Sum"
+                                         DisplayFormat="{}{0:c2}"/>
+                </dxg:GridControl.TotalSummary>
             </dxg:GridControl>
 
             <Border Grid.Row="2"

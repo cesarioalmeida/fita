@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
 using fita.data.Models;
 using fita.services.Repositories;
-using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.Portfolio
@@ -12,15 +10,15 @@ namespace fita.ui.ViewModels.Portfolio
     [POCOViewModel]
     public class PortfolioViewModel : ComposedViewModelBase
     {
-        private List<Transaction> _transactions { get; set; }
-        
         public virtual Account Account { get; set; }
 
-        public LockableCollection<SecurityPosition> Data { get; set; } = new();
+        public LockableCollection<EntityModel> Data { get; set; } = new();
         
         public AccountRepoService AccountRepoService { get; set; }
         
         public SecurityPositionRepoService SecurityPositionRepoService { get; set; }
+        
+        public SecurityHistoryRepoService SecurityHistoryRepoService { get; set; }
         
         public async Task RefreshData()
         {
@@ -42,7 +40,14 @@ namespace fita.ui.ViewModels.Portfolio
             try
             {
                 Data.Clear();
-                Data.AddRange(await SecurityPositionRepoService.AllEnrichedForAccountAsync(Account.AccountId));
+                var positions = await SecurityPositionRepoService.AllEnrichedForAccountAsync(Account.AccountId);
+
+                foreach (var position in positions)
+                {
+                    var latestPrice = (await SecurityHistoryRepoService.FromSecurityEnrichedAsync(position.Security))?
+                        .Price?.LatestValue ?? 0m;
+                    Data.Add(new EntityModel(position, latestPrice, position.Quantity * latestPrice - position.Value));
+                }
             }
             finally
             {
@@ -60,15 +65,18 @@ namespace fita.ui.ViewModels.Portfolio
         
         public class EntityModel
         {
-            public EntityModel(Account account, Transaction transaction, decimal balance)
+            public EntityModel(SecurityPosition position, decimal currentPrice, decimal pl)
             {
-                Entity = transaction;
-                Account = account;
+                Entity = position;
+                CurrentPrice = currentPrice;
+                PL = pl;
             }
 
-            public Transaction Entity { get; }
+            public SecurityPosition Entity { get; }
             
-            public Account Account { get; }
+            public decimal CurrentPrice { get; }
+            
+            public decimal PL { get; }
         }
     }
 }
