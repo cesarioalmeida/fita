@@ -18,11 +18,24 @@ namespace fita.ui.ViewModels.Portfolio
 
         public LockableCollection<SecurityPosition> Data { get; set; } = new();
         
+        public AccountRepoService AccountRepoService { get; set; }
+        
         public SecurityPositionRepoService SecurityPositionRepoService { get; set; }
         
         public async Task RefreshData()
         {
             IsBusy = true;
+            
+            if (Account == null)
+            {
+                return;
+            }
+                
+            Account = await AccountRepoService.DetailsEnrichedAsync(Account.AccountId);
+            if (Account == null)
+            {
+                return;
+            }
             
             Data.BeginUpdate();
             

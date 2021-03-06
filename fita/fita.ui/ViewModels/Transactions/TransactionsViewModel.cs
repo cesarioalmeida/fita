@@ -35,6 +35,8 @@ namespace fita.ui.ViewModels.Transactions
         public TradeRepoService TradeRepoService { get; set; }
 
         public IAccountService AccountService { get; set; }
+        
+        public IPortfolioService PortfolioService { get; set; }
 
         protected IDocumentManagerService ModalDocumentManagerService =>
             this.GetService<IDocumentManagerService>("ModalWindowDocumentService", ServiceSearchMode.PreferParents);
@@ -49,8 +51,7 @@ namespace fita.ui.ViewModels.Transactions
                 {
                     return;
                 }
-
-                // refresh account
+                
                 Account = await AccountRepoService.DetailsEnrichedAsync(Account.AccountId);
                 if (Account == null)
                 {
@@ -95,7 +96,7 @@ namespace fita.ui.ViewModels.Transactions
 
         public bool CanEdit(EntityModel model)
         {
-            return model?.Entity.Category != null;
+            return model?.Entity.Category != null && model?.Entity.TradeId == null;
         }
 
         public async Task NewTransaction()
@@ -145,7 +146,7 @@ namespace fita.ui.ViewModels.Transactions
 
                 if (model.Entity.TradeId != null)
                 {
-                    await TradeRepoService.DeleteAsync(model.Entity.TradeId);
+                    await PortfolioService.DeleteTrade(model.Entity.TradeId);
                 }
 
                 Messenger.Default.Send(

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using fita.data.Enums;
 using fita.data.Models;
 using fita.services.Repositories;
+using LiteDB;
 using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.Core
@@ -34,7 +35,7 @@ namespace fita.services.Core
                     {
                         return true;
                     }
-                    
+
                     var securityPosition =
                         await SecurityPositionRepoService.DetailsForSecurityEnrichedAsync(trade.Security.SecurityId);
 
@@ -63,6 +64,26 @@ namespace fita.services.Core
                 });
         }
 
+        public Task<bool> DeleteTrade(ObjectId tradeId)
+        {
+            return Task.Run(
+                async () =>
+                {
+                    try
+                    {
+                        var trade = await TradeRepoService.DetailsEnrichedAsync(tradeId);
+                        
+                        return await DeleteSecurityPosition(trade) &&
+                               await TradeRepoService.DeleteAsync(trade.TradeId) == Result.Success;
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Warn($"{nameof(DeleteTrade)}: {ex}");
+                        return false;
+                    }
+                });
+        }
+
         private async Task RefreshData()
         {
             if (!_categories.Any())
@@ -77,7 +98,7 @@ namespace fita.services.Core
             {
                 _categories.AddRange(await CategoryRepoService.AllAsync());
             }
-            
+
             transaction ??= new Transaction();
             transaction.AccountId = trade.AccountId;
             transaction.TradeId = trade.TradeId;
@@ -139,6 +160,43 @@ namespace fita.services.Core
 
             return await ClosedPositionRepoService.SaveAsync(closedPosition) == Result.Success
                    && await SecurityPositionRepoService.SaveAsync(securityPosition) == Result.Success;
+        }
+
+        private async Task<bool> DeleteSecurityPosition(Trade trade)
+        {
+            var securityPosition =
+                await SecurityPositionRepoService.DetailsForSecurityEnrichedAsync(trade.Security.SecurityId);
+
+            if (trade.Action == TradeActionEnum.Buy)
+            {
+                securityPosition.Quantity -= trade.Quantity;
+                securityPosition.Value -= trade.Value;
+
+                return await SecurityPositionRepoService.SaveAsync(securityPosition) == Result.Success;
+            }
+
+            if (securityPosition == null || securityPosition.Quantity == 0)
+            {
+                securityPosition ??= new SecurityPosition {AccountId = trade.AccountId, Security = trade.Security};
+                securityPosition.Quantity = trade.Quantity;
+                securityPosition.Value = trade.Value;
+            }
+            else if (securityPosition.Quantity > 0)
+            {
+                securityPosition.Quantity += trade.Quantity;
+                securityPosition.Value += trade.Value;
+            }
+
+            var closedPositionToDelete =
+                (await ClosedPositionRepoService.AllEnrichedForSecurityAsync(trade.Security.SecurityId))
+                .SingleOrDefault(x => x.Quantity == trade.Quantity && x.SellDate == trade.Date);
+
+            if (closedPositionToDelete != null)
+            {
+                await ClosedPositionRepoService.DeleteAsync(closedPositionToDelete.ClosedPositionId);
+            }
+
+            return await SecurityPositionRepoService.SaveAsync(securityPosition) == Result.Success;
         }
     }
 }
