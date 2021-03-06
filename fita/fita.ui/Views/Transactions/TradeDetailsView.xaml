@@ -94,7 +94,6 @@
                                      Label="Security"
                                      LabelPosition="Top">
                         <dxg:LookUpEdit VerticalAlignment="Center"
-                                        IsReadOnly="{Binding IsReadOnly}"
                                         AutoPopulateColumns="False"
                                         ShowSizeGrip="False"
                                         DisplayMember="Name"

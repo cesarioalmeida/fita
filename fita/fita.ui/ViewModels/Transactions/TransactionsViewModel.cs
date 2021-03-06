@@ -37,7 +37,7 @@ namespace fita.ui.ViewModels.Transactions
         public IAccountService AccountService { get; set; }
 
         protected IDocumentManagerService ModalDocumentManagerService =>
-            this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
+            this.GetService<IDocumentManagerService>("ModalWindowDocumentService", ServiceSearchMode.PreferParents);
 
         public async Task RefreshData()
         {

@@ -18,10 +18,13 @@ namespace fita.services
             serviceRegistry.Register<AccountRepoService>();
             serviceRegistry.Register<TransactionRepoService>();
             serviceRegistry.Register<TradeRepoService>();
+            serviceRegistry.Register<SecurityPositionRepoService>();
+            serviceRegistry.Register<ClosedPositionRepoService>();
 
             serviceRegistry.Register<IExchangeRateService, ExchangeRateService>();
             serviceRegistry.Register<ISecurityService, SecurityService>();
             serviceRegistry.Register<IAccountService, AccountService>();
+            serviceRegistry.Register<IPortfolioService, PortfolioService>();
         }
     }
 }
