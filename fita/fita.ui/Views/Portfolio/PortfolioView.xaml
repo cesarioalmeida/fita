@@ -1,35 +1,38 @@
-﻿<UserControl x:Class="fita.ui.Views.Portfolio.PortfolioView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:fita.ui.Controls"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
-             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:portfolio="clr-namespace:fita.ui.ViewModels.Portfolio"
-             x:Name="this"
-             d:DataContext="{d:DesignInstance portfolio:PortfolioViewModel}"
-             DataContext="{dxmvvm:ViewModelSource Type=portfolio:PortfolioViewModel}"
-             mc:Ignorable="d">
+﻿<UserControl
+    x:Class="fita.ui.Views.Portfolio.PortfolioView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:fita.ui.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:portfolio="clr-namespace:fita.ui.ViewModels.Portfolio"
+    x:Name="this"
+    d:DataContext="{d:DesignInstance portfolio:PortfolioViewModel}"
+    DataContext="{dxmvvm:ViewModelSource Type=portfolio:PortfolioViewModel}"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <dxe:TextEditSettings x:Key="Currency2EditSettings"
-                                  Mask="c2"
-                                  MaskCulture="{Binding Account.Currency.Culture}"
-                                  MaskType="Numeric"
-                                  MaskUseAsDisplayFormat="True" />
+            <dxe:TextEditSettings
+                x:Key="Currency2EditSettings"
+                Mask="c2"
+                MaskCulture="{Binding Account.Currency.Culture}"
+                MaskType="Numeric"
+                MaskUseAsDisplayFormat="True" />
 
-            <dxe:TextEditSettings x:Key="Currency4EditSettings"
-                                  Mask="c4"
-                                  MaskCulture="{Binding Account.Currency.Culture}"
-                                  MaskType="Numeric"
-                                  MaskUseAsDisplayFormat="True" />
+            <dxe:TextEditSettings
+                x:Key="Currency4EditSettings"
+                Mask="c4"
+                MaskCulture="{Binding Account.Currency.Culture}"
+                MaskType="Numeric"
+                MaskUseAsDisplayFormat="True" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -42,93 +45,109 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0"
-                    Height="50"
-                    Background="{StaticResource BgStartBrush}">
+            <Border
+                Grid.Row="0"
+                Height="50"
+                Background="{StaticResource BgStartBrush}">
 
                 <Grid>
-                    <StackPanel HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal">
-                        <TextBlock Foreground="{StaticResource White1Brush}"
-                                   Style="{StaticResource H1}"
-                                   Text="{Binding Account.Name}" />
-                        <TextBlock FontFamily="Roboto"
-                                   FontSize="11"
-                                   Foreground="{StaticResource White1Brush}"
-                                   Opacity="0.6"
-                                   Text="Portfolio" />
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Foreground="{StaticResource White1Brush}"
+                            Style="{StaticResource H1}"
+                            Text="{Binding Account.Name}" />
+                        <TextBlock
+                            FontFamily="Roboto"
+                            FontSize="11"
+                            Foreground="{StaticResource White1Brush}"
+                            Opacity="0.6"
+                            Text="Portfolio" />
                     </StackPanel>
                 </Grid>
 
             </Border>
 
-            <dxg:GridControl x:Name="grid"
-                             Grid.Row="1"
-                             ItemsSource="{Binding Data}">
+            <dxg:GridControl
+                x:Name="grid"
+                Grid.Row="1"
+                ItemsSource="{Binding Data}">
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="Entity.Security.Name"
-                                    Header="Security" />
-                    <dxg:GridColumn FieldName="Entity.Quantity"
-                                    Header="Quantity" />
-                    <dxg:GridColumn FieldName="Entity.Value"
-                                    Header="Value"
-                                    EditSettings="{StaticResource Currency2EditSettings}" />
-                    <dxg:GridColumn FieldName="Entity.BreakEvenPrice"
-                                    Header="BreakEvenPrice"
-                                    EditSettings="{StaticResource Currency4EditSettings}" />
-                    <dxg:GridColumn FieldName="CurrentPrice"
-                                    Header="Latest Price"
-                                    EditSettings="{StaticResource Currency4EditSettings}" />
-                    <dxg:GridColumn FieldName="PL"
-                                    Header="PL"
-                                    EditSettings="{StaticResource Currency2EditSettings}" />
+                    <dxg:GridColumn FieldName="Entity.Security.Name" Header="Security" />
+                    <dxg:GridColumn FieldName="Entity.Quantity" Header="Quantity" />
+                    <dxg:GridColumn
+                        EditSettings="{StaticResource Currency2EditSettings}"
+                        FieldName="Entity.Value"
+                        Header="Value" />
+                    <dxg:GridColumn
+                        EditSettings="{StaticResource Currency4EditSettings}"
+                        FieldName="Entity.BreakEvenPrice"
+                        Header="BreakEvenPrice" />
+                    <dxg:GridColumn
+                        EditSettings="{StaticResource Currency4EditSettings}"
+                        FieldName="CurrentPrice"
+                        Header="Latest Price" />
+                    <dxg:GridColumn
+                        EditSettings="{StaticResource Currency2EditSettings}"
+                        FieldName="PL"
+                        Header="PL" />
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
-                    <dxg:TableView AllowEditing="False"
-                                   AutoWidth="True"
-                                   RowMinHeight="24"
-                                   ShowGroupPanel="False"
-                                   ShowSearchPanelMode="Always"
-                                   ShowTotalSummary="True">
+                    <dxg:TableView
+                        AllowEditing="False"
+                        AutoWidth="True"
+                        RowMinHeight="24"
+                        ShowFixedTotalSummary="True"
+                        ShowGroupPanel="False"
+                        ShowSearchPanelMode="Always">
                         <dxg:TableView.FormatConditions>
-                            <dxg:FormatCondition ValueRule="GreaterOrEqual"
-                                                 Value1="0"
-                                                 FieldName="PL"
-                                                 PredefinedFormatName="LightGreenFill"
-                                                 ApplyToRow="True" />
-                            <dxg:FormatCondition ValueRule="Less"
-                                                 Value1="0"
-                                                 FieldName="PL"
-                                                 PredefinedFormatName="LightRedFill"
-                                                 ApplyToRow="True" />
+                            <dxg:FormatCondition
+                                ApplyToRow="True"
+                                FieldName="PL"
+                                PredefinedFormatName="LightGreenFill"
+                                Value1="0"
+                                ValueRule="GreaterOrEqual" />
+                            <dxg:FormatCondition
+                                ApplyToRow="True"
+                                FieldName="PL"
+                                PredefinedFormatName="LightRedFill"
+                                Value1="0"
+                                ValueRule="Less" />
                         </dxg:TableView.FormatConditions>
                     </dxg:TableView>
                 </dxg:GridControl.View>
                 <dxg:GridControl.TotalSummary>
-                    <dxg:GridSummaryItem FieldName="Entity.Value"
-                                         SummaryType="Sum"
-                                         DisplayFormat="{}{0:c2}" />
-                    <dxg:GridSummaryItem FieldName="PL"
-                                         SummaryType="Sum"
-                                         DisplayFormat="{}{0:c2}"/>
+                    <dxg:GridSummaryItem
+                        Alignment="Left"
+                        DisplayFormat="Amount Invested = {0:c2}"
+                        FieldName="Entity.Value"
+                        SummaryType="Sum" />
+                    <dxg:GridSummaryItem
+                        Alignment="Right"
+                        DisplayFormat="P/L = {0:c2}"
+                        FieldName="PL"
+                        SummaryType="Sum" />
                 </dxg:GridControl.TotalSummary>
             </dxg:GridControl>
 
-            <Border Grid.Row="2"
-                    Height="40"
-                    Background="{StaticResource BgStartBrush}">
+            <Border
+                Grid.Row="2"
+                Height="40"
+                Background="{StaticResource BgStartBrush}">
                 <Grid Margin="4">
-                    <StackPanel HorizontalAlignment="Left"
-                                Orientation="Horizontal">
-                        <controls:ViewRadioButton Caption="Transactions"
-                                                  GroupName="ViewGroup"
-                                                  Command="{Binding NavigateToCommand}"
-                                                  Icon="../../Resources/Icons/Transactions_24x24.png" />
-                        <controls:ViewRadioButton Caption="Portfolio"
-                                                  IsChecked="True"
-                                                  GroupName="ViewGroup"
-                                                  Icon="../../Resources/Icons/Portfolio_24x24.png" />
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <controls:ViewRadioButton
+                            Caption="Transactions"
+                            Command="{Binding NavigateToCommand}"
+                            GroupName="ViewGroup"
+                            Icon="../../Resources/Icons/Transactions_24x24.png" />
+                        <controls:ViewRadioButton
+                            Caption="Portfolio"
+                            GroupName="ViewGroup"
+                            Icon="../../Resources/Icons/Portfolio_24x24.png"
+                            IsChecked="True" />
                     </StackPanel>
                 </Grid>
             </Border>

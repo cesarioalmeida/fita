@@ -34,6 +34,7 @@
                 <Setter Property="FontFamily" Value="Roboto" />
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="Foreground" Value="#693c72" />
+                <Setter Property="Opacity" Value="0.5" />
             </Style>
 
         </ResourceDictionary>
