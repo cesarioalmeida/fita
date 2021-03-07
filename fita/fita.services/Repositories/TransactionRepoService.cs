@@ -90,5 +90,28 @@ namespace fita.services.Repositories
                     }
                 });
         }
+
+        public Task<IEnumerable<Transaction>> AllEnrichedBetweenDatesAsync(DateTime startDate, DateTime? endDate = null)
+        {
+            return Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        endDate ??= DateTime.MaxValue;
+
+                        return Collection
+                            .Include(x => x.Category)
+                            .Find(x => x.Date >= startDate && x.Date <= endDate)
+                            .OrderBy(x => x.Date)
+                            .AsEnumerable();
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Warn($"{nameof(AllEnrichedBetweenDatesAsync)}: {ex}");
+                        return null;
+                    }
+                });
+        }
     }
 }

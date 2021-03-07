@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:home="clr-namespace:fita.ui.ViewModels.Home"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,6 +17,25 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="KeyNumber" TargetType="dxe:TextEdit">
+                <Setter Property="FontFamily" Value="Roboto" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="FontSize" Value="72" />
+                <Setter Property="IsReadOnly" Value="True" />
+                <Setter Property="ShowBorder" Value="False" />
+                <Setter Property="MaskUseAsDisplayFormat" Value="True" />
+                <Setter Property="MaskType" Value="Numeric" />
+                <Setter Property="Mask" Value="c0" />
+                <Setter Property="MaskCulture" Value="{Binding BanksViewModel.BaseCulture}" />
+            </Style>
+
+            <Style x:Key="KeyText" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Roboto" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Foreground" Value="#693c72" />
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -57,6 +77,48 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+
+                <Grid
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="30"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <dxe:TextEdit
+                        EditValue="{Binding NetWorth, IsAsync=True, Mode=OneWay}"
+                        Foreground="#d97642"
+                        Style="{StaticResource KeyNumber}" />
+                    <TextBlock Style="{StaticResource KeyText}" Text="net worth" />
+                </Grid>
+                <Grid
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="30">
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <dxe:TextEdit
+                            Grid.Column="0"
+                            EditValue="{Binding IncomeMonth, IsAsync=True, Mode=OneWay}"
+                            Foreground="#9ecca4"
+                            Style="{StaticResource KeyNumber}" />
+                        <TextBlock
+                            Grid.Column="0"
+                            Style="{StaticResource KeyText}"
+                            Text="income this month" />
+                        <dxe:TextEdit
+                            Grid.Column="1"
+                            EditValue="{Binding ExpensesMonth, IsAsync=True, Mode=OneWay}"
+                            Foreground="#d49d42"
+                            Style="{StaticResource KeyNumber}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Style="{StaticResource KeyText}"
+                            Text="expenses this month" />
+                    </Grid>
+                </Grid>
 
                 <views:BanksView
                     Grid.Row="1"
