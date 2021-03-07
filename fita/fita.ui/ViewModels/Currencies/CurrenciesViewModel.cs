@@ -215,6 +215,28 @@ namespace fita.ui.ViewModels.Currencies
             }
         }
 
+        public async Task UpdateAll()
+        {
+            IsBusy = true;
+
+            try
+            {
+                var baseCurrencyId = FileSettings.BaseCurrency.CurrencyId;
+                
+                foreach (var currency in Data.Select(x => x.Currency).ToList())
+                {
+                    await SetBase(currency);
+                    await Update();
+                }
+
+                await SetBase(Data.Select(x => x.Currency).Single(x => x.CurrencyId == baseCurrencyId));
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
         public async Task History(CurrenciesModel model)
         {
             var viewModel = ViewModelSource.Create<HistoricalDataViewModel>();

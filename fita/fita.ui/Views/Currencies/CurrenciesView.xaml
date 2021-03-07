@@ -117,7 +117,10 @@
                                   Content="Add" />
                 <dxc:SimpleButton Command="{Binding UpdateCommand}"
                                   Style="{StaticResource ActionButton}"
-                                  Content="Update" />
+                                  Content="Update Current" />
+                <dxc:SimpleButton Command="{Binding UpdateAllCommand}"
+                                  Style="{StaticResource ActionButton}"
+                                  Content="Update All Pairs" />
                 <dxc:SimpleButton Margin="15,0,7,0"
                                   Command="{Binding CloseCommand}"
                                   Style="{StaticResource ActionButton}"
