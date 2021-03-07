@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
 using fita.data.Enums;
 using fita.data.Models;
 using fita.services.Core;
 using fita.services.Repositories;
+using fita.ui.Messages;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.Home
@@ -29,6 +31,11 @@ namespace fita.ui.ViewModels.Home
 
         public IAccountService AccountService { get; set; }
 
+        public BanksViewModel()
+        {
+            Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
+        }
+        
         public async Task RefreshData()
         {
             IsBusy = true;

@@ -12,6 +12,7 @@ using fita.data.Models;
 using fita.services;
 using fita.services.Core;
 using fita.services.Repositories;
+using fita.ui.Messages;
 using fita.ui.ViewModels.HistoricalData;
 using fita.ui.Views.Currencies;
 using fita.ui.Views.HistoricalData;
@@ -78,6 +79,11 @@ namespace fita.ui.ViewModels.Currencies
             {
                 Data.EndUpdate();
                 IsBusy = false;
+
+                if (fireChangeNotification)
+                {
+                    Messenger.Default.Send(new BaseCurrencyChanged());
+                }
             }
         }
 

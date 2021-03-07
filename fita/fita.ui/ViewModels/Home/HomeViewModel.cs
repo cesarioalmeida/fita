@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
 using fita.data.Enums;
 using fita.services.Core;
 using fita.services.Repositories;
+using fita.ui.Messages;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.Home
@@ -46,6 +48,8 @@ namespace fita.ui.ViewModels.Home
             InvestmentsViewModel = ViewModelSource.Create<InvestmentsViewModel>();
 
             RefreshData();
+            
+            Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
         }
 
 
