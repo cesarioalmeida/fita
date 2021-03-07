@@ -37,7 +37,9 @@ namespace fita.ui.ViewModels
         public HamburgerMenuItemViewModel SelectedHamburgerItem { get; set; }
 
         public IEnumerable<HamburgerMenuItemViewModel> HomeHamburgerItem => new[]
-            {new HamburgerMenuItemViewModel("Home", "HomeView", "../Resources/Icons/Home_24x24.png")};
+        {
+            new HamburgerMenuItemViewModel("Home", "HomeView", "../Resources/Icons/Home_24x24.png") {IsChecked = true}
+        };
 
         public IEnumerable<HamburgerMenuItemViewModel> BankHamburgerItems =>
             _accountItems.Where(x => x.Account.Type == AccountTypeEnum.Bank);
@@ -55,7 +57,7 @@ namespace fita.ui.ViewModels
             this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
         protected IDispatcherService DispatcherService => this.GetService<IDispatcherService>();
-        
+
         protected AccountRepoService AccountRepoService { get; set; }
 
         public ShellViewModel()
@@ -151,6 +153,8 @@ namespace fita.ui.ViewModels
             public string View { get; set; }
 
             public Account Account { get; set; }
+
+            public bool IsChecked { get; set; }
 
             public HamburgerMenuItemViewModel(string caption, string view, string icon = null, Account account = null)
             {

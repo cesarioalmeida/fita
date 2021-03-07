@@ -10,29 +10,78 @@
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:home="clr-namespace:fita.ui.ViewModels.Home"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:fita.ui.Views.Home"
     d:DataContext="{d:DesignInstance home:HomeViewModel}"
     DataContext="{dxmvvm:ViewModelSource Type=home:HomeViewModel}"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <dxe:TextEditSettings
+                x:Key="Currency2EditSettings"
+                Mask="c2"
+                MaskCulture="{Binding Account.Currency.Culture}"
+                MaskType="Numeric"
+                MaskUseAsDisplayFormat="True" />
+
+            <dxe:TextEditSettings
+                x:Key="Currency4EditSettings"
+                Mask="c4"
+                MaskCulture="{Binding Account.Currency.Culture}"
+                MaskType="Numeric"
+                MaskUseAsDisplayFormat="True" />
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
     </dxmvvm:Interaction.Behaviors>
 
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
-        <Grid Margin="5">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock
-                HorizontalAlignment="Center"
-                Style="{StaticResource H1}"
-                Text="Home" />
+            <Border
+                Grid.Row="0"
+                Height="50"
+                Background="{StaticResource BgStartBrush}">
+                <Grid>
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Foreground="{StaticResource White1Brush}"
+                            Style="{StaticResource H1}"
+                            Text="Home" />
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-            <dxlc:LayoutControl Grid.Row="1">
-                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical" />
-            </dxlc:LayoutControl>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <views:BanksView Grid.Row="1" Grid.Column="0" />
+                <views:InvestmentsView Grid.Row="2" Grid.Column="0" />
+                <views:CreditCardsView Grid.Row="1" Grid.Column="1" />
+                <views:AssetsView Grid.Row="2" Grid.Column="1" />
+
+            </Grid>
         </Grid>
     </dxc:LoadingDecorator>
 

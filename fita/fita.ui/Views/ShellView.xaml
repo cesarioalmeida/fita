@@ -128,7 +128,7 @@
                         <Setter Property="ItemTemplate">
                             <Setter.Value>
                                 <DataTemplate>
-                                    <controls:ClickableMenuItem />
+                                    <controls:ClickableMenuItem IsChecked="{Binding IsChecked}" />
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>

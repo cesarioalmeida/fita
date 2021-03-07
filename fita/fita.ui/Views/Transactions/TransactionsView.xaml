@@ -12,7 +12,6 @@
     xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
-    xmlns:navigation="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/navigation"
     x:Name="this"
     d:DataContext="{d:DesignInstance transactions:TransactionsViewModel}"
     DataContext="{dxmvvm:ViewModelSource Type=transactions:TransactionsViewModel}"
