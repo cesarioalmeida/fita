@@ -4,9 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
-    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:home="clr-namespace:fita.ui.ViewModels.Home"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,21 +16,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <dxe:TextEditSettings
-                x:Key="Currency2EditSettings"
-                Mask="c2"
-                MaskCulture="{Binding Account.Currency.Culture}"
-                MaskType="Numeric"
-                MaskUseAsDisplayFormat="True" />
-
-            <dxe:TextEditSettings
-                x:Key="Currency4EditSettings"
-                Mask="c4"
-                MaskCulture="{Binding Account.Currency.Culture}"
-                MaskType="Numeric"
-                MaskUseAsDisplayFormat="True" />
-
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -76,10 +58,22 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <views:BanksView Grid.Row="1" Grid.Column="0" />
-                <views:InvestmentsView Grid.Row="2" Grid.Column="0" />
-                <views:CreditCardsView Grid.Row="1" Grid.Column="1" />
-                <views:AssetsView Grid.Row="2" Grid.Column="1" />
+                <views:BanksView
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    DataContext="{Binding BanksViewModel}" />
+                <views:InvestmentsView
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    DataContext="{Binding InvestmentsViewModel}" />
+                <views:CreditCardsView
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    DataContext="{Binding CreditCardsViewModel}" />
+                <views:AssetsView
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    DataContext="{Binding AssetsViewModel}" />
 
             </Grid>
         </Grid>
