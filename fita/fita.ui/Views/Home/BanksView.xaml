@@ -54,6 +54,7 @@
                 Grid.Row="2"
                 Margin="5"
                 Background="Transparent"
+                FontSize="15"
                 ItemsSource="{Binding Data}"
                 ShowBorder="False">
                 <dxg:GridControl.Columns>
@@ -86,13 +87,13 @@
                 <TextBlock
                     VerticalAlignment="Center"
                     FontFamily="Roboto"
-                    FontSize="14"
+                    FontSize="15"
                     Text="Total = " />
                 <dxe:TextEdit
                     VerticalAlignment="Center"
                     EditValue="{Binding TotalAmount}"
                     FontFamily="Roboto"
-                    FontSize="14"
+                    FontSize="15"
                     IsReadOnly="True"
                     Mask="c2"
                     MaskCulture="{Binding BaseCulture}"

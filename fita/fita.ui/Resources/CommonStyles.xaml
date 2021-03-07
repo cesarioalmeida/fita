@@ -15,9 +15,10 @@
     </Style>
 
     <Style x:Key="H2" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="Roboto Condensed" />
+        <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="Margin" Value="10,5" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="10,8,10,5" />
     </Style>
 
     <Style x:Key="ActionButton" TargetType="dx:SimpleButton">
