@@ -71,12 +71,12 @@ namespace fita.services.Core
 
                 if (date == null)
                 {
-                    return exchangeRate == null ? 1m : exchangeRate.Rate.LatestValue ?? 1m;
+                    return (exchangeRate == null ? 1m : exchangeRate.Rate.LatestValue ?? 1m) * value;
                 }
 
                 if (exchangeRate == null)
                 {
-                    return 1m;
+                    return 1m * value;
                 }
 
                 if (!exchangeRate.Rate.DataPoints.Select(x => x.Date.Date).Contains(date.Value.Date))
@@ -84,12 +84,12 @@ namespace fita.services.Core
                     await UpdateAsync(exchangeRate, date);
                 }
 
-                return exchangeRate.Rate.DataPoints.SingleOrDefault(x => x.Date.Date == date.Value.Date)?.Value ?? 1m;
+                return (exchangeRate.Rate.DataPoints.SingleOrDefault(x => x.Date.Date == date.Value.Date)?.Value ?? 1m) * value;
             }
             catch (Exception ex)
             {
                 LoggingService.Warn($"{nameof(Convert)}: {ex}");
-                return 1m;
+                return 1m * value;
             }
         }
 
