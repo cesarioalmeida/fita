@@ -53,6 +53,12 @@ namespace fita.ui.ViewModels
         public IEnumerable<HamburgerMenuItemViewModel> AssetHamburgerItems =>
             _accountItems.Where(x => x.Account.Type == AccountTypeEnum.Asset);
 
+        public IEnumerable<HamburgerMenuItemViewModel> ReportHamburgerItems => new[]
+        {
+            new HamburgerMenuItemViewModel("All Transactions", "AllTransactionsReportView", "../Resources/Icons/Reports_24x24.png"),
+            new HamburgerMenuItemViewModel("Closed Positions", "ClosedPositionsReportView", "../Resources/Icons/Reports_24x24.png")
+        };
+
         protected IDocumentManagerService ModalDocumentService =>
             this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
@@ -122,11 +128,6 @@ namespace fita.ui.ViewModels
         public void Navigate(HamburgerMenuItemViewModel hamburgerItem)
         {
             NavigationService?.Navigate(hamburgerItem.View, hamburgerItem.Account, this);
-        }
-
-        public void NavigateToView(string view)
-        {
-            NavigationService?.Navigate(view, null, this);
         }
 
         public void OnClose()

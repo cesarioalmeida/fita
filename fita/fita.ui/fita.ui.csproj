@@ -8,140 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Page Update="Themes\ViewRadioButton.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Themes\LabelMenuItem.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Accounts\AccountsView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Accounts\AccountDetailsView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Categories\CategoriesView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Categories\CategoryDetailsView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Currencies\CurrencyDetailsView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\HistoricalData\HistoricalPointView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\HistoricalData\HistoricalDataView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Home\AssetsView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Home\CreditCardsView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Home\InvestmentsView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      </Page>
-      <Page Update="Views\Home\HomeView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Securities\SecurityDetailsView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Securities\SecuritiesView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Views\Transactions\TransactionsView.xaml">
-        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Compile Update="Views\Accounts\AccountsView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Accounts\AccountDetailsView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Categories\CategoriesView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Categories\CategoryDetailsView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Currencies\CurrencyDetailsView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\HistoricalData\HistoricalPointView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\HistoricalData\HistoricalDataView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Home\HomeView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Securities\SecurityDetailsView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Securities\SecuritiesView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Transactions\TransactionsView.xaml.cs">
-        <SubType>Code</SubType>
-      </Compile>
-      <Page Update="Views\Transactions\TransactionDetailsView.xaml">
-        <SubType>Designer</SubType>
-      </Page>
-      <Compile Update="Views\Transactions\TransactionDetailsView.xaml.cs">
-        <SubType>Code</SubType>
-        <DependentUpon>SecurityDetailsView.xaml</DependentUpon>
-      </Compile>
-      <Page Update="Views\Transactions\TransferDetailsView.xaml">
-        <SubType>Designer</SubType>
-      </Page>
-      <Compile Update="Views\Transactions\TransferDetailsView.xaml.cs">
-        <SubType>Code</SubType>
-        <DependentUpon>TransferDetailsView.xaml</DependentUpon>
-      </Compile>
-      <Page Update="Views\Portfolio\PortfolioView.xaml">
-        <SubType>Designer</SubType>
-      </Page>
-      <Compile Update="Views\Portfolio\PortfolioView.xaml.cs">
-        <SubType>Code</SubType>
-        <DependentUpon>TransactionsView.xaml</DependentUpon>
-      </Compile>
-      <Page Update="Views\Transactions\TradeDetailsView.xaml">
-        <SubType>Designer</SubType>
-      </Page>
-      <Compile Update="Views\Transactions\TradeDetailsView.xaml.cs">
-        <SubType>Code</SubType>
-        <DependentUpon>TradeDetailsView.xaml</DependentUpon>
-      </Compile>
-      <Page Update="Views\Reports\AllTransactionsReportView.xaml">
-        <SubType>Designer</SubType>
-      </Page>
-      <Compile Update="Views\Reports\AllTransactionsReportView.xaml.cs">
-        <SubType>Code</SubType>
-        <DependentUpon>TransactionsView.xaml</DependentUpon>
-      </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Accordion" Version="20.2.5" />
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Charts" Version="20.2.5" />
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid" Version="20.2.5" />
@@ -173,6 +39,7 @@
       <None Remove="Resources\Icons\Investment_24x24.png" />
       <None Remove="Resources\Icons\NewAccount_24x24.png" />
       <None Remove="Resources\Icons\Portfolio_24x24.png" />
+      <None Remove="Resources\Icons\Reports_24x24.png" />
       <None Remove="Resources\Icons\Stocks_24x24.png" />
       <None Remove="Resources\Icons\Transactions_24x24.png" />
       <None Remove="Resources\Refresh_32x32.png" />
@@ -191,6 +58,7 @@
       <Resource Include="Resources\Icons\Investment_24x24.png" />
       <Resource Include="Resources\Icons\NewAccount_24x24.png" />
       <Resource Include="Resources\Icons\Portfolio_24x24.png" />
+      <Resource Include="Resources\Icons\Reports_24x24.png" />
       <Resource Include="Resources\Icons\Stocks_24x24.png" />
       <Resource Include="Resources\Icons\Transactions_24x24.png" />
       <None Remove="Resources\Currency_16x16.png" />
@@ -204,6 +72,12 @@
 
     <ItemGroup>
       <Folder Include="Common\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\Reports\ClosedPositionsReportView.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      </Page>
     </ItemGroup>
 
 </Project>
