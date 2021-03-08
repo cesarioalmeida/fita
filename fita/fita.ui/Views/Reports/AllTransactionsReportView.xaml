@@ -1,0 +1,125 @@
+﻿<UserControl
+    x:Class="fita.ui.Views.Reports.AllTransactionsReportView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:reports="clr-namespace:fita.ui.ViewModels.Reports"
+    x:Name="this"
+    d:DataContext="{d:DesignInstance reports:AllTransactionsReportViewModel}"
+    DataContext="{dxmvvm:ViewModelSource Type=reports:AllTransactionsReportViewModel}"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="Currency2Template">
+                <dxe:TextEdit
+                    Name="PART_Editor"
+                    HorizontalAlignment="Right"
+                    Mask="c2"
+                    MaskCulture="{Binding RowData.Row.Account.Currency.Culture}"
+                    MaskType="Numeric"
+                    MaskUseAsDisplayFormat="True" />
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
+    </dxmvvm:Interaction.Behaviors>
+
+    <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border
+                Grid.Row="0"
+                Height="50"
+                Background="{StaticResource BgStartBrush}">
+
+                <Grid>
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Foreground="{StaticResource White1Brush}"
+                            Style="{StaticResource H1}"
+                            Text="Report: All Transactions" />
+                    </StackPanel>
+                </Grid>
+
+            </Border>
+
+            <dxg:GridControl
+                x:Name="grid"
+                Grid.Row="1"
+                ItemsSource="{Binding Data}"
+                SelectionMode="Row">
+                <dxg:GridControl.Columns>
+                    <dxg:GridColumn
+                        Width="50"
+                        FieldName="Transaction.Date"
+                        Header="Date">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:DateEditSettings />
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn
+                        Width="80"
+                        FieldName="Account.Name"
+                        GroupIndex="0"
+                        Header="Account" />
+                    <dxg:GridColumn FieldName="Transaction.Description" Header="Description" />
+                    <dxg:GridColumn FieldName="Transaction.Category.Name" Header="Category" />
+                    <dxg:GridColumn
+                        Width="40"
+                        FieldName="Account.Currency.Symbol"
+                        Header="Currency" />
+                    <dxg:GridColumn
+                        Width="70"
+                        CellTemplate="{StaticResource Currency2Template}"
+                        FieldName="Transaction.Payment"
+                        Header="Payment" />
+                    <dxg:GridColumn
+                        Width="70"
+                        CellTemplate="{StaticResource Currency2Template}"
+                        FieldName="Transaction.Deposit"
+                        Header="Deposit" />
+                </dxg:GridControl.Columns>
+                <dxg:GridControl.View>
+                    <dxg:TableView
+                        AllowEditing="False"
+                        AutoWidth="True"
+                        GroupSummaryDisplayMode="AlignByColumns"
+                        RowMinHeight="24"
+                        ShowGroupPanel="True"
+                        ShowIndicator="False"
+                        ShowSearchPanelMode="Always"
+                        VerticalScrollbarVisibility="Auto" />
+                </dxg:GridControl.View>
+                <dxg:GridControl.GroupSummary>
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="Transaction.Payment"
+                        SummaryType="Sum" />
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="Transaction.Deposit"
+                        SummaryType="Sum" />
+                </dxg:GridControl.GroupSummary>
+            </dxg:GridControl>
+
+        </Grid>
+    </dxc:LoadingDecorator>
+
+</UserControl>

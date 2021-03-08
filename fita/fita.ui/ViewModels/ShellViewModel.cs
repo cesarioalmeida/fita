@@ -124,6 +124,11 @@ namespace fita.ui.ViewModels
             NavigationService?.Navigate(hamburgerItem.View, hamburgerItem.Account, this);
         }
 
+        public void NavigateToView(string view)
+        {
+            NavigationService?.Navigate(view, null, this);
+        }
+
         public void OnClose()
         {
             _messageTimer?.Stop();

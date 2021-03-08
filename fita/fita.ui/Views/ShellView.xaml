@@ -77,7 +77,11 @@
             <dxb:BarSubItem Command="{Binding ShowModalViewCommand}"
                             CommandParameter="SecuritiesView"
                             Content="Securities" />
-            <dxb:BarSubItem Content="Reports" />
+            <dxb:BarSubItem Content="Reports">
+                <dxb:BarButtonItem Content="All transactions"
+                                   Command="{Binding NavigateToViewCommand}"
+                                   CommandParameter="AllTransactionsReportView" />
+            </dxb:BarSubItem>
         </dxb:MainMenuControl>
     </dx:ThemedWindow.ToolbarItems>
 
