@@ -142,7 +142,7 @@ namespace fita.ui.ViewModels.Securities
 
                 foreach (var data in Data)
                 {
-                    var securityHistory = data.EntityHistory ?? GetNewSecurityHistory(data.Entity);
+                    var securityHistory = data.EntityHistory ?? await GetNewSecurityHistory(data.Entity);
 
                     Messenger.Default.Send(new NotificationMessage($"Updating security {data.Entity.Name}..."));
 
@@ -164,7 +164,7 @@ namespace fita.ui.ViewModels.Securities
         public async Task History(EntityModel model)
         {
             var viewModel = ViewModelSource.Create<HistoricalDataViewModel>();
-            viewModel.Model = model.EntityHistory?.Price ?? GetNewSecurityHistory(model.Entity).Price;
+            viewModel.Model = model.EntityHistory?.Price ?? (await GetNewSecurityHistory(model.Entity)).Price;
 
             var document = DocumentManagerService.CreateDocument(nameof(HistoricalDataView), viewModel, null, this);
             document.DestroyOnClose = true;
@@ -173,14 +173,13 @@ namespace fita.ui.ViewModels.Securities
             if (viewModel.Saved)
             {
                 fireChangeNotification = true;
-
                 await RefreshData();
             }
         }
 
-        private SecurityHistory GetNewSecurityHistory(Security security)
+        private async Task<SecurityHistory> GetNewSecurityHistory(Security security)
         {
-            return new()
+            var securityHistory = new SecurityHistory()
             {
                 Security = security,
                 Price = new data.Models.HistoricalData
@@ -188,6 +187,10 @@ namespace fita.ui.ViewModels.Securities
                     Name = $"Price History for {security.Name}"
                 }
             };
+
+            await SecurityHistoryRepoService.SaveAsync(securityHistory);
+
+            return securityHistory;
         }
 
         public class EntityModel

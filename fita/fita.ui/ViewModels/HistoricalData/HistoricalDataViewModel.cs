@@ -57,7 +57,9 @@ namespace fita.ui.ViewModels.HistoricalData
 
             if (viewModel.Saved)
             {
-                Messenger.Default.Send(await HistoricalDataRepoService.SaveAsync(Model) == Result.Fail
+                var failed = await HistoricalDataRepoService.SaveAsync(Model) == Result.Fail;
+
+                Messenger.Default.Send(failed
                     ? new NotificationMessage("Failed to edit historical point.", NotificationStatusEnum.Error)
                     : new NotificationMessage($"Historical point {historical.Date.ToShortDateString()} edited.", NotificationStatusEnum.Success));
 
