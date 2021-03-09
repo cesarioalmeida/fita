@@ -50,6 +50,7 @@ namespace fita.ui.ViewModels.Home
             RefreshData();
             
             Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
+            Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData(); });
         }
 
 
