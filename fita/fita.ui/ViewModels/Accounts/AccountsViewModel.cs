@@ -9,6 +9,7 @@ using DevExpress.Xpf.WindowsUI;
 using fita.data.Models;
 using fita.services;
 using fita.services.Repositories;
+using fita.ui.Messages;
 using fita.ui.Views.Accounts;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
@@ -33,6 +34,7 @@ namespace fita.ui.ViewModels.Accounts
         {
             if (fireChangeNotification)
             {
+                Messenger.Default.Send(new AccountsChanged());
             }
 
             Data.Clear();
