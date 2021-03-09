@@ -8,6 +8,7 @@ using System.Timers;
 using fita.data.Enums;
 using fita.data.Models;
 using fita.services.Repositories;
+using fita.ui.Messages;
 using LiteDB;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -73,6 +74,7 @@ namespace fita.ui.ViewModels
         public ShellViewModel()
         {
             Messenger.Default.Register<NotificationMessage>(this, this.OnNotificationMessage);
+            Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData(); });
 
             _messageTimer.Interval = 5000;
             _messageTimer.Elapsed += (_, _) => DispatcherService.BeginInvoke(() => Message = null);

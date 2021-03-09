@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm;
@@ -8,12 +9,13 @@ using fita.data.Enums;
 using fita.services.Core;
 using fita.services.Repositories;
 using fita.ui.Messages;
+using twentySix.Framework.Core.UI.Interfaces;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.Home
 {
     [POCOViewModel]
-    public class HomeViewModel : ComposedViewModelBase
+    public class HomeViewModel : ComposedViewModelBase, IDependsOnClose
     {
         public virtual BanksViewModel BanksViewModel { get; set; }
 
@@ -47,10 +49,23 @@ namespace fita.ui.ViewModels.Home
             AssetsViewModel = ViewModelSource.Create<AssetsViewModel>();
             InvestmentsViewModel = ViewModelSource.Create<InvestmentsViewModel>();
 
+            BanksViewModel.PropertyChanged += OnChildrenPropertyChanged;
+            CreditCardsViewModel.PropertyChanged += OnChildrenPropertyChanged;
+            AssetsViewModel.PropertyChanged += OnChildrenPropertyChanged;
+            InvestmentsViewModel.PropertyChanged += OnChildrenPropertyChanged;
+
             RefreshData();
-            
+
             Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
             Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData(); });
+        }
+
+        private void OnChildrenPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName?.Equals("TotalAmount") ?? false)
+            {
+                RaisePropertyChanged(() => NetWorth);
+            }
         }
 
 
@@ -68,7 +83,8 @@ namespace fita.ui.ViewModels.Home
                     (await TransactionRepoService.AllEnrichedBetweenDatesAsync(new DateTime(DateTime.Now.Year,
                         DateTime.Now.Month, 1))).ToList();
 
-                var closedPositions = (await ClosedPositionRepoService.AllEnrichedBetweenDatesAsync(new DateTime(DateTime.Now.Year,
+                var closedPositions = (await ClosedPositionRepoService.AllEnrichedBetweenDatesAsync(new DateTime(
+                    DateTime.Now.Year,
                     DateTime.Now.Month, 1))).ToList();
 
                 var expenses = 0m;
@@ -101,8 +117,22 @@ namespace fita.ui.ViewModels.Home
             finally
             {
                 IsBusy = false;
-                RaisePropertyChanged(() => NetWorth);
             }
+        }
+
+        public void OnClose()
+        {
+            if (BanksViewModel != null)
+                BanksViewModel.PropertyChanged -= OnChildrenPropertyChanged;
+
+            if (CreditCardsViewModel != null)
+                CreditCardsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
+
+            if (AssetsViewModel != null)
+                AssetsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
+
+            if (InvestmentsViewModel != null)
+                InvestmentsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
         }
     }
 }

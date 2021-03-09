@@ -86,7 +86,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                     <dxe:TextEdit
-                        EditValue="{Binding NetWorth, IsAsync=True, Mode=OneWay}"
+                        EditValue="{Binding NetWorth, Mode=OneWay}"
                         Foreground="#d97642"
                         Style="{StaticResource KeyNumber}" />
                     <TextBlock Style="{StaticResource KeyText}" Text="net worth" />
@@ -103,8 +103,8 @@
                         <dxe:TextEdit
                             Grid.Column="0"
                             EditValue="{Binding IncomeMonth, IsAsync=True, Mode=OneWay}"
-                            Foreground="#9ecca4"
                             FontSize="60"
+                            Foreground="#9ecca4"
                             Style="{StaticResource KeyNumber}" />
                         <TextBlock
                             Grid.Column="0"
@@ -113,8 +113,8 @@
                         <dxe:TextEdit
                             Grid.Column="1"
                             EditValue="{Binding ExpensesMonth, IsAsync=True, Mode=OneWay}"
-                            Foreground="#d49d42"
                             FontSize="60"
+                            Foreground="#d49d42"
                             Style="{StaticResource KeyNumber}" />
                         <TextBlock
                             Grid.Column="1"
