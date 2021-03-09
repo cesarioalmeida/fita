@@ -55,8 +55,12 @@ namespace fita.ui.ViewModels
 
         public IEnumerable<HamburgerMenuItemViewModel> ReportHamburgerItems => new[]
         {
-            new HamburgerMenuItemViewModel("All Transactions", "AllTransactionsReportView", "../Resources/Icons/Reports_24x24.png"),
-            new HamburgerMenuItemViewModel("Closed Positions", "ClosedPositionsReportView", "../Resources/Icons/Reports_24x24.png")
+            new HamburgerMenuItemViewModel("All Transactions", "AllTransactionsReportView",
+                "../Resources/Icons/Reports_24x24.png"),
+            new HamburgerMenuItemViewModel("Closed Positions", "ClosedPositionsReportView",
+                "../Resources/Icons/Reports_24x24.png"),
+            new HamburgerMenuItemViewModel("Net Worth", "NetWorthReportView",
+                "../Resources/Icons/Reports_24x24.png")
         };
 
         protected IDocumentManagerService ModalDocumentService =>
