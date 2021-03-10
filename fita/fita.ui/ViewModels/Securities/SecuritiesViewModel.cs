@@ -205,12 +205,12 @@ namespace fita.ui.ViewModels.Securities
 
             public SecurityHistory EntityHistory { get; }
 
-            public DateTime? LatestDate => EntityHistory?.Price.LatestDate;
+            public DateTime? LatestDate => EntityHistory?.Price?.LatestDate;
 
-            public decimal? LatestValue => EntityHistory?.Price.LatestValue;
+            public decimal? LatestValue => EntityHistory?.Price?.LatestValue;
 
             public IEnumerable<decimal> History =>
-                EntityHistory?.Price.DataPoints.OrderByDescending(x => x.Date).Select(x => x.Value);
+                EntityHistory?.Price?.DataPoints.OrderByDescending(x => x.Date).Select(x => x.Value);
         }
     }
 }

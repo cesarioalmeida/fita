@@ -64,6 +64,7 @@
                         <dxg:GridControl.View>
                             <dxg:TableView
                                 AllowEditing="False"
+                                AutoWidth="True"
                                 RowMinHeight="24"
                                 ShowGroupPanel="False"
                                 ShowSearchPanelMode="Always">

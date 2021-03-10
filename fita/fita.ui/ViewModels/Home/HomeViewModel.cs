@@ -100,16 +100,17 @@ namespace fita.ui.ViewModels.Home
                         case CategoryGroupEnum.BusinessExpenses:
                             expenses += await ExchangeRateService.Exchange(account.Currency, baseCurrency,
                                 transaction.Payment.GetValueOrDefault());
-                            expenses += closedPositions.Where(x => x.ProfitLoss <= 0).Sum(x => x.ProfitLoss);
                             break;
                         case CategoryGroupEnum.PersonalIncome:
                         case CategoryGroupEnum.BusinessIncome:
                             income += await ExchangeRateService.Exchange(account.Currency, baseCurrency,
                                 transaction.Deposit.GetValueOrDefault());
-                            income += closedPositions.Where(x => x.ProfitLoss > 0).Sum(x => x.ProfitLoss);
                             break;
                     }
                 }
+
+                expenses += closedPositions.Where(x => x.ProfitLoss <= 0).Sum(x => x.ProfitLoss);
+                income += closedPositions.Where(x => x.ProfitLoss > 0).Sum(x => x.ProfitLoss);
 
                 ExpensesMonth = expenses;
                 IncomeMonth = income;
