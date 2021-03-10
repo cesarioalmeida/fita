@@ -6,6 +6,7 @@ using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
 using fita.data.Enums;
+using fita.data.Models;
 using fita.services.Core;
 using fita.services.Repositories;
 using fita.ui.Messages;
@@ -17,6 +18,8 @@ namespace fita.ui.ViewModels.Home
     [POCOViewModel]
     public class HomeViewModel : ComposedViewModelBase, IDependsOnClose
     {
+        private NetWorth _netWorth;
+
         public virtual BanksViewModel BanksViewModel { get; set; }
 
         public virtual CreditCardsViewModel CreditCardsViewModel { get; set; }
@@ -35,6 +38,8 @@ namespace fita.ui.ViewModels.Home
         public FileSettingsRepoService FileSettingsRepoService { get; set; }
 
         public ClosedPositionRepoService ClosedPositionRepoService { get; set; }
+
+        public NetWorthRepoService NetWorthRepoService { get; set; }
 
         public IExchangeRateService ExchangeRateService { get; set; }
 
@@ -60,14 +65,14 @@ namespace fita.ui.ViewModels.Home
             Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData(); });
         }
 
-        private void OnChildrenPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private async void OnChildrenPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e?.PropertyName?.Equals("TotalAmount") ?? false)
             {
                 RaisePropertyChanged(() => NetWorth);
+                await SaveNetWorth();
             }
         }
-
 
         public async Task RefreshData()
         {
@@ -118,6 +123,29 @@ namespace fita.ui.ViewModels.Home
             finally
             {
                 IsBusy = false;
+            }
+        }
+        
+        private async Task SaveNetWorth()
+        {
+            if (_netWorth == null)
+            {
+                _netWorth = await NetWorthRepoService.GetForDateAsync(DateTime.Today) ?? new();
+            }
+
+            if (_netWorth.Total != NetWorth || _netWorth.Banks != BanksViewModel.TotalAmount ||
+                _netWorth.CreditCards != CreditCardsViewModel.TotalAmount ||
+                _netWorth.Investments != InvestmentsViewModel.TotalAmount ||
+                _netWorth.Assets != AssetsViewModel.TotalAmount)
+            {
+                _netWorth.Date = DateTime.Today;
+                _netWorth.Total = NetWorth;
+                _netWorth.Banks = BanksViewModel.TotalAmount;
+                _netWorth.CreditCards = CreditCardsViewModel.TotalAmount;
+                _netWorth.Investments = InvestmentsViewModel.TotalAmount;
+                _netWorth.Assets = AssetsViewModel.TotalAmount;
+
+                await NetWorthRepoService.SaveAsync(_netWorth);
             }
         }
 

@@ -20,6 +20,7 @@ namespace fita.services
             serviceRegistry.Register<TradeRepoService>();
             serviceRegistry.Register<SecurityPositionRepoService>();
             serviceRegistry.Register<ClosedPositionRepoService>();
+            serviceRegistry.Register<NetWorthRepoService>();
 
             serviceRegistry.Register<IExchangeRateService, ExchangeRateService>();
             serviceRegistry.Register<ISecurityService, SecurityService>();
