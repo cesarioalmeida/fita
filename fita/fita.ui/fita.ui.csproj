@@ -75,6 +75,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Page Update="Views\Reports\IncomeExpensesReportView.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      </Page>
       <Page Update="Views\Reports\ClosedPositionsReportView.xaml">
         <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       </Page>

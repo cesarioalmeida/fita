@@ -60,6 +60,8 @@ namespace fita.ui.ViewModels
                 "../Resources/Icons/Reports_24x24.png"),
             new HamburgerMenuItemViewModel("Closed Positions", "ClosedPositionsReportView",
                 "../Resources/Icons/Reports_24x24.png"),
+            new HamburgerMenuItemViewModel("Income/Expenses", "IncomeExpensesReportView",
+                "../Resources/Icons/Reports_24x24.png"),
             new HamburgerMenuItemViewModel("Net Worth", "NetWorthReportView",
                 "../Resources/Icons/Reports_24x24.png")
         };

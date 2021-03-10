@@ -109,7 +109,7 @@ namespace fita.ui.ViewModels.Home
                     }
                 }
 
-                expenses += closedPositions.Where(x => x.ProfitLoss <= 0).Sum(x => x.ProfitLoss);
+                expenses += closedPositions.Where(x => x.ProfitLoss <= 0).Sum(x => -x.ProfitLoss);
                 income += closedPositions.Where(x => x.ProfitLoss > 0).Sum(x => x.ProfitLoss);
 
                 ExpensesMonth = expenses;
