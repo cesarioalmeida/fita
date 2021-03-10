@@ -95,7 +95,7 @@
                             <dxc:LineSeries2D
                                 ArgumentDataMember="Date"
                                 CrosshairLabelPattern="{}{S}: {V:c2}"
-                                DisplayName="Investments (using current positions)"
+                                DisplayName="Investments"
                                 ValueDataMember="Investments" />
                             <dxc:LineSeries2D
                                 ArgumentDataMember="Date"
