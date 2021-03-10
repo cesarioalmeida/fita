@@ -10,7 +10,6 @@
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui"
-    xmlns:enums="clr-namespace:twentySix.Framework.Core.UI.Enums;assembly=twentySix.Framework.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:navigation="http://schemas.devexpress.com/winfx/2008/xaml/windowsui/navigation"
     xmlns:viewModels="clr-namespace:fita.ui.ViewModels"
@@ -30,11 +29,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <dxmvvm:ObjectToObjectConverter x:Key="MessageStateToColourConverter" DefaultTarget="Black">
-                <dxmvvm:MapItem Source="{x:Static enums:NotificationStatusEnum.Error}" Target="Red" />
-                <dxmvvm:MapItem Source="{x:Static enums:NotificationStatusEnum.Success}" Target="Green" />
-            </dxmvvm:ObjectToObjectConverter>
 
             <DataTemplate x:Key="waitIndicator">
                 <dx:WaitIndicator DeferedVisibility="True" />
@@ -96,7 +90,6 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Margin="5,10,5,0">
@@ -127,7 +120,10 @@
                         <Setter Property="LeftCaption" Value="{Binding Caption}" />
                     </Style>
                 </Border.Resources>
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer
+                    dx:ScrollBarExtensions.ScrollBarMode="TouchOverlap"
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="0,5,0,0">
                         <ItemsControl ItemsSource="{Binding HomeHamburgerItem}" />
                         <controls:SeparatorMenuItem />
@@ -170,14 +166,6 @@
             </dxwui:NavigationFrame>
 
         </Grid>
-
-        <dxb:StatusBarControl Grid.Row="1" Caption="Status Bar">
-            <dxb:BarStaticItem
-                Content="{Binding Message.Message}"
-                CustomizationContent="Caret Position"
-                Foreground="{Binding Message.Status, Converter={StaticResource MessageStateToColourConverter}}"
-                ShowBorder="False" />
-        </dxb:StatusBarControl>
 
         <!--  Initial load of heavy dx controls  -->
         <Grid Height="1" Opacity="0">

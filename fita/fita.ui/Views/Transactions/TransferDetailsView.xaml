@@ -1,56 +1,58 @@
-﻿<UserControl x:Class="fita.ui.Views.Transactions.TransferDetailsView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
-             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-             xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
-             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
-             xmlns:converters="clr-namespace:fita.ui.Converters"
-             d:DataContext="{d:DesignInstance transactions:TransferDetailsViewModel}"
-             mc:Ignorable="d">
+﻿<UserControl
+    x:Class="fita.ui.Views.Transactions.TransferDetailsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:fita.ui.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
+    d:DataContext="{d:DesignInstance transactions:TransferDetailsViewModel}"
+    mc:Ignorable="d">
     <UserControl.Resources>
 
-        <dxmvvm:BooleanToObjectConverter x:Key="ReadOnlyToLabelAccountConverter"
-                                         TrueValue="From Account"
-                                         FalseValue="To Account" />
+        <dxmvvm:BooleanToObjectConverter
+            x:Key="ReadOnlyToLabelAccountConverter"
+            FalseValue="To Account"
+            TrueValue="From Account" />
 
         <ControlTemplate x:Key="popupContentTemplate">
-            <dxg:GridControl x:Name="PART_GridControl"
-                             AutoGenerateColumns="None"
-                             IsFilterEnabled="False"
-                             ShowLoadingPanel="False"
-                             AllowColumnMRUFilterList="False"
-                             AllowMRUFilterList="False"
-                             ShowBorder="False">
+            <dxg:GridControl
+                x:Name="PART_GridControl"
+                AllowColumnMRUFilterList="False"
+                AllowMRUFilterList="False"
+                AutoGenerateColumns="None"
+                IsFilterEnabled="False"
+                ShowBorder="False"
+                ShowLoadingPanel="False">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="Name" />
-                    <dxg:GridColumn FieldName="Type"
-                                    Binding="{Binding Type, Converter={converters:EnumDisplayConverter}}" />
+                    <dxg:GridColumn Binding="{Binding Type, Converter={converters:EnumDisplayConverter}}" FieldName="Type" />
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
-                    <dxg:TableView ScrollAnimationDuration="0"
-                                   HorizontalScrollbarVisibility="Hidden"
-                                   AllowFilterEditor="False"
-                                   AutoWidth="True"
-                                   ShowColumnHeaders="False"
-                                   ShowHorizontalLines="False"
-                                   ShowIndicator="False"
-                                   ShowSearchPanelCloseButton="False"
-                                   ShowVerticalLines="False"
-                                   ShowValidationAttributeErrors="False"
-                                   ShowGroupPanel="False" />
+                    <dxg:TableView
+                        AllowFilterEditor="False"
+                        AutoWidth="True"
+                        HorizontalScrollbarVisibility="Hidden"
+                        ScrollAnimationDuration="0"
+                        ShowColumnHeaders="False"
+                        ShowGroupPanel="False"
+                        ShowHorizontalLines="False"
+                        ShowIndicator="False"
+                        ShowSearchPanelCloseButton="False"
+                        ShowValidationAttributeErrors="False"
+                        ShowVerticalLines="False" />
                 </dxg:GridControl.View>
             </dxg:GridControl>
         </ControlTemplate>
     </UserControl.Resources>
 
     <dxmvvm:Interaction.Behaviors>
-        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}"
-                               EventName="Loaded" />
+        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
     </dxmvvm:Interaction.Behaviors>
 
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
@@ -61,79 +63,102 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock HorizontalAlignment="Center"
-                       Style="{StaticResource H1}"
-                       Text="{DXBinding 'Account.Name + ` - Transfer`'}" />
+            <TextBlock
+                HorizontalAlignment="Center"
+                Style="{StaticResource H1}"
+                Text="{DXBinding 'Account.Name + ` - Transfer`'}" />
 
             <dxlc:LayoutControl Grid.Row="1">
-                <dxlc:LayoutGroup ItemSpace="15"
-                                  Orientation="Vertical">
-                    <dxlc:LayoutItem AddColonToLabel="True"
-                                     Label="Date"
-                                     LabelPosition="Top">
+                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
+                    <dxlc:LayoutItem
+                        AddColonToLabel="True"
+                        Label="Date"
+                        LabelPosition="Top">
                         <dxe:DateEdit EditValue="{Binding Transaction.Date, UpdateSourceTrigger=PropertyChanged}">
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:FocusBehavior />
                             </dxmvvm:Interaction.Behaviors>
                         </dxe:DateEdit>
                     </dxlc:LayoutItem>
-                    <dxlc:LayoutItem AddColonToLabel="True"
-                                     Label="{Binding IsReadOnly, Converter={StaticResource ReadOnlyToLabelAccountConverter}}"
-                                     LabelPosition="Top">
-                        <dxg:LookUpEdit VerticalAlignment="Center"
-                                        IsReadOnly="{Binding IsReadOnly}"
-                                        AutoPopulateColumns="False"
-                                        ShowSizeGrip="False"
-                                        DisplayMember="Name"
-                                        EditValue="{Binding OtherAccount, UpdateSourceTrigger=PropertyChanged}"
-                                        FilterCondition="Contains"
-                                        ImmediatePopup="True"
-                                        IncrementalFiltering="True"
-                                        IsTextEditable="True"
-                                        ItemsSource="{Binding Accounts}"
-                                        AllowRecreatePopupContent="False"
-                                        PopupContentTemplate="{StaticResource popupContentTemplate}" />
+                    <dxlc:LayoutItem
+                        AddColonToLabel="True"
+                        Label="{Binding IsReadOnly, Converter={StaticResource ReadOnlyToLabelAccountConverter}}"
+                        LabelPosition="Top">
+                        <dxg:LookUpEdit
+                            VerticalAlignment="Center"
+                            AllowRecreatePopupContent="False"
+                            AutoPopulateColumns="False"
+                            DisplayMember="Name"
+                            EditValue="{Binding OtherAccount, UpdateSourceTrigger=PropertyChanged}"
+                            FilterCondition="Contains"
+                            ImmediatePopup="True"
+                            IncrementalFiltering="True"
+                            IsReadOnly="{Binding IsReadOnly}"
+                            IsTextEditable="True"
+                            ItemsSource="{Binding Accounts}"
+                            PopupContentTemplate="{StaticResource popupContentTemplate}"
+                            ShowSizeGrip="False" />
                     </dxlc:LayoutItem>
-                    <dxlc:LayoutItem AddColonToLabel="True"
-                                     Label="Transfer Amount"
-                                     LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding PaymentAmount, UpdateSourceTrigger=PropertyChanged}"
-                                      Mask="c2"
-                                      Foreground="DarkRed"
-                                      MaskCulture="{Binding PaymentCulture, UpdateSourceTrigger=PropertyChanged}"
-                                      MaskType="Numeric"
-                                      MaskUseAsDisplayFormat="True" />
+                    <dxlc:LayoutItem
+                        AddColonToLabel="True"
+                        Label="Transfer Amount"
+                        LabelPosition="Top">
+                        <dxe:TextEdit
+                            EditValue="{Binding PaymentAmount, UpdateSourceTrigger=PropertyChanged}"
+                            Foreground="DarkRed"
+                            Mask="c2"
+                            MaskCulture="{Binding PaymentCulture, UpdateSourceTrigger=PropertyChanged}"
+                            MaskType="Numeric"
+                            MaskUseAsDisplayFormat="True">
+                            <dxmvvm:Interaction.Behaviors>
+                                <dxmvvm:KeyToCommand Command="{Binding SaveCommand}" KeyGesture="Enter" />
+                            </dxmvvm:Interaction.Behaviors>
+                        </dxe:TextEdit>
                     </dxlc:LayoutItem>
-                    <dxlc:LayoutItem AddColonToLabel="True"
-                                     Label="Received Amount"
-                                     LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding DepositAmount, UpdateSourceTrigger=PropertyChanged}"
-                                      Mask="c2"
-                                      Foreground="DarkGreen"
-                                      MaskCulture="{Binding DepositCulture, UpdateSourceTrigger=PropertyChanged}"
-                                      MaskType="Numeric"
-                                      MaskUseAsDisplayFormat="True" />
+                    <dxlc:LayoutItem
+                        AddColonToLabel="True"
+                        Label="Received Amount"
+                        LabelPosition="Top">
+                        <dxe:TextEdit
+                            EditValue="{Binding DepositAmount, UpdateSourceTrigger=PropertyChanged}"
+                            Foreground="DarkGreen"
+                            Mask="c2"
+                            MaskCulture="{Binding DepositCulture, UpdateSourceTrigger=PropertyChanged}"
+                            MaskType="Numeric"
+                            MaskUseAsDisplayFormat="True">
+                            <dxmvvm:Interaction.Behaviors>
+                                <dxmvvm:KeyToCommand Command="{Binding SaveCommand}" KeyGesture="Enter" />
+                            </dxmvvm:Interaction.Behaviors>
+                        </dxe:TextEdit>
                     </dxlc:LayoutItem>
-                    <dxlc:LayoutItem AddColonToLabel="True"
-                                     Label="Notes"
-                                     LabelPosition="Top">
-                        <dxe:TextEdit EditValue="{Binding Transaction.Notes, UpdateSourceTrigger=PropertyChanged}" />
+                    <dxlc:LayoutItem
+                        AddColonToLabel="True"
+                        Label="Notes"
+                        LabelPosition="Top">
+                        <dxe:TextEdit EditValue="{Binding Transaction.Notes, UpdateSourceTrigger=PropertyChanged}">
+                            <dxmvvm:Interaction.Behaviors>
+                                <dxmvvm:KeyToCommand Command="{Binding SaveCommand}" KeyGesture="Enter" />
+                            </dxmvvm:Interaction.Behaviors>
+                        </dxe:TextEdit>
                     </dxlc:LayoutItem>
                 </dxlc:LayoutGroup>
             </dxlc:LayoutControl>
 
-            <StackPanel Grid.Row="2"
-                        Margin="4"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal">
-                <dxc:SimpleButton Command="{Binding SaveCommand}"
-                                  Content="Save"
-                                  Style="{StaticResource ActionButton}" />
-                <dxc:SimpleButton Margin="15,0,7,0"
-                                  Command="{Binding CancelCommand}"
-                                  Content="Cancel"
-                                  IsCancel="True"
-                                  Style="{StaticResource ActionButton}" />
+            <StackPanel
+                Grid.Row="2"
+                Margin="4"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <dxc:SimpleButton
+                    Command="{Binding SaveCommand}"
+                    Content="Save"
+                    Style="{StaticResource ActionButton}" />
+                <dxc:SimpleButton
+                    Margin="15,0,7,0"
+                    Command="{Binding CancelCommand}"
+                    Content="Cancel"
+                    IsCancel="True"
+                    Style="{StaticResource ActionButton}" />
             </StackPanel>
         </Grid>
     </dxc:LoadingDecorator>
