@@ -63,7 +63,8 @@ namespace fita.ui.ViewModels.Securities
                 var securityHistories = await SecurityHistoryRepoService.AllEnrichedAsync();
 
                 var data = securities.Select(s =>
-                    new EntityModel(s, securityHistories.FirstOrDefault(x => x.Security.SecurityId == s.SecurityId)));
+                    new EntityModel(s,
+                        securityHistories.FirstOrDefault(x => x.Security.SecurityId == s.SecurityId)));
 
                 Data.AddRange(data);
             }

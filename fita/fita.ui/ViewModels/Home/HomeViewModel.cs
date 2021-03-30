@@ -47,6 +47,8 @@ namespace fita.ui.ViewModels.Home
 
         public virtual decimal ExpensesMonth { get; set; }
 
+        public virtual decimal PLMonth { get; set; }
+
         public HomeViewModel()
         {
             BanksViewModel = ViewModelSource.Create<BanksViewModel>();
@@ -119,6 +121,7 @@ namespace fita.ui.ViewModels.Home
 
                 ExpensesMonth = expenses;
                 IncomeMonth = income;
+                PLMonth = IncomeMonth - ExpensesMonth;
             }
             finally
             {

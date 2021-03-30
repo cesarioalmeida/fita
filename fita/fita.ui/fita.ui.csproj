@@ -12,6 +12,7 @@
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="20.2.6" />
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid" Version="20.2.6" />
       <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid.Core" Version="20.2.6" />
+      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.All" Version="20.2.6" />
       <PackageReference Include="twentySix.Framework.Core" Version="4.0.4" />
       <PackageReference Include="twentySix.Framework.Theme" Version="4.0.4" />
     </ItemGroup>

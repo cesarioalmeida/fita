@@ -21,7 +21,7 @@
             <Style x:Key="KeyNumber" TargetType="dxe:TextEdit">
                 <Setter Property="FontFamily" Value="Roboto" />
                 <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="FontSize" Value="72" />
+                <Setter Property="FontSize" Value="60" />
                 <Setter Property="IsReadOnly" Value="True" />
                 <Setter Property="ShowBorder" Value="False" />
                 <Setter Property="MaskUseAsDisplayFormat" Value="True" />
@@ -82,15 +82,34 @@
                 <Grid
                     Grid.Row="0"
                     Grid.Column="0"
-                    Margin="30"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                    <dxe:TextEdit
-                        EditValue="{Binding NetWorth, Mode=OneWay}"
-                        Foreground="#d97642"
-                        Style="{StaticResource KeyNumber}" />
-                    <TextBlock Style="{StaticResource KeyText}" Text="net worth" />
+                    Margin="30">
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <dxe:TextEdit
+                            Grid.Column="0"
+                            EditValue="{Binding NetWorth, Mode=OneWay}"
+                            Foreground="#d97642"
+                            Style="{StaticResource KeyNumber}" />
+                        <TextBlock
+                            Grid.Column="0"
+                            Style="{StaticResource KeyText}"
+                            Text="net worth" />
+                        <dxe:TextEdit
+                            Grid.Column="1"
+                            EditValue="{Binding PLMonth, Mode=OneWay}"
+                            Foreground="#966c3b"
+                            Style="{StaticResource KeyNumber}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Style="{StaticResource KeyText}"
+                            Text="pl" />
+                    </Grid>
                 </Grid>
+
                 <Grid
                     Grid.Row="0"
                     Grid.Column="1"
@@ -103,7 +122,6 @@
                         <dxe:TextEdit
                             Grid.Column="0"
                             EditValue="{Binding IncomeMonth, IsAsync=True, Mode=OneWay}"
-                            FontSize="60"
                             Foreground="#9ecca4"
                             Style="{StaticResource KeyNumber}" />
                         <TextBlock
@@ -113,7 +131,6 @@
                         <dxe:TextEdit
                             Grid.Column="1"
                             EditValue="{Binding ExpensesMonth, IsAsync=True, Mode=OneWay}"
-                            FontSize="60"
                             Foreground="#d49d42"
                             Style="{StaticResource KeyNumber}" />
                         <TextBlock
