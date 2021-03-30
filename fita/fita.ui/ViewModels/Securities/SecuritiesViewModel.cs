@@ -116,7 +116,11 @@ namespace fita.ui.ViewModels.Securities
 
                 if (historicalToDelete != null)
                 {
-                    await HistoricalDataRepoService.DeleteAsync(historicalToDelete.Price.HistoricalDataId);
+                    if (historicalToDelete.Price != null)
+                    {
+                        await HistoricalDataRepoService.DeleteAsync(historicalToDelete.Price.HistoricalDataId);
+                    }
+
                     await SecurityHistoryRepoService.DeleteAsync(historicalToDelete.SecurityHistoryId);
                 }
 

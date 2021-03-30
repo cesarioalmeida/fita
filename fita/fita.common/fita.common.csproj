@@ -7,7 +7,7 @@
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="10.1.1" />
       <PackageReference Include="LiteDB" Version="5.0.10" />
-      <PackageReference Include="twentySix.Framework.Core" Version="4.0.3" />
+      <PackageReference Include="twentySix.Framework.Core" Version="4.0.4" />
     </ItemGroup>
 
 </Project>

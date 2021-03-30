@@ -8,14 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Accordion" Version="20.2.5" />
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Charts" Version="20.2.5" />
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid" Version="20.2.5" />
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Navigation" Version="20.2.5" />
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.PivotGrid" Version="20.2.5" />
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.All" Version="20.2.5" />
-      <PackageReference Include="twentySix.Framework.Core" Version="4.0.3" />
-      <PackageReference Include="twentySix.Framework.Theme" Version="4.0.3" />
+      <PackageReference Include="DevExpress.WindowsDesktop.Mvvm" Version="20.2.6" />
+      <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="20.2.6" />
+      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid" Version="20.2.6" />
+      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid.Core" Version="20.2.6" />
+      <PackageReference Include="twentySix.Framework.Core" Version="4.0.4" />
+      <PackageReference Include="twentySix.Framework.Theme" Version="4.0.4" />
     </ItemGroup>
 
     <ItemGroup>
