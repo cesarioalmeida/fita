@@ -116,8 +116,19 @@ namespace fita.ui.ViewModels.Home
                     }
                 }
 
-                expenses += closedPositions.Where(x => x.ProfitLoss <= 0).Sum(x => -x.ProfitLoss);
-                income += closedPositions.Where(x => x.ProfitLoss > 0).Sum(x => x.ProfitLoss);
+                foreach (var position in closedPositions)
+                {
+                    var account = accounts.Single(x => x.AccountId == position.AccountId);
+
+                    if (position.ProfitLoss <= 0)
+                    {
+                        expenses += await ExchangeRateService.Exchange(account.Currency, baseCurrency, -position.ProfitLoss);
+                    }
+                    else
+                    {
+                        income += await ExchangeRateService.Exchange(account.Currency, baseCurrency, position.ProfitLoss);
+                    }
+                }
 
                 ExpensesMonth = expenses;
                 IncomeMonth = income;
