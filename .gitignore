@@ -228,3 +228,4 @@ FakesAssemblies/
 **/.idea/**/contentModel.xml
 **/.idea/**/modules.xml
 **/.idea/**/.idea/*.*
+*.bak
