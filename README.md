@@ -1,2 +1,2 @@
 # fita
-Financial Tracker
+Personal Financial Manager
