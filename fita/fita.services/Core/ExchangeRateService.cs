@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using fita.services.Repositories;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Services.Interfaces;
@@ -11,6 +12,9 @@ namespace fita.services.Core
 {
     public class ExchangeRateService : IExchangeRateService
     {
+        private static IConfiguration configuration =
+            new ConfigurationBuilder().AddUserSecrets<ExchangeRateService>().Build();
+
         public ExchangeRateRepoService ExchangeRateRepoService { get; set; }
 
         public HistoricalDataRepoService HistoricalDataRepoService { get; set; }
@@ -63,7 +67,8 @@ namespace fita.services.Core
                 });
         }
 
-        public async Task<decimal> Exchange(Currency fromCurrency, Currency toCurrency, decimal value, DateTime? date = null)
+        public async Task<decimal> Exchange(Currency fromCurrency, Currency toCurrency, decimal value,
+            DateTime? date = null)
         {
             try
             {
@@ -84,7 +89,8 @@ namespace fita.services.Core
                     await UpdateAsync(exchangeRate, date);
                 }
 
-                return (exchangeRate.Rate.DataPoints.SingleOrDefault(x => x.Date.Date == date.Value.Date)?.Value ?? 1m) * value;
+                return (exchangeRate.Rate.DataPoints.SingleOrDefault(x => x.Date.Date == date.Value.Date)?.Value ??
+                        1m) * value;
             }
             catch (Exception ex)
             {
@@ -96,8 +102,8 @@ namespace fita.services.Core
         private static HistoricalElement DownloadData(ExchangeRate exchangeRate, DateTime? date = null)
         {
             var requestUrl = date == null
-                ? $"{Properties.Resources.ExchangeRateApi}?base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}"
-                : $"{Properties.Resources.ExchangeRateApi}?start_at={date.Value:YYYY-MM-dd}&end_at={date.Value:YYYY-MM-dd}&base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}";
+                ? $"{Properties.Resources.ExchangeRateApi}?access_key={configuration["ExchangeRatesApi"]}&base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}"
+                : $"{Properties.Resources.ExchangeRateApi}?access_key={configuration["ExchangeRatesApi"]}&start_at={date.Value:YYYY-MM-dd}&end_at={date.Value:YYYY-MM-dd}&base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}";
 
             using var client = new WebClientExtended {Timeout = 5000};
 

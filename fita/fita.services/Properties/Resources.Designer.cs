@@ -61,7 +61,7 @@ namespace fita.services.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://api.exchangeratesapi.io/v1/latest.
+        ///   Looks up a localized string similar to http://api.exchangeratesapi.io/v1/latest.
         /// </summary>
         internal static string ExchangeRateApi {
             get {

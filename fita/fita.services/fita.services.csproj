@@ -2,11 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0-windows</TargetFramework>
+        <UserSecretsId>436297b7-041d-4ac9-859c-35ef256234a6</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="LiteDB" Version="5.0.10" />
       <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="twentySix.Framework.Core" Version="4.0.4" />
       <PackageReference Include="YahooFinanceAPI" Version="2.0.0" />
