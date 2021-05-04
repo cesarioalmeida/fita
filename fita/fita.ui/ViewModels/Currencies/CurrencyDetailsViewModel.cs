@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using fita.data.Models;
@@ -6,6 +7,7 @@ using fita.services;
 using fita.services.Repositories;
 using fita.ui.Common;
 using twentySix.Framework.Core.Messages;
+using twentySix.Framework.Core.Services;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
 
@@ -19,6 +21,8 @@ namespace fita.ui.ViewModels.Currencies
         public int Height => 600;
 
         public CurrencyRepoService CurrencyRepoService { get; set; }
+        
+        public LoggingService LoggingService { get; set; }
 
         public Currency Currency { get; set; }
 
@@ -41,6 +45,10 @@ namespace fita.ui.ViewModels.Currencies
 
                 Saved = true;
                 DocumentOwner?.Close(this);
+            }
+            catch (Exception ex)
+            {
+                LoggingService.Error($@"{nameof(CurrencyDetailsViewModel)} - {ex.Message}");
             }
             finally
             {

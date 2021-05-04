@@ -18,6 +18,7 @@ using fita.ui.Views.Currencies;
 using fita.ui.Views.HistoricalData;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
+using twentySix.Framework.Core.Services;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
 
@@ -28,6 +29,8 @@ namespace fita.ui.ViewModels.Currencies
     {
         private bool fireChangeNotification;
 
+        public LoggingService LoggingService { get; set; }
+        
         public FileSettingsRepoService FileSettingsRepoService { get; set; }
 
         public CurrencyRepoService CurrencyRepoService { get; set; }
@@ -67,13 +70,30 @@ namespace fita.ui.ViewModels.Currencies
                 FileSettings = (await FileSettingsRepoService.AllEnrichedAsync())?.FirstOrDefault();
 
                 var currencies = await CurrencyRepoService.AllAsync();
-                var exchangeRates =
-                    await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
+                
+                // if there's no base currency and there's at least one currency => set base currency
+                if (FileSettings?.BaseCurrency == null)
+                {
+                    if (currencies.Any())
+                    {
+                        await SetBase(currencies.First(), false);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                var exchangeRates = await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
 
                 var data = currencies.Select(c =>
                     new CurrenciesModel(FileSettings.BaseCurrency, c, exchangeRates.FirstOrDefault(x => x.ToCurrency.CurrencyId == c.CurrencyId)));
 
                 Data.AddRange(data);
+            }
+            catch (Exception ex)
+            {
+                LoggingService.Error($"@CurrenciesViewModel.RefreshData(): {ex.Message}");
             }
             finally
             {
@@ -142,6 +162,10 @@ namespace fita.ui.ViewModels.Currencies
 
                 await RefreshData();
             }
+            catch (Exception ex)
+            {
+                LoggingService.Error($"{nameof(Delete)}: {ex.Message}");
+            }
             finally
             {
                 IsBusy = false;
@@ -153,7 +177,7 @@ namespace fita.ui.ViewModels.Currencies
             return currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
         }
 
-        public async Task SetBase(Currency currency)
+        public async Task SetBase(Currency currency, bool refresh = true)
         {
             if (currency == null)
             {
@@ -173,7 +197,14 @@ namespace fita.ui.ViewModels.Currencies
 
                 fireChangeNotification = true;
 
-                await RefreshData();
+                if (refresh)
+                {
+                    await RefreshData();
+                }
+            }
+            catch (Exception ex)
+            {
+                LoggingService.Error($"{nameof(SetBase)}: {ex.Message}");
             }
             finally
             {
@@ -215,6 +246,10 @@ namespace fita.ui.ViewModels.Currencies
 
                 await RefreshData();
             }
+            catch (Exception ex)
+            {
+                LoggingService.Error($"{nameof(Update)}: {ex.Message}");
+            }
             finally
             {
                 IsBusy = false;
@@ -236,6 +271,10 @@ namespace fita.ui.ViewModels.Currencies
                 }
 
                 await SetBase(Data.Select(x => x.Currency).Single(x => x.CurrencyId == baseCurrencyId));
+            }
+            catch (Exception ex)
+            {
+                LoggingService.Error($"{nameof(UpdateAll)}: {ex.Message}");
             }
             finally
             {
