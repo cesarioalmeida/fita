@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
 using fita.data.Models;
 using fita.services.Repositories;
+using fita.ui.Messages;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.Reports
@@ -17,6 +19,12 @@ namespace fita.ui.ViewModels.Reports
         public virtual Currency BaseCurrency { get; set; }
         
         public NetWorthRepoService NetWorthRepoService { get; set; }
+
+        public NetWorthReportViewModel()
+        {
+            Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
+            Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData(); });
+        }
 
         public async Task RefreshData()
         {

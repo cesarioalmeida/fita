@@ -52,6 +52,7 @@ namespace fita.ui.ViewModels.Currencies
         {
             if (fireChangeNotification)
             {
+                Messenger.Default.Send(new BaseCurrencyChanged());
             }
 
             Data.Clear();
