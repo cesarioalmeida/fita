@@ -62,6 +62,8 @@ namespace fita.ui.ViewModels
                 "../Resources/Icons/Reports_24x24.png"),
             new HamburgerMenuItemViewModel("Income/Expenses", "IncomeExpensesReportView",
                 "../Resources/Icons/Reports_24x24.png"),
+            new HamburgerMenuItemViewModel("PL (Month)", "PLMonthReportView",
+                "../Resources/Icons/Reports_24x24.png"),
             new HamburgerMenuItemViewModel("Net Worth", "NetWorthReportView",
                 "../Resources/Icons/Reports_24x24.png")
         };
