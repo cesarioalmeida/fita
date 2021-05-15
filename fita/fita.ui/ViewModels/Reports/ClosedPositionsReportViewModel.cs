@@ -1,17 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
 using fita.data.Models;
 using fita.services.Repositories;
-using fita.ui.Messages;
-using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.Reports
 {
     [POCOViewModel]
-    public class ClosedPositionsReportViewModel : ComposedViewModelBase
+    public class ClosedPositionsReportViewModel : ReportBaseViewModel
     {
         public LockableCollection<Model> Data { get; set; } = new();
 
@@ -19,13 +16,7 @@ namespace fita.ui.ViewModels.Reports
 
         public ClosedPositionRepoService ClosedPositionRepoService { get; set; }
 
-        public ClosedPositionsReportViewModel()
-        {
-            Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
-            Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData(); });
-        }
-        
-        public async Task RefreshData()
+        public override async Task RefreshData()
         {
             IsBusy = true;
             Data.BeginUpdate();

@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
 using fita.data.Models;
 using fita.services.Repositories;
-using fita.ui.Messages;
-using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.Reports
 {
     [POCOViewModel]
-    public class NetWorthReportViewModel : ComposedViewModelBase
+    public class NetWorthReportViewModel : ReportBaseViewModel
     {
         public LockableCollection<Model> Data { get; set; } = new();
 
@@ -20,13 +17,7 @@ namespace fita.ui.ViewModels.Reports
         
         public NetWorthRepoService NetWorthRepoService { get; set; }
 
-        public NetWorthReportViewModel()
-        {
-            Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
-            Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData(); });
-        }
-
-        public async Task RefreshData()
+        public override async Task RefreshData()
         {
             IsBusy = true;
             Data.BeginUpdate();
