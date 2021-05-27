@@ -1,8 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using DevExpress.Mvvm.UI;
+﻿using System.Windows;
 using fita.services.Repositories;
 using fita.ui.Views;
 using LightInject;
@@ -43,12 +39,6 @@ namespace fita.ui
 
         protected override void ConfigureViewModelLocator()
         {
-            //// devexpress
-            //var callingAssemblyLocation = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location);
-            //var appFiles = Directory.EnumerateFiles(callingAssemblyLocation, "fita.common.dll")
-            //    .Concat(Directory.EnumerateFiles(callingAssemblyLocation, "fita.ui.exe"));
-            //var viewLocator = new ViewLocator(appFiles.Select(Assembly.LoadFile));
-            //ViewLocator.Default = viewLocator;
         }
 
         protected override void ShowWindow()

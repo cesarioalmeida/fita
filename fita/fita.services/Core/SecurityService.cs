@@ -37,8 +37,7 @@ namespace fita.services.Core
                             PrepareHistoricalData(securityHistory);
                         }
 
-                        if (securityHistory.Price?.DataPoints.SingleOrDefault(x => x.Date.Date == data.Date.Date) is var
-                            existingDataPoint and { })
+                        if (securityHistory.Price?.DataPoints.SingleOrDefault(x => x.Date.Date == data.Date.Date) is { } existingDataPoint)
                         {
                             existingDataPoint.Value = data.Value;
                         }
@@ -70,9 +69,24 @@ namespace fita.services.Core
             var numberOfTries = 0;
             var selectedDate = date ?? DateTime.Now;
 
+            if (selectedDate.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+            {
+                selectedDate = selectedDate.DayOfWeek == DayOfWeek.Saturday
+                    ? selectedDate.AddDays(-1)
+                    : selectedDate.AddDays(-2);
+            }
+
+            var timeout = 5000;
+
             while(yahooHistorical.Count == 0 && numberOfTries < 3)
             {
-                yahooHistorical = await YahooHistorical.GetPriceAsync(securityHistory.Security.Symbol, selectedDate.Date, selectedDate);
+                //yahooHistorical = await YahooHistorical.GetPriceAsync(securityHistory.Security.Symbol, selectedDate.Date, selectedDate);
+                var downloadTask = YahooHistorical.GetPriceAsync(securityHistory.Security.Symbol, selectedDate.Date, selectedDate);
+                if (await Task.WhenAny(downloadTask, Task.Delay(timeout)) == downloadTask)
+                {
+                    yahooHistorical = downloadTask.Result;
+                }
+
                 numberOfTries++;
             }
 
