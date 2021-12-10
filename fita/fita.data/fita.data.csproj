@@ -1,23 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0-windows</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="LiteDB" Version="5.0.10" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="DevExpress.Mvvm.v20.2, Version=20.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
-        
-      </Reference>
-      <Reference Include="DevExpress.Office.v20.2.Core">
-        
-      </Reference>
-      <Reference Include="DevExpress.RichEdit.v20.2.Core">
-        
-      </Reference>
+      <PackageReference Include="LiteDB" Version="5.0.11" />
     </ItemGroup>
 
 </Project>

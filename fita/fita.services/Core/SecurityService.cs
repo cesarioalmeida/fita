@@ -90,7 +90,7 @@ namespace fita.services.Core
                 numberOfTries++;
             }
 
-            return new HistoricalElement(yahooHistorical.First().Date, yahooHistorical.First().Close);
+            return new HistoricalElement(yahooHistorical.First().Date, (decimal)yahooHistorical.First().Close);
         }
 
         private static void PrepareHistoricalData(SecurityHistory securityHistory)

@@ -7,8 +7,10 @@ namespace fita.ui
 {
     public partial class App
     {
-        protected override async void OnStartup(StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs e)
         {
+            ClearAutomationEventsHelper.IsEnabled = false;
+            
             base.OnStartup(e);
 
             SplashScreenManager.CreateFluent(new DXSplashScreenViewModel

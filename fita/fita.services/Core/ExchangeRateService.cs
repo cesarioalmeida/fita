@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using fita.data.Models;
 using fita.services.Repositories;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.Core
@@ -105,9 +105,9 @@ namespace fita.services.Core
                 ? $"{Properties.Resources.ExchangeRateApi}?access_key={configuration["ExchangeRatesApi"]}&base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}"
                 : $"{Properties.Resources.ExchangeRateApi}?access_key={configuration["ExchangeRatesApi"]}&start_at={date.Value:YYYY-MM-dd}&end_at={date.Value:YYYY-MM-dd}&base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}";
 
-            using var client = new WebClientExtended {Timeout = 5000};
+            using var client = new HttpClient {Timeout = TimeSpan.FromSeconds(5)};
 
-            var json = client.DownloadString(requestUrl);
+            var json = client.GetStringAsync(requestUrl).Result;
             dynamic parsedJson = JObject.Parse(json);
 
             return new HistoricalElement((DateTime) Convert.ToDateTime(parsedJson.date),

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using System.Windows;
 using fita.services.Repositories;
 using fita.ui.Views;
 using LightInject;
@@ -20,25 +22,15 @@ namespace fita.ui
         {
         }
 
-        protected override void ConfigureApplication()
-        {
-            ApplicationHelper.SetApplicationDetails("twentySix", ApplicationName);
-        }
+        protected override void ConfigureApplication() 
+            => ApplicationHelper.SetApplicationDetails("twentySix", ApplicationName);
 
-        protected override void ConfigureServiceContainer()
+        protected override IEnumerable<Assembly> GetRegistrationAssemblies()
         {
-            base.ConfigureServiceContainer();
-
-            Container.RegisterAssembly("twentySix.Framework.*.dll");
-            Container.RegisterAssembly("fita.common.dll");
-            Container.RegisterAssembly("fita.data.dll");
-            Container.RegisterAssembly("fita.services.dll");
-            
-            Container.RegisterFrom<Composition>();
-        }
-
-        protected override void ConfigureViewModelLocator()
-        {
+            yield return Assembly.LoadFile(ApplicationHelper.GetFullPath("fita.common.dll"));
+            yield return Assembly.LoadFile(ApplicationHelper.GetFullPath("fita.data.dll"));
+            yield return Assembly.LoadFile(ApplicationHelper.GetFullPath("fita.services.dll"));
+            yield return GetType().Assembly;
         }
 
         protected override void ShowWindow()
@@ -48,14 +40,14 @@ namespace fita.ui
                 instance.SeedData();
             }
 
-            this.Container.GetInstance<ShellView>().Show();
+            Container.GetInstance<ShellView>().Show();
         }
 
         protected override void OnExit()
         {
             base.OnExit();
 
-            foreach (var obj in this.Container.GetAllInstances<IDependsOnClose>())
+            foreach (var obj in Container.GetAllInstances<IDependsOnClose>())
             {
                 obj.OnClose();
             }

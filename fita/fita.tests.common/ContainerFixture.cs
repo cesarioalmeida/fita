@@ -20,7 +20,6 @@ namespace fita.tests.common
             container.RegisterAssembly("fita.common.dll");
             container.RegisterAssembly("fita.data.dll");
             container.RegisterAssembly("fita.services.dll");
-            container.RegisterAssembly("fita.ui.dll");
 
             // mocked services
             container.Register(_ => new Mock<ILoggingService>().Object);

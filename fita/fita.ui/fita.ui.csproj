@@ -2,20 +2,10 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net5.0-windows</TargetFramework>
+        <TargetFramework>net6.0-windows</TargetFramework>
         <UseWPF>true</UseWPF>
         <ApplicationIcon>fita.ico</ApplicationIcon>
     </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="DevExpress.WindowsDesktop.Mvvm" Version="20.2.7" />
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="20.2.7" />
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid" Version="20.2.7" />
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Grid.Core" Version="20.2.7" />
-      <PackageReference Include="DevExpress.WindowsDesktop.Wpf.Themes.All" Version="20.2.7" />
-      <PackageReference Include="twentySix.Framework.Core" Version="4.0.5" />
-      <PackageReference Include="twentySix.Framework.Theme" Version="4.0.5" />
-    </ItemGroup>
 
     <ItemGroup>
       <None Remove="ddeploy.ico" />
@@ -71,6 +61,12 @@
 
     <ItemGroup>
       <Folder Include="Common\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DevExpress.Wpf.Themes.Win10Light" Version="21.1.3" />
+      <PackageReference Include="twentySix.Framework.Core" Version="6.0.0" />
+      <PackageReference Include="twentySix.Framework.Theme" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
