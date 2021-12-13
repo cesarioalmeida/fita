@@ -9,7 +9,7 @@
       <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="twentySix.Framework.Core" Version="6.0.0" />
+      <PackageReference Include="twentySix.Framework.Core" Version="6.3.0" />
       <PackageReference Include="YahooFinanceAPI" Version="2.3.0" />
     </ItemGroup>
 
