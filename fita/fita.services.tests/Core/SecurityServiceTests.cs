@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using fita.data.Models;
 using fita.services.Core;
-using fita.tests.common;
 using NUnit.Framework;
 
 namespace fita.services.tests.Core

@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fita.ui", "fita.ui\fita.ui.csproj", "{DE776980-E79E-49A2-A96D-619E63F0B775}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fita.common", "fita.common\fita.common.csproj", "{71A5C0B3-F1C7-46F6-9017-3B58DC32AA44}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fita.data", "fita.data\fita.data.csproj", "{440986AB-004A-4405-8E1E-5420D54F5DA9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fita.services", "fita.services\fita.services.csproj", "{E1D0EE89-FDBC-4CC3-B8FE-AA80C7243D42}"
@@ -14,8 +12,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fita.services.tests", "fita.services.tests\fita.services.tests.csproj", "{BF4A4B19-33D1-4600-9119-7767F40AC4F7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0164E774-719C-4CDC-90AE-A248AED82230}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fita.tests.common", "fita.tests.common\fita.tests.common.csproj", "{D87796CD-E24E-4A35-A560-20D5ECE60787}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +23,6 @@ Global
 		{DE776980-E79E-49A2-A96D-619E63F0B775}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE776980-E79E-49A2-A96D-619E63F0B775}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE776980-E79E-49A2-A96D-619E63F0B775}.Release|Any CPU.Build.0 = Release|Any CPU
-		{71A5C0B3-F1C7-46F6-9017-3B58DC32AA44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{71A5C0B3-F1C7-46F6-9017-3B58DC32AA44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{71A5C0B3-F1C7-46F6-9017-3B58DC32AA44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{71A5C0B3-F1C7-46F6-9017-3B58DC32AA44}.Release|Any CPU.Build.0 = Release|Any CPU
 		{440986AB-004A-4405-8E1E-5420D54F5DA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{440986AB-004A-4405-8E1E-5420D54F5DA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{440986AB-004A-4405-8E1E-5420D54F5DA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,17 +35,12 @@ Global
 		{BF4A4B19-33D1-4600-9119-7767F40AC4F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF4A4B19-33D1-4600-9119-7767F40AC4F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF4A4B19-33D1-4600-9119-7767F40AC4F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D87796CD-E24E-4A35-A560-20D5ECE60787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D87796CD-E24E-4A35-A560-20D5ECE60787}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D87796CD-E24E-4A35-A560-20D5ECE60787}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D87796CD-E24E-4A35-A560-20D5ECE60787}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BF4A4B19-33D1-4600-9119-7767F40AC4F7} = {0164E774-719C-4CDC-90AE-A248AED82230}
-		{D87796CD-E24E-4A35-A560-20D5ECE60787} = {0164E774-719C-4CDC-90AE-A248AED82230}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33FB09BE-681D-451E-800F-12F78DA302B6}
