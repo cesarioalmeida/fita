@@ -4,6 +4,7 @@ using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
 using fita.data.Models;
 using fita.services.Repositories;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.Portfolio
@@ -25,13 +26,13 @@ namespace fita.ui.ViewModels.Portfolio
         {
             IsBusy = true;
             
-            if (Account == null)
+            if (Account is null)
             {
                 return;
             }
                 
             Account = await AccountRepoService.DetailsEnrichedAsync(Account.AccountId);
-            if (Account == null)
+            if (Account is null)
             {
                 return;
             }
@@ -57,10 +58,8 @@ namespace fita.ui.ViewModels.Portfolio
             }
         }
 
-        public void NavigateTo()
-        {
-            NavigationService?.Navigate("TransactionsView", Account, this);
-        }
+        [UsedImplicitly]
+        public void NavigateTo() => NavigationService?.Navigate("TransactionsView", Account, this);
 
         protected override async void OnNavigatedTo()
         {
@@ -69,20 +68,7 @@ namespace fita.ui.ViewModels.Portfolio
             await RefreshData();
         }
         
-        public class EntityModel
-        {
-            public EntityModel(SecurityPosition position, decimal currentPrice, decimal pl)
-            {
-                Entity = position;
-                CurrentPrice = currentPrice;
-                PL = pl;
-            }
-
-            public SecurityPosition Entity { get; }
-            
-            public decimal CurrentPrice { get; }
-            
-            public decimal PL { get; }
-        }
+        [UsedImplicitly]
+        public record EntityModel(SecurityPosition Entity, decimal CurrentPrice, decimal PL);
     }
 }

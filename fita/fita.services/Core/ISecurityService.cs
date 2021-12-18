@@ -6,6 +6,6 @@ namespace fita.services.Core
 {
     public interface ISecurityService
     {
-        Task<Result> UpdateAsync(SecurityHistory securityHistory, DateTime? date = null);
+        Task<Result> Update(SecurityHistory securityHistory, DateTime? date = null);
     }
 }

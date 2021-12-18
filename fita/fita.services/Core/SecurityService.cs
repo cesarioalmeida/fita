@@ -18,21 +18,21 @@ namespace fita.services.Core
 
         public ILoggingService LoggingService { get; set; }
 
-        public Task<Result> UpdateAsync(SecurityHistory securityHistory, DateTime? date = null)
+        public Task<Result> Update(SecurityHistory securityHistory, DateTime? date = null)
         {
             return Task.Run(
                 async () =>
                 {
-                    if (securityHistory == null || string.IsNullOrEmpty(securityHistory.Security.Symbol))
+                    if (securityHistory is null || string.IsNullOrEmpty(securityHistory.Security.Symbol))
                     {
                         return Result.Fail;
                     }
 
                     try
                     {
-                        var data = await DownloadDataAsync(securityHistory, date);
+                        var data = await DownloadData(securityHistory, date);
 
-                        if (securityHistory.Price == null)
+                        if (securityHistory.Price is null)
                         {
                             PrepareHistoricalData(securityHistory);
                         }
@@ -43,26 +43,22 @@ namespace fita.services.Core
                         }
                         else
                         {
-                            securityHistory.Price?.DataPoints.Add(new HistoricalDataPoint
-                                {Date = data.Date.Date, Value = data.Value});
+                            securityHistory.Price?.DataPoints.Add(new() {Date = data.Date.Date, Value = data.Value});
                         }
 
-                        if (await HistoricalDataRepoService.SaveAsync(securityHistory.Price))
-                        {
-                            return await SecurityHistoryRepoService.SaveAsync(securityHistory);
-                        }
-
-                        return Result.Success;
+                        return await HistoricalDataRepoService.SaveAsync(securityHistory.Price)
+                            ? await SecurityHistoryRepoService.SaveAsync(securityHistory)
+                            : Result.Success;
                     }
                     catch (Exception ex)
                     {
-                        LoggingService.Warn($"{nameof(UpdateAsync)}: {ex}");
+                        LoggingService.Warn($"{nameof(Update)}: {ex}");
                         return Result.Fail;
                     }
                 });
         }
 
-        private static async Task<HistoricalElement> DownloadDataAsync(SecurityHistory securityHistory, DateTime? date = null)
+        private static async Task<HistoricalElement> DownloadData(SecurityHistory securityHistory, DateTime? date = null)
         {
             List<YahooHistoryPrice> yahooHistorical = new();
 
@@ -76,11 +72,10 @@ namespace fita.services.Core
                     : selectedDate.AddDays(-2);
             }
 
-            var timeout = 5000;
+            const int timeout = 5000;
 
             while(yahooHistorical.Count == 0 && numberOfTries < 3)
             {
-                //yahooHistorical = await YahooHistorical.GetPriceAsync(securityHistory.Security.Symbol, selectedDate.Date, selectedDate);
                 var downloadTask = YahooHistorical.GetPriceAsync(securityHistory.Security.Symbol, selectedDate.Date, selectedDate);
                 if (await Task.WhenAny(downloadTask, Task.Delay(timeout)) == downloadTask)
                 {
@@ -103,17 +98,6 @@ namespace fita.services.Core
             securityHistory.Price = historicalData;
         }
 
-        internal readonly struct HistoricalElement
-        {
-            public HistoricalElement(DateTime date, decimal value)
-            {
-                Date = date;
-                Value = value;
-            }
-
-            public DateTime Date { get; }
-
-            public decimal Value { get; }
-        }
+        private record HistoricalElement(DateTime Date, decimal Value);
     }
 }

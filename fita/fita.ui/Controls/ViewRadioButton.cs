@@ -25,14 +25,14 @@ namespace fita.ui.Controls
 
         public ImageSource Icon
         {
-            get => (ImageSource)this.GetValue(IconProperty);
-            set => this.SetValue(IconProperty, value);
+            get => (ImageSource)GetValue(IconProperty);
+            set => SetValue(IconProperty, value);
         }
 
         public string Caption
         {
-            get => (string)this.GetValue(CaptionProperty);
-            set => this.SetValue(CaptionProperty, value);
+            get => (string)GetValue(CaptionProperty);
+            set => SetValue(CaptionProperty, value);
         }
     }
 }

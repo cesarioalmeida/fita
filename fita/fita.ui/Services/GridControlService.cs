@@ -5,11 +5,8 @@ namespace fita.ui.Services
 {
     public class GridControlService : ServiceBase, IGridControlService
     {
-        protected GridControl ActualControl => this.AssociatedObject as GridControl;
+        protected GridControl ActualControl => AssociatedObject as GridControl;
 
-        public void Refresh()
-        {
-            ActualControl.RefreshData();
-        }
+        public void Refresh() => ActualControl.RefreshData();
     }
 }

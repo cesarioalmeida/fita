@@ -6,6 +6,7 @@ using fita.data.Models;
 using fita.services;
 using fita.services.Repositories;
 using fita.ui.Common;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.Services;
 using twentySix.Framework.Core.UI.Enums;
@@ -28,11 +29,10 @@ namespace fita.ui.ViewModels.Currencies
 
         public bool Saved { get; private set; }
 
-        public void Cancel()
-        {
-            DocumentOwner?.Close(this);
-        }
-        
+        [UsedImplicitly]
+        public void Cancel() => DocumentOwner?.Close(this);
+
+        [UsedImplicitly]
         public async Task Save()
         {
             IsBusy = true;

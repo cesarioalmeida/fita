@@ -9,6 +9,7 @@ using fita.data.Enums;
 using fita.data.Models;
 using fita.services.Repositories;
 using fita.ui.Messages;
+using JetBrains.Annotations;
 using LiteDB;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -71,13 +72,13 @@ namespace fita.ui.ViewModels
         protected IDocumentManagerService ModalDocumentService =>
             this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
-        protected IDispatcherService DispatcherService => this.GetService<IDispatcherService>();
+        protected IDispatcherService DispatcherService => GetService<IDispatcherService>();
 
         protected AccountRepoService AccountRepoService { get; set; }
 
         public ShellViewModel()
         {
-            Messenger.Default.Register<NotificationMessage>(this, this.OnNotificationMessage);
+            Messenger.Default.Register<NotificationMessage>(this, OnNotificationMessage);
             Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData(); });
 
             _messageTimer.Interval = 5000;
@@ -121,6 +122,7 @@ namespace fita.ui.ViewModels
             }
         }
 
+        [UsedImplicitly]
         public void ShowModalView(string view)
         {
             var document = ModalDocumentService.CreateDocument(view, null, this);
@@ -128,6 +130,7 @@ namespace fita.ui.ViewModels
             document.Show();
         }
 
+        [UsedImplicitly]
         public async Task OnViewLoaded()
         {
             await RefreshData();
@@ -135,6 +138,7 @@ namespace fita.ui.ViewModels
             NavigationService?.Navigate("HomeView", null, this);
         }
 
+        [UsedImplicitly]
         public void Navigate(HamburgerMenuItemViewModel hamburgerItem)
         {
             NavigationService?.Navigate(hamburgerItem.View, hamburgerItem.Account, this);

@@ -15,6 +15,7 @@ using fita.services.Repositories;
 using fita.ui.ViewModels.HistoricalData;
 using fita.ui.Views.HistoricalData;
 using fita.ui.Views.Securities;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -25,7 +26,7 @@ namespace fita.ui.ViewModels.Securities
     [POCOViewModel]
     public class SecuritiesViewModel : ComposedDocumentViewModelBase
     {
-        private bool fireChangeNotification;
+        private bool _fireChangeNotification;
 
         public SecurityRepoService SecurityRepoService { get; set; }
 
@@ -40,12 +41,9 @@ namespace fita.ui.ViewModels.Securities
 
         public virtual LockableCollection<EntityModel> Data { get; set; } = new();
 
+        [UsedImplicitly]
         public void Close()
         {
-            if (fireChangeNotification)
-            {
-            }
-
             Data.Clear();
             DocumentOwner?.Close(this);
         }
@@ -75,27 +73,28 @@ namespace fita.ui.ViewModels.Securities
             }
         }
 
+        [UsedImplicitly]
         public async Task Edit(Security security)
         {
             var viewModel = ViewModelSource.Create<SecurityDetailsViewModel>();
             viewModel.Entity = security ?? new Security();
 
-            var document =
-                this.DocumentManagerService.CreateDocument(nameof(SecurityDetailsView), viewModel, null, this);
+            var document = DocumentManagerService.CreateDocument(nameof(SecurityDetailsView), viewModel, null, this);
             document.DestroyOnClose = true;
             document.Show();
 
             if (viewModel.Saved)
             {
-                fireChangeNotification = true;
+                _fireChangeNotification = true;
 
                 await RefreshData();
             }
         }
 
+        [UsedImplicitly]
         public async Task Delete(Security security)
         {
-            if (security == null)
+            if (security is null)
             {
                 return;
             }
@@ -115,9 +114,9 @@ namespace fita.ui.ViewModels.Securities
             {
                 var historicalToDelete = await SecurityHistoryRepoService.FromSecurityEnrichedAsync(security);
 
-                if (historicalToDelete != null)
+                if (historicalToDelete is not null)
                 {
-                    if (historicalToDelete.Price != null)
+                    if (historicalToDelete.Price is not null)
                     {
                         await HistoricalDataRepoService.DeleteAsync(historicalToDelete.Price.HistoricalDataId);
                     }
@@ -137,13 +136,14 @@ namespace fita.ui.ViewModels.Securities
             }
         }
 
+        [UsedImplicitly]
         public async Task Update()
         {
             IsBusy = true;
 
             try
             {
-                fireChangeNotification = true;
+                _fireChangeNotification = true;
 
                 foreach (var data in Data)
                 {
@@ -151,7 +151,7 @@ namespace fita.ui.ViewModels.Securities
 
                     Messenger.Default.Send(new NotificationMessage($"Updating security {data.Entity.Name}..."));
 
-                    if (await SecurityService.UpdateAsync(securityHistory) == Result.Fail)
+                    if (await SecurityService.Update(securityHistory) == Result.Fail)
                     {
                         Messenger.Default.Send(new NotificationMessage($"Could not update security {data.Entity.Name}",
                             NotificationStatusEnum.Error));
@@ -166,6 +166,7 @@ namespace fita.ui.ViewModels.Securities
             }
         }
 
+        [UsedImplicitly]
         public async Task History(EntityModel model)
         {
             var viewModel = ViewModelSource.Create<HistoricalDataViewModel>();
@@ -177,14 +178,14 @@ namespace fita.ui.ViewModels.Securities
 
             if (viewModel.Saved)
             {
-                fireChangeNotification = true;
+                _fireChangeNotification = true;
                 await RefreshData();
             }
         }
 
         private async Task<SecurityHistory> GetNewSecurityHistory(Security security)
         {
-            var securityHistory = new SecurityHistory()
+            var securityHistory = new SecurityHistory
             {
                 Security = security,
                 Price = new data.Models.HistoricalData
@@ -198,24 +199,13 @@ namespace fita.ui.ViewModels.Securities
             return securityHistory;
         }
 
-        public class EntityModel
+        public record EntityModel(Security Entity, SecurityHistory EntityHistory)
         {
-            public EntityModel(Security entity, SecurityHistory entityHistory)
-            {
-                Entity = entity;
-                EntityHistory = entityHistory;
-            }
-
-            public Security Entity { get; }
-
-            public SecurityHistory EntityHistory { get; }
-
             public DateTime? LatestDate => EntityHistory?.Price?.LatestDate;
 
             public decimal? LatestValue => EntityHistory?.Price?.LatestValue;
 
-            public IEnumerable<decimal> History =>
-                EntityHistory?.Price?.DataPoints.OrderByDescending(x => x.Date).Select(x => x.Value);
+            public IEnumerable<decimal> History => EntityHistory?.Price?.DataPoints.OrderByDescending(x => x.Date).Select(x => x.Value);
         }
     }
 }

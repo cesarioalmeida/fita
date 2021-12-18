@@ -10,32 +10,21 @@ namespace fita.ui.Converters
 {
     public class EnumDisplayConverter : MarkupExtension, IValueConverter
     {
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
+        public override object ProvideValue(IServiceProvider serviceProvider) => this;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
-            {
-                return DependencyProperty.UnsetValue;
-            }
+            var fieldInfo = value?.GetType().GetField(value.ToString() ?? string.Empty);
 
-            var fieldInfo = value.GetType().GetField(value.ToString() ?? string.Empty);
-
-            if (fieldInfo == null)
+            if (fieldInfo is null)
             {
                 return DependencyProperty.UnsetValue;
             }
             
             var attributes = (DisplayAttribute[])fieldInfo.GetCustomAttributes(typeof(DisplayAttribute), false);
-            return attributes.ElementAt(0)?.Name ?? value.ToString();
+            return attributes.ElementAt(0).Name ?? value.ToString();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
     }
 }

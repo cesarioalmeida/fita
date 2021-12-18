@@ -10,6 +10,7 @@ using fita.services;
 using fita.services.Repositories;
 using fita.ui.Common;
 using fita.ui.Views.Categories;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -20,7 +21,7 @@ namespace fita.ui.ViewModels.Categories
     [POCOViewModel]
     public class CategoriesViewModel : ComposedDocumentViewModelBase, IDesiredSize
     {
-        private bool fireChangeNotification;
+        private bool _fireChangeNotification;
 
         public int Width => 500;
 
@@ -33,12 +34,9 @@ namespace fita.ui.ViewModels.Categories
 
         public virtual LockableCollection<Category> Data { get; set; } = new();
 
+        [UsedImplicitly]
         public void Close()
         {
-            if (fireChangeNotification)
-            {
-            }
-
             Data.Clear();
             DocumentOwner?.Close(this);
         }
@@ -63,27 +61,28 @@ namespace fita.ui.ViewModels.Categories
             }
         }
 
+        [UsedImplicitly]
         public async Task Edit(Category category)
         {
             var viewModel = ViewModelSource.Create<CategoryDetailsViewModel>();
             viewModel.Entity = category ?? new Category();
 
-            var document =
-                this.DocumentManagerService.CreateDocument(nameof(CategoryDetailsView), viewModel, null, this);
+            var document = DocumentManagerService.CreateDocument(nameof(CategoryDetailsView), viewModel, null, this);
             document.DestroyOnClose = true;
             document.Show();
 
             if (viewModel.Saved)
             {
-                fireChangeNotification = true;
+                _fireChangeNotification = true;
 
                 await RefreshData();
             }
         }
 
+        [UsedImplicitly]
         public async Task Delete(Category category)
         {
-            if (category == null)
+            if (category is null)
             {
                 return;
             }
@@ -112,6 +111,5 @@ namespace fita.ui.ViewModels.Categories
                 IsBusy = false;
             }
         }
-        
     }
 }

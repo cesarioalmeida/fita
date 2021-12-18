@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using fita.data.Models;
 using fita.services.Core;
+using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace fita.services.tests.Core
@@ -8,23 +9,21 @@ namespace fita.services.tests.Core
     [TestFixture]
     public class SecurityServiceTests : ContainerFixture
     {
-        private ISecurityService securityService;
+        [UsedImplicitly]
+        private ISecurityService _securityService;
 
         [Test]
         public async Task UpdateAsync_SecurityHistoryNull_ReturnsFail()
         {
-            Assert.AreEqual(Result.Fail, await securityService.UpdateAsync(null));
+            Assert.AreEqual(Result.Fail, await _securityService.Update(null));
         }
 
         [Test]
         public async Task UpdateAsync_SecuritySymbolNull_ReturnsFail()
         {
-            var securityHistory = new SecurityHistory
-            {
-                Security = new()
-            };
+            var securityHistory = new SecurityHistory { Security = new() };
 
-            Assert.AreEqual(Result.Fail, await securityService.UpdateAsync(securityHistory));
+            Assert.AreEqual(Result.Fail, await _securityService.Update(securityHistory));
         }
 
         [Test]
@@ -32,13 +31,10 @@ namespace fita.services.tests.Core
         {
             var securityHistory = new SecurityHistory
             {
-                Security = new Security
-                {
-                    Symbol = "ttttt"
-                }
+                Security = new Security { Symbol = "ttttt" }
             };
 
-            Assert.AreEqual(Result.Fail, await securityService.UpdateAsync(securityHistory));
+            Assert.AreEqual(Result.Fail, await _securityService.Update(securityHistory));
         }
 
         [Test]
@@ -46,13 +42,10 @@ namespace fita.services.tests.Core
         {
             var securityHistory = new SecurityHistory
             {
-                Security = new Security
-                {
-                    Symbol = "AAPL"
-                }
+                Security = new Security { Symbol = "AAPL" }
             };
 
-            var result = await securityService.UpdateAsync(securityHistory);
+            var result = await _securityService.Update(securityHistory);
 
             Assert.AreEqual(Result.Success, result);
             Assert.NotNull(securityHistory.Price.DataPoints);

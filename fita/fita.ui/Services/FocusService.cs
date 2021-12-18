@@ -5,11 +5,8 @@ namespace fita.ui.Services
 {
     public class FocusService : ServiceBase, IFocusService
     {
-        protected FrameworkElement ActualControl => this.AssociatedObject;
+        protected FrameworkElement ActualControl => AssociatedObject;
 
-        public void Focus()
-        {
-            this.ActualControl?.Focus();
-        }
+        public void Focus() => ActualControl?.Focus();
     }
 }

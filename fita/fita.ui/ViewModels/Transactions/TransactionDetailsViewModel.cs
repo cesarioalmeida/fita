@@ -8,6 +8,7 @@ using fita.data.Models;
 using fita.services;
 using fita.services.Repositories;
 using fita.ui.Common;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -36,6 +37,7 @@ namespace fita.ui.ViewModels.Transactions
         
         public TransactionRepoService TransactionRepoService { get; set; }
 
+        [UsedImplicitly]
         public async Task RefreshData()
         {
             IsBusy = true;
@@ -59,11 +61,10 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
 
-        public void Cancel()
-        {
-            DocumentOwner?.Close(this);
-        }
-        
+        [UsedImplicitly]
+        public void Cancel() => DocumentOwner?.Close(this);
+
+        [UsedImplicitly]
         public async Task Save()
         {
             IsBusy = true;

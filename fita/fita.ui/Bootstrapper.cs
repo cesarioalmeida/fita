@@ -27,7 +27,6 @@ namespace fita.ui
 
         protected override IEnumerable<Assembly> GetRegistrationAssemblies()
         {
-            yield return Assembly.LoadFile(ApplicationHelper.GetFullPath("fita.common.dll"));
             yield return Assembly.LoadFile(ApplicationHelper.GetFullPath("fita.data.dll"));
             yield return Assembly.LoadFile(ApplicationHelper.GetFullPath("fita.services.dll"));
             yield return GetType().Assembly;

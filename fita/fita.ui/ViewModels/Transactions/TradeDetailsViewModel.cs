@@ -7,6 +7,7 @@ using fita.data.Models;
 using fita.services.Core;
 using fita.services.Repositories;
 using fita.ui.Common;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -39,6 +40,7 @@ namespace fita.ui.ViewModels.Transactions
         
         public IPortfolioService PortfolioService { get; set; }
 
+        [UsedImplicitly]
         public async Task RefreshData()
         {
             IsBusy = true;
@@ -60,11 +62,10 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
 
-        public void Cancel()
-        {
-            DocumentOwner?.Close(this);
-        }
+        [UsedImplicitly]
+        public void Cancel() => DocumentOwner?.Close(this);
 
+        [UsedImplicitly]
         public async Task Save()
         {
             IsBusy = true;
@@ -91,14 +92,16 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
 
+        [UsedImplicitly]
         public bool CanSave()
         {
             return Trade.Quantity != 0m && Trade.Price > 0m;
         }
 
+        [UsedImplicitly]
         protected async void OnSecurityChanged(Security oldValue)
         {
-            if (Trade == null || Account == null || Security == null)
+            if (Trade is null || Account is null || Security is null)
             {
                 return;
             }

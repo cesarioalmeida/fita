@@ -67,7 +67,7 @@ namespace fita.ui.ViewModels.Home
             }
         }
 
-        public class EntityModel
+        public record EntityModel
         {
             public EntityModel(Account account, decimal balance)
             {

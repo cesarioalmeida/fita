@@ -13,6 +13,7 @@ using fita.services;
 using fita.services.Core;
 using fita.services.Repositories;
 using fita.ui.Views.Transactions;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
@@ -38,8 +39,7 @@ namespace fita.ui.ViewModels.Transactions
         
         public IPortfolioService PortfolioService { get; set; }
 
-        protected IDocumentManagerService ModalDocumentManagerService =>
-            this.GetService<IDocumentManagerService>("ModalWindowDocumentService", ServiceSearchMode.PreferParents);
+        protected IDocumentManagerService ModalDocumentManagerService => GetService<IDocumentManagerService>("ModalWindowDocumentService", ServiceSearchMode.PreferParents);
 
         public async Task RefreshData()
         {
@@ -47,13 +47,13 @@ namespace fita.ui.ViewModels.Transactions
 
             try
             {
-                if (Account == null)
+                if (Account is null)
                 {
                     return;
                 }
                 
                 Account = await AccountRepoService.DetailsEnrichedAsync(Account.AccountId);
-                if (Account == null)
+                if (Account is null)
                 {
                     return;
                 }
@@ -78,13 +78,12 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
 
+        [UsedImplicitly]
         public async Task Edit(EntityModel model)
         {
-            var detailsSaved = model.Entity.Category.Group == CategoryGroupEnum.TransfersIn ||
-                               model.Entity.Category.Group == CategoryGroupEnum.TransfersOut
+            var detailsSaved = model.Entity.Category.Group is CategoryGroupEnum.TransfersIn or CategoryGroupEnum.TransfersOut
                 ? EditTransfer(model)
-                : model.Entity.Category.Group == CategoryGroupEnum.TradeBuy ||
-                  model.Entity.Category.Group == CategoryGroupEnum.TradeSell
+                : model.Entity.Category.Group is CategoryGroupEnum.TradeBuy or CategoryGroupEnum.TradeSell
                     ? await EditTrade(model)
                     : EditTransaction(model);
 
@@ -94,11 +93,13 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
 
+        [UsedImplicitly]
         public bool CanEdit(EntityModel model)
         {
-            return model?.Entity.Category != null && model?.Entity.TradeId == null;
+            return model?.Entity.Category is not null && model.Entity.TradeId is null;
         }
 
+        [UsedImplicitly]
         public async Task NewTransaction()
         {
             var detailsSaved = EditTransaction(null);
@@ -109,6 +110,7 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
 
+        [UsedImplicitly]
         public async Task NewTransfer()
         {
             var detailsSaved = EditTransfer(null);
@@ -119,9 +121,10 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
 
+        [UsedImplicitly]
         public async Task Delete(EntityModel model)
         {
-            if (model == null)
+            if (model is null)
             {
                 return;
             }
@@ -139,12 +142,12 @@ namespace fita.ui.ViewModels.Transactions
 
             try
             {
-                if (model.Entity.TransferTransactionId != null)
+                if (model.Entity.TransferTransactionId is not null)
                 {
                     await TransactionRepoService.DeleteAsync(model.Entity.TransferTransactionId);
                 }
 
-                if (model.Entity.TradeId != null)
+                if (model.Entity.TradeId is not null)
                 {
                     await PortfolioService.DeleteTrade(model.Entity.TradeId);
                 }
@@ -163,11 +166,10 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
 
-        public bool CanDelete(EntityModel model)
-        {
-            return model?.Entity.Category != null;
-        }
+        [UsedImplicitly]
+        public bool CanDelete(EntityModel model) => model?.Entity.Category is not null;
 
+        [UsedImplicitly]
         public async Task Trade(TradeActionEnum action)
         {
             var viewModel = ViewModelSource.Create<TradeDetailsViewModel>();
@@ -188,15 +190,12 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
         
-        public void NavigateTo()
-        {
-            NavigationService?.Navigate("PortfolioView", Account, this);
-        }
+        [UsedImplicitly]
+        public void NavigateTo() => NavigationService?.Navigate("PortfolioView", Account, this);
 
         protected override async void OnNavigatedTo()
         {
             Account = Parameter as Account;
-
             await RefreshData();
         }
 
@@ -207,8 +206,7 @@ namespace fita.ui.ViewModels.Transactions
             viewModel.Account = Account;
             viewModel.Transaction = model.Entity;
 
-            var document =
-                this.ModalDocumentManagerService.CreateDocument(nameof(TradeDetailsView), viewModel, null, this);
+            var document = ModalDocumentManagerService.CreateDocument(nameof(TradeDetailsView), viewModel, null, this);
 
             document.DestroyOnClose = true;
             document.Show();
@@ -222,8 +220,7 @@ namespace fita.ui.ViewModels.Transactions
             viewModel.Transaction = model?.Entity ?? new Transaction {AccountId = Account.AccountId};
             viewModel.Account = Account;
 
-            var document =
-                this.ModalDocumentManagerService.CreateDocument(nameof(TransferDetailsView), viewModel, null, this);
+            var document = ModalDocumentManagerService.CreateDocument(nameof(TransferDetailsView), viewModel, null, this);
 
             document.DestroyOnClose = true;
             document.Show();
@@ -237,8 +234,7 @@ namespace fita.ui.ViewModels.Transactions
             viewModel.Entity = model?.Entity ?? new Transaction {AccountId = Account.AccountId};
             viewModel.Account = Account;
 
-            var document =
-                this.ModalDocumentManagerService.CreateDocument(nameof(TransactionDetailsView), viewModel, null, this);
+            var document = ModalDocumentManagerService.CreateDocument(nameof(TransactionDetailsView), viewModel, null, this);
 
             document.DestroyOnClose = true;
             document.Show();
@@ -246,21 +242,8 @@ namespace fita.ui.ViewModels.Transactions
             return viewModel.Saved;
         }
 
-        public class EntityModel
+        public record EntityModel(Account Account, Transaction Entity, decimal? Balance)
         {
-            public EntityModel(Account account, Transaction transaction, decimal balance)
-            {
-                Entity = transaction;
-                Account = account;
-                Balance = balance;
-            }
-
-            public Transaction Entity { get; }
-
-            public Account Account { get; }
-
-            public decimal? Balance { get; }
-
             public static EntityModel GetInitialBalance(Account account)
             {
                 return new(account, new Transaction

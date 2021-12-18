@@ -36,8 +36,7 @@ namespace fita.services.Core
                         return true;
                     }
 
-                    var securityPosition =
-                        await SecurityPositionRepoService.DetailsForSecurityEnrichedAsync(trade.Security.SecurityId);
+                    var securityPosition = await SecurityPositionRepoService.DetailsForSecurityEnrichedAsync(trade.Security.SecurityId);
 
                     return trade.Quantity <= securityPosition.Quantity;
                 });
@@ -84,14 +83,6 @@ namespace fita.services.Core
                 });
         }
 
-        private async Task RefreshData()
-        {
-            if (!_categories.Any())
-            {
-                _categories.AddRange(await CategoryRepoService.AllAsync());
-            }
-        }
-
         private async Task<Transaction> PrepareTransaction(Trade trade, Transaction transaction)
         {
             if (!_categories.Any())
@@ -99,7 +90,7 @@ namespace fita.services.Core
                 _categories.AddRange(await CategoryRepoService.AllAsync());
             }
 
-            transaction ??= new Transaction();
+            transaction ??= new();
             transaction.AccountId = trade.AccountId;
             transaction.TradeId = trade.TradeId;
             transaction.Date = trade.Date;
@@ -118,14 +109,13 @@ namespace fita.services.Core
 
         private async Task<bool> PrepareSecurityPosition(Trade trade)
         {
-            var securityPosition =
-                await SecurityPositionRepoService.DetailsForSecurityEnrichedAsync(trade.Security.SecurityId);
+            var securityPosition = await SecurityPositionRepoService.DetailsForSecurityEnrichedAsync(trade.Security.SecurityId);
 
             if (trade.Action == TradeActionEnum.Buy)
             {
-                if (securityPosition == null || securityPosition.Quantity == 0)
+                if (securityPosition is null || securityPosition.Quantity == 0)
                 {
-                    securityPosition ??= new SecurityPosition {AccountId = trade.AccountId, Security = trade.Security};
+                    securityPosition ??= new() {AccountId = trade.AccountId, Security = trade.Security};
                     securityPosition.Quantity = trade.Quantity;
                     securityPosition.Value = trade.Value;
                 }
@@ -138,8 +128,7 @@ namespace fita.services.Core
                 return await SecurityPositionRepoService.SaveAsync(securityPosition) == Result.Success;
             }
 
-            if (securityPosition == null || securityPosition.Quantity == 0 ||
-                securityPosition.Quantity < trade.Quantity)
+            if (securityPosition is null || securityPosition.Quantity == 0 || securityPosition.Quantity < trade.Quantity)
             {
                 return false;
             }
@@ -164,8 +153,7 @@ namespace fita.services.Core
 
         private async Task<bool> DeleteSecurityPosition(Trade trade)
         {
-            var securityPosition =
-                await SecurityPositionRepoService.DetailsForSecurityEnrichedAsync(trade.Security.SecurityId);
+            var securityPosition = await SecurityPositionRepoService.DetailsForSecurityEnrichedAsync(trade.Security.SecurityId);
 
             if (trade.Action == TradeActionEnum.Buy)
             {
@@ -175,9 +163,9 @@ namespace fita.services.Core
                 return await SecurityPositionRepoService.SaveAsync(securityPosition) == Result.Success;
             }
 
-            if (securityPosition == null || securityPosition.Quantity == 0)
+            if (securityPosition is null || securityPosition.Quantity == 0)
             {
-                securityPosition ??= new SecurityPosition {AccountId = trade.AccountId, Security = trade.Security};
+                securityPosition ??= new() {AccountId = trade.AccountId, Security = trade.Security};
                 securityPosition.Quantity = trade.Quantity;
                 securityPosition.Value = trade.Value;
             }

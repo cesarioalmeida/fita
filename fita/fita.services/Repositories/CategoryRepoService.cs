@@ -20,10 +20,10 @@ namespace fita.services.Repositories
             {
                 foreach (var category in DefaultCategories())
                 {
-                    if (Collection.FindOne(x => x.Name == category.Name) == null)
+                    if (Collection.FindOne(x => x.Name == category.Name) is null)
                     {
                         await SaveAsync(category);
-                    };
+                    }
                 }
                 
                 return Result.Success;

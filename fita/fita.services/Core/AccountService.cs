@@ -16,9 +16,9 @@ namespace fita.services.Core
             return Task.Run(
                 () =>
                 {
-                    decimal balance = 0m;
+                    var balance = 0m;
 
-                    if (account == null)
+                    if (account is null)
                     {
                         return balance;
                     }
@@ -27,7 +27,7 @@ namespace fita.services.Core
                     {
                         balance += account.InitialBalance;
 
-                        if (transactions == null)
+                        if (transactions is null)
                         {
                             return balance;
                         }
@@ -52,11 +52,11 @@ namespace fita.services.Core
             return Task.Run(
                 () =>
                 {
-                    decimal balance = previousBalance;
+                    var balance = previousBalance;
 
                     try
                     {
-                        if (transaction == null)
+                        if (transaction is null)
                         {
                             return balance;
                         }

@@ -11,6 +11,7 @@ using fita.services.Repositories;
 using fita.ui.Common;
 using fita.ui.Services;
 using fita.ui.Views.HistoricalData;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
@@ -35,14 +36,12 @@ namespace fita.ui.ViewModels.HistoricalData
         protected IDocumentManagerService DocumentManagerService =>
             this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
-        public void Close()
-        {
-            DocumentOwner?.Close(this);
-        }
+        [UsedImplicitly]
+        public void Close() => DocumentOwner?.Close(this);
 
         public async Task Edit(HistoricalDataPoint historical)
         {
-            if (historical == null)
+            if (historical is null)
             {
                 historical = new HistoricalDataPoint {Date = DateTime.Now, Value = 0m};
                 Model.DataPoints.Add(historical);
@@ -51,7 +50,7 @@ namespace fita.ui.ViewModels.HistoricalData
             var viewModel = ViewModelSource.Create<HistoricalPointViewModel>();
             viewModel.Point = historical;
 
-            var document = this.DocumentManagerService.CreateDocument(nameof(HistoricalPointView), viewModel, null, this);
+            var document = DocumentManagerService.CreateDocument(nameof(HistoricalPointView), viewModel, null, this);
             document.DestroyOnClose = true;
             document.Show();
 
@@ -69,6 +68,7 @@ namespace fita.ui.ViewModels.HistoricalData
             }
         }
 
+        [UsedImplicitly]
         public async Task Delete(HistoricalDataPoint historical)
         {
             if (WinUIMessageBox.Show(
@@ -100,9 +100,6 @@ namespace fita.ui.ViewModels.HistoricalData
             }
         }
         
-        private void RefreshData()
-        {
-            GridControlService?.Refresh();
-        }
+        private void RefreshData() => GridControlService?.Refresh();
     }
 }

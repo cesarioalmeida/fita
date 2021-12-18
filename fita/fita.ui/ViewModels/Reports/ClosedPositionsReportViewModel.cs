@@ -4,6 +4,7 @@ using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
 using fita.data.Models;
 using fita.services.Repositories;
+using JetBrains.Annotations;
 
 namespace fita.ui.ViewModels.Reports
 {
@@ -30,7 +31,7 @@ namespace fita.ui.ViewModels.Reports
 
                 foreach (var position in closedPositions.OrderBy(x => x.SellDate))
                 {
-                    Data.Add(new Model(position, accounts.Single(x => x.AccountId == position.AccountId)));
+                    Data.Add(new(position, accounts.Single(x => x.AccountId == position.AccountId)));
                 }
             }
             finally
@@ -40,17 +41,7 @@ namespace fita.ui.ViewModels.Reports
             }
         }
 
-        public class Model
-        {
-            public Model(ClosedPosition position, Account account)
-            {
-                Position = position;
-                Account = account;
-            }
-
-            public ClosedPosition Position { get; }
-            
-            public Account Account { get; }
-        }
+        [UsedImplicitly]
+        public record Model(ClosedPosition Position, Account Account);
     }
 }

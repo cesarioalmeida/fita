@@ -31,20 +31,20 @@ namespace fita.ui.Controls
 
         public ImageSource Icon
         {
-            get => (ImageSource)this.GetValue(IconProperty);
-            set => this.SetValue(IconProperty, value);
+            get => (ImageSource)GetValue(IconProperty);
+            set => SetValue(IconProperty, value);
         }
 
         public string LeftCaption
         {
-            get => (string)this.GetValue(LeftCaptionProperty);
-            set => this.SetValue(LeftCaptionProperty, value);
+            get => (string)GetValue(LeftCaptionProperty);
+            set => SetValue(LeftCaptionProperty, value);
         }
 
         public string RightCaption
         {
-            get => (string)this.GetValue(RightCaptionProperty);
-            set => this.SetValue(RightCaptionProperty, value);
+            get => (string)GetValue(RightCaptionProperty);
+            set => SetValue(RightCaptionProperty, value);
         }
     }
 }

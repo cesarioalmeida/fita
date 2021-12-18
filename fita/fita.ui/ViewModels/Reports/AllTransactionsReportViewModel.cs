@@ -4,6 +4,7 @@ using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
 using fita.data.Models;
 using fita.services.Repositories;
+using JetBrains.Annotations;
 
 namespace fita.ui.ViewModels.Reports
 {
@@ -40,17 +41,7 @@ namespace fita.ui.ViewModels.Reports
             }
         }
 
-        public class Model
-        {
-            public Model(Transaction transaction, Account account)
-            {
-                Transaction = transaction;
-                Account = account;
-            }
-
-            public Transaction Transaction { get; }
-            
-            public Account Account { get; }
-        }
+        [UsedImplicitly]
+        public record Model(Transaction Transaction, Account Account);
     }
 }

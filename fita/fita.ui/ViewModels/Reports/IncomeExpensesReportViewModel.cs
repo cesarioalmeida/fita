@@ -6,6 +6,7 @@ using DevExpress.Xpf.Core;
 using fita.data.Enums;
 using fita.services.Core;
 using fita.services.Repositories;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Extensions;
 
 namespace fita.ui.ViewModels.Reports
@@ -74,7 +75,7 @@ namespace fita.ui.ViewModels.Reports
                             var payment = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
                                 transaction.Payment.GetValueOrDefault());
                             TotalExpenses += payment;
-                            Expenses.Add(new Model(account.Name, transaction.Date, transaction.Category.Name,
+                            Expenses.Add(new(account.Name, transaction.Date, transaction.Category.Name,
                                 transaction.Description, payment));
                             break;
                         case CategoryGroupEnum.PersonalIncome:
@@ -82,7 +83,7 @@ namespace fita.ui.ViewModels.Reports
                             var deposit = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
                                 transaction.Deposit.GetValueOrDefault());
                             TotalIncome += deposit;
-                            Income.Add(new Model(account.Name, transaction.Date, transaction.Category.Name,
+                            Income.Add(new(account.Name, transaction.Date, transaction.Category.Name,
                                 transaction.Description, deposit));
                             break;
                     }
@@ -128,49 +129,16 @@ namespace fita.ui.ViewModels.Reports
             }
         }
 
-        protected void OnFromDateChanged(DateTime oldDate)
-        {
-            RefreshData();
-        }
+        [UsedImplicitly]
+        protected void OnFromDateChanged(DateTime oldDate) => RefreshData();
 
-        protected void OnToDateChanged(DateTime oldDate)
-        {
-            RefreshData();
-        }
+        [UsedImplicitly]
+        protected void OnToDateChanged(DateTime oldDate) => RefreshData();
 
-        public class Model
-        {
-            public Model(string account, DateTime? date, string category, string description, decimal amount)
-            {
-                Account = account;
-                Date = date;
-                Category = category;
-                Description = description;
-                Amount = amount;
-            }
+        [UsedImplicitly]
+        public record Model(string Account, DateTime? Date, string Category, string Description, decimal Amount);
 
-            public string Account { get; }
-
-            public DateTime? Date { get; }
-
-            public string Category { get; }
-
-            public string Description { get; }
-
-            public decimal Amount { get; }
-        }
-
-        public class PieModel
-        {
-            public PieModel(string category, decimal amount)
-            {
-                Category = category;
-                Amount = amount;
-            }
-
-            public string Category { get; }
-
-            public decimal Amount { get; }
-        }
+        [UsedImplicitly]
+        public record PieModel(string Category, decimal Amount);
     }
 }

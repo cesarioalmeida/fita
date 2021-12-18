@@ -11,6 +11,7 @@ using fita.services;
 using fita.services.Repositories;
 using fita.ui.Messages;
 using fita.ui.Views.Accounts;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -21,7 +22,7 @@ namespace fita.ui.ViewModels.Accounts
     [POCOViewModel]
     public class AccountsViewModel : ComposedDocumentViewModelBase
     {
-        private bool fireChangeNotification;
+        private bool _fireChangeNotification;
 
         public AccountRepoService AccountRepoService { get; set; }
 
@@ -30,9 +31,10 @@ namespace fita.ui.ViewModels.Accounts
 
         public virtual LockableCollection<EntityModel> Data { get; set; } = new();
 
+        [UsedImplicitly]
         public void Close()
         {
-            if (fireChangeNotification)
+            if (_fireChangeNotification)
             {
                 Messenger.Default.Send(new AccountsChanged());
             }
@@ -63,27 +65,28 @@ namespace fita.ui.ViewModels.Accounts
             }
         }
 
+        [UsedImplicitly]
         public async Task Edit(Account account)
         {
             var viewModel = ViewModelSource.Create<AccountDetailsViewModel>();
             viewModel.Entity = account ?? new Account();
 
-            var document =
-                this.DocumentManagerService.CreateDocument(nameof(AccountDetailsView), viewModel, null, this);
+            var document = DocumentManagerService.CreateDocument(nameof(AccountDetailsView), viewModel, null, this);
             document.DestroyOnClose = true;
             document.Show();
 
             if (viewModel.Saved)
             {
-                fireChangeNotification = true;
+                _fireChangeNotification = true;
 
                 await RefreshData();
             }
         }
 
+        [UsedImplicitly]
         public async Task Delete(Account account)
         {
-            if (account == null)
+            if (account is null)
             {
                 return;
             }
@@ -113,14 +116,7 @@ namespace fita.ui.ViewModels.Accounts
             }
         }
 
-        public class EntityModel
-        {
-            public EntityModel(Account entity)
-            {
-                Entity = entity;
-            }
-
-            public Account Entity { get; }
-        }
+        [UsedImplicitly]
+        public record EntityModel(Account Entity);
     }
 }

@@ -24,14 +24,14 @@ namespace fita.ui.Controls
 
         public string LeftCaption
         {
-            get => (string)this.GetValue(LeftCaptionProperty);
-            set => this.SetValue(LeftCaptionProperty, value);
+            get => (string)GetValue(LeftCaptionProperty);
+            set => SetValue(LeftCaptionProperty, value);
         }
 
         public string RightCaption
         {
-            get => (string)this.GetValue(RightCaptionProperty);
-            set => this.SetValue(RightCaptionProperty, value);
+            get => (string)GetValue(RightCaptionProperty);
+            set => SetValue(RightCaptionProperty, value);
         }
     }
 }

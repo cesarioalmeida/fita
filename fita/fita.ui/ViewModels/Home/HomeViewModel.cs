@@ -142,10 +142,7 @@ namespace fita.ui.ViewModels.Home
         
         private async Task SaveNetWorth()
         {
-            if (_netWorth == null)
-            {
-                _netWorth = await NetWorthRepoService.GetForDateAsync(DateTime.Today) ?? new();
-            }
+            _netWorth ??= await NetWorthRepoService.GetForDateAsync(DateTime.Today) ?? new();
 
             if (_netWorth.Total != NetWorth || _netWorth.Banks != BanksViewModel.TotalAmount ||
                 _netWorth.CreditCards != CreditCardsViewModel.TotalAmount ||
@@ -165,16 +162,16 @@ namespace fita.ui.ViewModels.Home
 
         public void OnClose()
         {
-            if (BanksViewModel != null)
+            if (BanksViewModel is not null)
                 BanksViewModel.PropertyChanged -= OnChildrenPropertyChanged;
 
-            if (CreditCardsViewModel != null)
+            if (CreditCardsViewModel is not null)
                 CreditCardsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
 
-            if (AssetsViewModel != null)
+            if (AssetsViewModel is not null)
                 AssetsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
 
-            if (InvestmentsViewModel != null)
+            if (InvestmentsViewModel is not null)
                 InvestmentsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
         }
     }

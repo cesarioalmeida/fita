@@ -41,7 +41,7 @@ namespace fita.ui.ViewModels.Reports
             }
         }
 
-        public class Model
+        public record Model
         {
             public Model(NetWorth item)
             {

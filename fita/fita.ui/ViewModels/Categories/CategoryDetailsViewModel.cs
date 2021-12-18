@@ -5,6 +5,7 @@ using fita.data.Models;
 using fita.services;
 using fita.services.Repositories;
 using fita.ui.Common;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
@@ -24,11 +25,10 @@ namespace fita.ui.ViewModels.Categories
 
         public bool Saved { get; private set; }
 
-        public void Cancel()
-        {
-            DocumentOwner?.Close(this);
-        }
-        
+        [UsedImplicitly]
+        public void Cancel() => DocumentOwner?.Close(this);
+
+        [UsedImplicitly]
         public async Task Save()
         {
             IsBusy = true;

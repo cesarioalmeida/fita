@@ -16,6 +16,7 @@ using fita.ui.Messages;
 using fita.ui.ViewModels.HistoricalData;
 using fita.ui.Views.Currencies;
 using fita.ui.Views.HistoricalData;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.Services;
@@ -27,7 +28,7 @@ namespace fita.ui.ViewModels.Currencies
     [POCOViewModel]
     public class CurrenciesViewModel : ComposedDocumentViewModelBase
     {
-        private bool fireChangeNotification;
+        private bool _fireChangeNotification;
 
         public LoggingService LoggingService { get; set; }
         
@@ -48,9 +49,10 @@ namespace fita.ui.ViewModels.Currencies
 
         public virtual FileSettings FileSettings { get; set; }
 
+        [UsedImplicitly]
         public void Close()
         {
-            if (fireChangeNotification)
+            if (_fireChangeNotification)
             {
                 Messenger.Default.Send(new BaseCurrencyChanged());
             }
@@ -101,34 +103,35 @@ namespace fita.ui.ViewModels.Currencies
                 Data.EndUpdate();
                 IsBusy = false;
 
-                if (fireChangeNotification)
+                if (_fireChangeNotification)
                 {
                     Messenger.Default.Send(new BaseCurrencyChanged());
                 }
             }
         }
 
+        [UsedImplicitly]
         public async Task Edit(Currency currency)
         {
             var viewModel = ViewModelSource.Create<CurrencyDetailsViewModel>();
             viewModel.Currency = currency ?? new Currency();
 
-            var document =
-                this.DocumentManagerService.CreateDocument(nameof(CurrencyDetailsView), viewModel, null, this);
+            var document = DocumentManagerService.CreateDocument(nameof(CurrencyDetailsView), viewModel, null, this);
             document.DestroyOnClose = true;
             document.Show();
 
             if (viewModel.Saved)
             {
-                fireChangeNotification = true;
+                _fireChangeNotification = true;
 
                 await RefreshData();
             }
         }
 
+        [UsedImplicitly]
         public async Task Delete(Currency currency)
         {
-            if (currency == null)
+            if (currency is null)
             {
                 return;
             }
@@ -148,7 +151,7 @@ namespace fita.ui.ViewModels.Currencies
             {
                 var exchangeRatesToDelete = await ExchangeRateRepoService.AllWithCurrencyEnrichedAsync(currency);
 
-                if (exchangeRatesToDelete != null)
+                if (exchangeRatesToDelete is not null)
                 {
                     foreach (var rate in exchangeRatesToDelete)
                     {
@@ -173,14 +176,12 @@ namespace fita.ui.ViewModels.Currencies
             }
         }
 
-        public bool CanDelete(Currency currency)
-        {
-            return currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
-        }
+        [UsedImplicitly]
+        public bool CanDelete(Currency currency) => currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
 
         public async Task SetBase(Currency currency, bool refresh = true)
         {
-            if (currency == null)
+            if (currency is null)
             {
                 return;
             }
@@ -196,7 +197,7 @@ namespace fita.ui.ViewModels.Currencies
                     : new NotificationMessage($"Base currency set to {currency.Name}.",
                         NotificationStatusEnum.Success));
 
-                fireChangeNotification = true;
+                _fireChangeNotification = true;
 
                 if (refresh)
                 {
@@ -213,10 +214,8 @@ namespace fita.ui.ViewModels.Currencies
             }
         }
 
-        public bool CanSetBase(Currency currency)
-        {
-            return currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
-        }
+        [UsedImplicitly]
+        public bool CanSetBase(Currency currency) => currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
 
         public async Task Update()
         {
@@ -224,7 +223,7 @@ namespace fita.ui.ViewModels.Currencies
 
             try
             {
-                fireChangeNotification = true;
+                _fireChangeNotification = true;
 
                 var currentExchangeRates =
                     (await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings.BaseCurrency)).ToList();
@@ -238,7 +237,7 @@ namespace fita.ui.ViewModels.Currencies
 
                     Messenger.Default.Send(new NotificationMessage($"Updating currency {currency.Name}..."));
 
-                    if (await ExchangeRateService.UpdateAsync(exchangeRate) == Result.Fail)
+                    if (await ExchangeRateService.Update(exchangeRate) == Result.Fail)
                     {
                         Messenger.Default.Send(new NotificationMessage($"Could not update currency {currency.Name}",
                             NotificationStatusEnum.Error));
@@ -257,6 +256,7 @@ namespace fita.ui.ViewModels.Currencies
             }
         }
 
+        [UsedImplicitly]
         public async Task UpdateAll()
         {
             IsBusy = true;
@@ -283,6 +283,7 @@ namespace fita.ui.ViewModels.Currencies
             }
         }
 
+        [UsedImplicitly]
         public async Task History(CurrenciesModel model)
         {
             var viewModel = ViewModelSource.Create<HistoricalDataViewModel>();
@@ -294,16 +295,14 @@ namespace fita.ui.ViewModels.Currencies
 
             if (viewModel.Saved)
             {
-                fireChangeNotification = true;
+                _fireChangeNotification = true;
 
                 await RefreshData();
             }
         }
 
-        public bool CanHistory(CurrenciesModel model)
-        {
-            return model?.Currency.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
-        }
+        [UsedImplicitly]
+        public bool CanHistory(CurrenciesModel model) => model?.Currency.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
 
         private ExchangeRate GetNewExchangeRate(Currency currency)
         {
@@ -317,21 +316,9 @@ namespace fita.ui.ViewModels.Currencies
             };
         }
 
-        public class CurrenciesModel
+        [UsedImplicitly]
+        public record CurrenciesModel(Currency BaseCurrency, Currency Currency, ExchangeRate ExchangeRate)
         {
-            public CurrenciesModel(Currency baseCurrency, Currency currency, ExchangeRate exchangeRate)
-            {
-                BaseCurrency = baseCurrency;
-                Currency = currency;
-                ExchangeRate = exchangeRate;
-            }
-
-            public Currency BaseCurrency { get; }
-            
-            public Currency Currency { get; }
-
-            public ExchangeRate ExchangeRate { get; }
-            
             public DateTime? LatestDate => ExchangeRate?.Rate.LatestDate;
 
             public decimal? LatestValue => ExchangeRate?.Rate.LatestValue;

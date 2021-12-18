@@ -7,6 +7,7 @@ using fita.data.Enums;
 using fita.services.Core;
 using fita.services.Repositories;
 using fita.ui.Messages;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.Home
@@ -34,11 +35,8 @@ namespace fita.ui.ViewModels.Home
 
         public IAccountService AccountService { get; set; }
 
-        public InvestmentsViewModel()
-        {
-            Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
-        }
-        
+        public InvestmentsViewModel() => Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
+
         public async Task RefreshData()
         {
             IsBusy = true;
@@ -84,20 +82,7 @@ namespace fita.ui.ViewModels.Home
             }
         }
 
-        public class EntityModel
-        {
-            public EntityModel(string accountName, string accountCulture, decimal balance)
-            {
-                Name = accountName;
-                Balance = balance;
-                Culture = accountCulture;
-            }
-
-            public string Name { get; }
-
-            public decimal Balance { get; }
-
-            public string Culture { get; }
-        }
+        [UsedImplicitly]
+        public record EntityModel(string Name, string Culture, decimal Balance);
     }
 }

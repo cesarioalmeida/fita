@@ -8,6 +8,7 @@ using fita.data.Models;
 using fita.services;
 using fita.services.Repositories;
 using fita.ui.Common;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -42,7 +43,7 @@ namespace fita.ui.ViewModels.Transactions
         
         public virtual string DepositCulture { get; set; }
 
-        public virtual bool IsReadOnly => Transaction?.Category != null && Transaction?.Category.Group == CategoryGroupEnum.TransfersIn;
+        public virtual bool IsReadOnly => Transaction?.Category is {Group: CategoryGroupEnum.TransfersIn};
         
         public bool Saved { get; private set; }
         
@@ -52,6 +53,7 @@ namespace fita.ui.ViewModels.Transactions
         
         public TransactionRepoService TransactionRepoService { get; set; }
 
+        [UsedImplicitly]
         public async Task RefreshData()
         {
             IsBusy = true;
@@ -100,18 +102,17 @@ namespace fita.ui.ViewModels.Transactions
 
         }
 
-        public void Cancel()
-        {
-            DocumentOwner?.Close(this);
-        }
-        
+        [UsedImplicitly]
+        public void Cancel() => DocumentOwner?.Close(this);
+
+        [UsedImplicitly]
         public async Task Save()
         {
             IsBusy = true;
 
             try
             {
-                if (OtherAccount == null || PaymentAmount == null || DepositAmount == null)
+                if (OtherAccount is null || PaymentAmount is null || DepositAmount is null)
                 {
                     DocumentOwner?.Close(this);
                     return;
@@ -156,6 +157,7 @@ namespace fita.ui.ViewModels.Transactions
             }
         }
 
+        [UsedImplicitly]
         protected void OnOtherAccountChanged(Account oldAccount)
         {
             DepositCulture = IsReadOnly ? Account?.Currency.Culture : OtherAccount?.Currency.Culture;

@@ -1,6 +1,7 @@
 ﻿using DevExpress.Mvvm.DataAnnotations;
 using fita.data.Models;
 using fita.ui.Common;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels.HistoricalData
@@ -16,11 +17,10 @@ namespace fita.ui.ViewModels.HistoricalData
 
         public bool Saved { get; private set; }
 
-        public void Cancel()
-        {
-            DocumentOwner?.Close(this);
-        }
+        [UsedImplicitly]
+        public void Cancel() => DocumentOwner?.Close(this);
 
+        [UsedImplicitly]
         public void Save()
         {
             Saved = true;

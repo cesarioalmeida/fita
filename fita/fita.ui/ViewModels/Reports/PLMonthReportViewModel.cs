@@ -6,6 +6,7 @@ using DevExpress.Xpf.Core;
 using fita.data.Enums;
 using fita.services.Core;
 using fita.services.Repositories;
+using JetBrains.Annotations;
 
 namespace fita.ui.ViewModels.Reports
 {
@@ -80,15 +81,11 @@ namespace fita.ui.ViewModels.Reports
             }
         }
 
-        protected void OnFromDateChanged(DateTime oldDate)
-        {
-            RefreshData();
-        }
+        [UsedImplicitly]
+        protected void OnFromDateChanged(DateTime oldDate) => RefreshData();
 
-        protected void OnToDateChanged(DateTime oldDate)
-        {
-            RefreshData();
-        }
+        [UsedImplicitly]
+        protected void OnToDateChanged(DateTime oldDate) => RefreshData();
 
         private async Task<Tuple<decimal, decimal>> GetModel(DateTime fromDate, DateTime toDate)
         {
@@ -144,17 +141,7 @@ namespace fita.ui.ViewModels.Reports
             return Tuple.Create(totalIncome, totalExpenses);
         }
 
-        public class Model
-        {
-            public Model(string month, decimal value)
-            {
-                Month = month;
-                Value = value;
-            }
-
-            public string Month { get; }
-            
-            public decimal Value { get; }
-        }
+        [UsedImplicitly]
+        public record Model(string Month, decimal Value);
     }
 }
