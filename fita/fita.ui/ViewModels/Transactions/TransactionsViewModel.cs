@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
+using DevExpress.Xpf.Core;
 using DevExpress.Xpf.WindowsUI;
 using fita.data.Enums;
 using fita.data.Models;
 using fita.services;
 using fita.services.Core;
 using fita.services.Repositories;
+using fita.ui.Services;
 using fita.ui.Views.Transactions;
 using JetBrains.Annotations;
 using twentySix.Framework.Core.Messages;
@@ -27,7 +28,7 @@ namespace fita.ui.ViewModels.Transactions
 
         public virtual Account Account { get; set; }
 
-        public ObservableCollection<EntityModel> Data { get; set; } = new();
+        public LockableCollection<EntityModel> Data { get; set; } = new();
 
         public AccountRepoService AccountRepoService { get; set; }
 
@@ -38,7 +39,7 @@ namespace fita.ui.ViewModels.Transactions
         public IAccountService AccountService { get; set; }
         
         public IPortfolioService PortfolioService { get; set; }
-
+        
         protected IDocumentManagerService ModalDocumentManagerService => GetService<IDocumentManagerService>("ModalWindowDocumentService", ServiceSearchMode.PreferParents);
 
         public async Task RefreshData()
@@ -60,6 +61,7 @@ namespace fita.ui.ViewModels.Transactions
 
                 _transactions = (await TransactionRepoService.AllEnrichedForAccountAsync(Account?.AccountId)).ToList();
 
+                Data.BeginUpdate();
                 Data.Clear();
 
                 Data.Add(EntityModel.GetInitialBalance(Account));
@@ -71,6 +73,8 @@ namespace fita.ui.ViewModels.Transactions
                     balance = await AccountService.CalculateBalance(transaction, balance);
                     Data.Add(new EntityModel(Account, transaction, balance));
                 }
+                
+                Data.EndUpdate();
             }
             finally
             {
@@ -196,6 +200,7 @@ namespace fita.ui.ViewModels.Transactions
         protected override async void OnNavigatedTo()
         {
             Account = Parameter as Account;
+
             await RefreshData();
         }
 
@@ -242,11 +247,12 @@ namespace fita.ui.ViewModels.Transactions
             return viewModel.Saved;
         }
 
+        [UsedImplicitly]
         public record EntityModel(Account Account, Transaction Entity, decimal? Balance)
         {
             public static EntityModel GetInitialBalance(Account account)
             {
-                return new(account, new Transaction
+                return new EntityModel(account, new Transaction
                     {
                         AccountId = account.AccountId, Description = "Initial balance", Deposit = account.InitialBalance
                     },
