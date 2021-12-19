@@ -135,6 +135,9 @@
                         FieldName="Balance"
                         Header="Balance" />
                 </dxg:GridControl.Columns>
+                <dxg:GridControl.SortInfo>
+                    <dxg:GridSortInfo FieldName="Entity.Date" SortOrder="Descending" />
+                </dxg:GridControl.SortInfo>
                 <dxg:GridControl.View>
                     <dxg:TableView
                         AllowEditing="False"
