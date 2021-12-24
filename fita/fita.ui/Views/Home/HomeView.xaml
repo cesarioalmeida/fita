@@ -1,9 +1,7 @@
 ﻿<UserControl
-    DataContext="{dxmvvm:ViewModelSource Type=home:HomeViewModel}"
-    d:DataContext="{d:DesignInstance home:HomeViewModel}"
-    mc:Ignorable="d"
     x:Class="fita.ui.Views.Home.HomeView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
@@ -11,14 +9,16 @@
     xmlns:home="clr-namespace:fita.ui.ViewModels.Home"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:fita.ui.Views.Home"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    d:DataContext="{d:DesignInstance home:HomeViewModel}"
+    DataContext="{dxmvvm:ViewModelSource Type=home:HomeViewModel}"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="dxe:TextEdit" x:Key="KeyNumber">
+            <Style x:Key="KeyNumber" TargetType="dxe:TextEdit">
                 <Setter Property="FontFamily" Value="Roboto" />
                 <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="FontSize" Value="60" />
@@ -30,7 +30,7 @@
                 <Setter Property="MaskCulture" Value="{Binding BanksViewModel.BaseCulture}" />
             </Style>
 
-            <Style TargetType="TextBlock" x:Key="KeyText">
+            <Style x:Key="KeyText" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="Roboto" />
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="Foreground" Value="#693c72" />
@@ -52,14 +52,14 @@
             </Grid.RowDefinitions>
 
             <Border
-                Background="{StaticResource BgStartBrush}"
                 Grid.Row="0"
-                Height="50">
+                Height="50"
+                Background="{StaticResource BgStartBrush}">
                 <Grid>
                     <StackPanel
                         HorizontalAlignment="Center"
-                        Orientation="Horizontal"
-                        VerticalAlignment="Center">
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
                         <TextBlock
                             Foreground="{StaticResource White1Brush}"
                             Style="{StaticResource H1}"
@@ -80,8 +80,8 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid
-                    Grid.Column="0"
                     Grid.Row="0"
+                    Grid.Column="0"
                     Margin="30">
                     <Grid VerticalAlignment="Center">
                         <Grid.ColumnDefinitions>
@@ -90,18 +90,18 @@
                         </Grid.ColumnDefinitions>
 
                         <dxe:TextEdit
+                            Grid.Column="0"
                             EditValue="{Binding NetWorth, Mode=OneWay}"
                             Foreground="#d97642"
-                            Grid.Column="0"
                             Style="{StaticResource KeyNumber}" />
                         <TextBlock
                             Grid.Column="0"
                             Style="{StaticResource KeyText}"
                             Text="net worth" />
                         <dxe:TextEdit
+                            Grid.Column="1"
                             EditValue="{Binding PLMonth, Mode=OneWay}"
                             Foreground="#966c3b"
-                            Grid.Column="1"
                             Style="{StaticResource KeyNumber}" />
                         <TextBlock
                             Grid.Column="1"
@@ -111,8 +111,8 @@
                 </Grid>
 
                 <Grid
-                    Grid.Column="1"
                     Grid.Row="0"
+                    Grid.Column="1"
                     Margin="30">
                     <Grid VerticalAlignment="Center">
                         <Grid.ColumnDefinitions>
@@ -120,18 +120,18 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <dxe:TextEdit
+                            Grid.Column="0"
                             EditValue="{Binding IncomeMonth, IsAsync=True, Mode=OneWay}"
                             Foreground="#9ecca4"
-                            Grid.Column="0"
                             Style="{StaticResource KeyNumber}" />
                         <TextBlock
                             Grid.Column="0"
                             Style="{StaticResource KeyText}"
                             Text="income this month" />
                         <dxe:TextEdit
+                            Grid.Column="1"
                             EditValue="{Binding ExpensesMonth, IsAsync=True, Mode=OneWay}"
                             Foreground="#d49d42"
-                            Grid.Column="1"
                             Style="{StaticResource KeyNumber}" />
                         <TextBlock
                             Grid.Column="1"
@@ -141,21 +141,21 @@
                 </Grid>
 
                 <views:BanksView
-                    DataContext="{Binding BanksViewModel}"
+                    Grid.Row="1"
                     Grid.Column="0"
-                    Grid.Row="1" />
+                    DataContext="{Binding BanksViewModel}" />
                 <views:InvestmentsView
-                    DataContext="{Binding InvestmentsViewModel}"
+                    Grid.Row="2"
                     Grid.Column="0"
-                    Grid.Row="2" />
+                    DataContext="{Binding InvestmentsViewModel}" />
                 <views:CreditCardsView
-                    DataContext="{Binding CreditCardsViewModel}"
+                    Grid.Row="1"
                     Grid.Column="1"
-                    Grid.Row="1" />
+                    DataContext="{Binding CreditCardsViewModel}" />
                 <views:AssetsView
-                    DataContext="{Binding AssetsViewModel}"
+                    Grid.Row="2"
                     Grid.Column="1"
-                    Grid.Row="2" />
+                    DataContext="{Binding AssetsViewModel}" />
 
             </Grid>
         </Grid>

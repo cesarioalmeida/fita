@@ -17,7 +17,6 @@ public class ContainerFixture : IDisposable
         Configure(container);
 
         container.RegisterAssembly("twentySix.Framework.*.dll");
-        container.RegisterAssembly("fita.common.dll");
         container.RegisterAssembly("fita.data.dll");
         container.RegisterAssembly("fita.services.dll");
 

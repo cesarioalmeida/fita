@@ -7,12 +7,12 @@
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="NUnit" Version="3.13.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\fita.services\fita.services.csproj" />
-    <ProjectReference Include="..\fita.tests.common\fita.tests.common.csproj" />
     <ProjectReference Include="..\fita.ui\fita.ui.csproj" />
   </ItemGroup>
 

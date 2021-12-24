@@ -54,7 +54,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\fita.common\fita.common.csproj" />
       <ProjectReference Include="..\fita.data\fita.data.csproj" />
       <ProjectReference Include="..\fita.services\fita.services.csproj" />
     </ItemGroup>

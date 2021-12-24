@@ -7,7 +7,6 @@
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-    xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -28,23 +27,7 @@
                 MaskCulture="{Binding Account.Currency.Culture}"
                 MaskType="Numeric"
                 MaskUseAsDisplayFormat="True" />
-
-            <Style
-                x:Key="RedForegroundCell"
-                BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle,
-                                                               ThemeName=Win10Light}}"
-                TargetType="dxg:LightweightCellEditor">
-                <Setter Property="Foreground" Value="DarkRed" />
-            </Style>
-
-            <Style
-                x:Key="GreenForegroundCell"
-                BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle,
-                                                               ThemeName=Win10Light}}"
-                TargetType="dxg:LightweightCellEditor">
-                <Setter Property="Foreground" Value="DarkGreen" />
-            </Style>
-
+            
             <dxmvvm:ObjectToObjectConverter x:Key="AccountTypeToVisibilityConverter" DefaultTarget="{x:Static Visibility.Hidden}">
                 <dxmvvm:MapItem Source="{x:Static enums:AccountTypeEnum.Investment}" Target="{x:Static Visibility.Visible}" />
             </dxmvvm:ObjectToObjectConverter>
@@ -119,13 +102,11 @@
                     <dxg:GridColumn FieldName="Entity.Category.Name" Header="Category" />
                     <dxg:GridColumn
                         Width="70"
-                        CellStyle="{StaticResource RedForegroundCell}"
                         EditSettings="{StaticResource CurrencyEditSettings}"
                         FieldName="Entity.Payment"
                         Header="Payment" />
                     <dxg:GridColumn
                         Width="70"
-                        CellStyle="{StaticResource GreenForegroundCell}"
                         EditSettings="{StaticResource CurrencyEditSettings}"
                         FieldName="Entity.Deposit"
                         Header="Deposit" />
@@ -144,7 +125,14 @@
                         AutoWidth="True"
                         RowMinHeight="24"
                         ShowGroupPanel="False"
-                        ShowSearchPanelMode="Always" />
+                        ShowSearchPanelMode="Always">
+                        <dxg:TableView.FormatConditions>
+                            <dxg:FormatCondition ValueRule="Greater" Value1="0" FieldName="Entity.Payment"
+                                                 PredefinedFormatName="LightRedFillWithDarkRedText" />
+                            <dxg:FormatCondition ValueRule="Greater" Value1="0" FieldName="Entity.Deposit"
+                                                 PredefinedFormatName="GreenFillWithDarkGreenText" />
+                        </dxg:TableView.FormatConditions>
+                    </dxg:TableView>
                 </dxg:GridControl.View>
             </dxg:GridControl>
 

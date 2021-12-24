@@ -1,4 +1,8 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors">
 
     <Color x:Key="BgStarColour">#FF40444D</Color>
     <Color x:Key="BgEndColour">#FF232A31</Color>
@@ -19,5 +23,15 @@
     <SolidColorBrush x:Key="Gray1Brush" Color="{StaticResource Gray1Colour}" />
     <SolidColorBrush x:Key="White1Brush" Color="{StaticResource White1Colour}" />
     <SolidColorBrush x:Key="Yellow1Brush" Color="{StaticResource Yellow1Colour}" />
+
+    <Style TargetType="dxg:RowControl">
+        <Setter Property="FontFamily" Value="JetBrains Mono" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+    
+    <Style TargetType="dxe:HyperlinkEdit">
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="11" />
+    </Style>
 
 </ResourceDictionary>
