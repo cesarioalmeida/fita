@@ -33,20 +33,20 @@ namespace fita.services.Core
 
                     try
                     {
-                        var data = DownloadData(exchangeRate, date);
+                        var (day, rate) = DownloadData(exchangeRate, date);
 
                         if (exchangeRate.Rate is null)
                         {
                             PrepareHistoricalData(exchangeRate);
                         }
 
-                        if (exchangeRate.Rate?.DataPoints.SingleOrDefault(x => x.Date.Date == data.Date.Date) is { } existingDataPoint)
+                        if (exchangeRate.Rate?.DataPoints.SingleOrDefault(x => x.Date.Date == day.Date) is { } existingDataPoint)
                         {
-                            existingDataPoint.Value = data.Value;
+                            existingDataPoint.Value = rate;
                         }
                         else
                         {
-                            exchangeRate.Rate?.DataPoints.Add(new HistoricalDataPoint {Date = data.Date.Date, Value = data.Value});
+                            exchangeRate.Rate?.DataPoints.Add(new HistoricalDataPoint {Date = day.Date, Value = rate});
                         }
 
                         return await HistoricalDataRepoService.SaveAsync(exchangeRate.Rate)

@@ -272,6 +272,7 @@ namespace fita.ui.ViewModels.Currencies
                 }
 
                 await SetBase(Data.Select(x => x.Currency).Single(x => x.CurrencyId == baseCurrencyId));
+                await Update();
             }
             catch (Exception ex)
             {
