@@ -31,7 +31,7 @@ namespace fita.ui.ViewModels.Currencies
         private bool _fireChangeNotification;
 
         public LoggingService LoggingService { get; set; }
-        
+
         public FileSettingsRepoService FileSettingsRepoService { get; set; }
 
         public CurrencyRepoService CurrencyRepoService { get; set; }
@@ -73,7 +73,7 @@ namespace fita.ui.ViewModels.Currencies
                 FileSettings = (await FileSettingsRepoService.AllEnrichedAsync())?.FirstOrDefault();
 
                 var currencies = await CurrencyRepoService.AllAsync();
-                
+
                 // if there's no base currency and there's at least one currency => set base currency
                 if (FileSettings?.BaseCurrency == null)
                 {
@@ -87,10 +87,12 @@ namespace fita.ui.ViewModels.Currencies
                     }
                 }
 
-                var exchangeRates = await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
+                var exchangeRates =
+                    await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
 
                 var data = currencies.Select(c =>
-                    new CurrenciesModel(FileSettings.BaseCurrency, c, exchangeRates.FirstOrDefault(x => x.ToCurrency.CurrencyId == c.CurrencyId)));
+                    new CurrenciesModel(FileSettings.BaseCurrency, c,
+                        exchangeRates.FirstOrDefault(x => x.ToCurrency.CurrencyId == c.CurrencyId)));
 
                 Data.AddRange(data);
             }
@@ -137,10 +139,10 @@ namespace fita.ui.ViewModels.Currencies
             }
 
             if (WinUIMessageBox.Show(
-                $"Are you sure you want to delete the currency {currency.Name}?",
-                "Delete currency",
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Question) != MessageBoxResult.OK)
+                    $"Are you sure you want to delete the currency {currency.Name}?",
+                    "Delete currency",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Question) != MessageBoxResult.OK)
             {
                 return;
             }
@@ -179,7 +181,39 @@ namespace fita.ui.ViewModels.Currencies
         [UsedImplicitly]
         public bool CanDelete(Currency currency) => currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
 
-        public async Task SetBase(Currency currency, bool refresh = true)
+        public async Task SetBase(Currency currency)
+        {
+            if (currency is null)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                FileSettings.BaseCurrency = currency;
+
+                Messenger.Default.Send(await FileSettingsRepoService.SaveAsync(FileSettings) == Result.Fail
+                    ? new NotificationMessage("Failed to save base currency.", NotificationStatusEnum.Error)
+                    : new NotificationMessage($"Base currency set to {currency.Name}.",
+                        NotificationStatusEnum.Success));
+
+                _fireChangeNotification = true;
+
+                await RefreshData();
+            }
+            catch (Exception ex)
+            {
+                LoggingService.Error($"{nameof(SetBase)}: {ex.Message}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        private async Task SetBase(Currency currency, bool refresh = true)
         {
             if (currency is null)
             {
@@ -229,7 +263,7 @@ namespace fita.ui.ViewModels.Currencies
                     (await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings.BaseCurrency)).ToList();
 
                 foreach (var currency in Data.Select(x => x.Currency)
-                    .Where(x => x.CurrencyId != FileSettings.BaseCurrency.CurrencyId))
+                             .Where(x => x.CurrencyId != FileSettings.BaseCurrency.CurrencyId))
                 {
                     var exchangeRate =
                         currentExchangeRates.SingleOrDefault(x => x.ToCurrency.CurrencyId == currency.CurrencyId) ??
@@ -264,7 +298,7 @@ namespace fita.ui.ViewModels.Currencies
             try
             {
                 var baseCurrencyId = FileSettings.BaseCurrency.CurrencyId;
-                
+
                 foreach (var currency in Data.Select(x => x.Currency).ToList())
                 {
                     await SetBase(currency);
@@ -303,7 +337,8 @@ namespace fita.ui.ViewModels.Currencies
         }
 
         [UsedImplicitly]
-        public bool CanHistory(CurrenciesModel model) => model?.Currency.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
+        public bool CanHistory(CurrenciesModel model) =>
+            model?.Currency.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
 
         private ExchangeRate GetNewExchangeRate(Currency currency)
         {
