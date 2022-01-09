@@ -112,12 +112,6 @@ namespace fita.ui.ViewModels.Transactions
 
             try
             {
-                if (OtherAccount is null || PaymentAmount is null || DepositAmount is null)
-                {
-                    DocumentOwner?.Close(this);
-                    return;
-                }
-
                 if (!IsReadOnly)
                 {
                     Transaction.Description = $"Transfer to {OtherAccount.Name}";
@@ -156,6 +150,10 @@ namespace fita.ui.ViewModels.Transactions
                 IsBusy = false;
             }
         }
+
+        [UsedImplicitly]
+        public bool CanSave()
+            => OtherAccount is not null && PaymentAmount is not null && DepositAmount is not null;
 
         [UsedImplicitly]
         protected void OnOtherAccountChanged(Account oldAccount)

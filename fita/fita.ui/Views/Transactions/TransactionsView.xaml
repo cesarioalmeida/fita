@@ -34,7 +34,12 @@
 
         </ResourceDictionary>
     </UserControl.Resources>
-
+    
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:KeyToCommand KeyGesture="Ctrl+T" Command="{Binding NewTransactionCommand}" />
+        <dxmvvm:KeyToCommand KeyGesture="Ctrl+Y" Command="{Binding NewTransferCommand}" />
+    </dxmvvm:Interaction.Behaviors>
+    
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
         <Grid>
             <Grid.RowDefinitions>

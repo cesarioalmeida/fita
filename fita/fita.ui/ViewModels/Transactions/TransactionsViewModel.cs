@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,7 +13,6 @@ using fita.data.Models;
 using fita.services;
 using fita.services.Core;
 using fita.services.Repositories;
-using fita.ui.Services;
 using fita.ui.Views.Transactions;
 using JetBrains.Annotations;
 using twentySix.Framework.Core.Messages;
@@ -24,6 +24,8 @@ namespace fita.ui.ViewModels.Transactions
     [POCOViewModel]
     public class TransactionsViewModel : ComposedViewModelBase
     {
+        private DateTime? _lastTransactionDate = DateTime.Now;
+        
         private List<Transaction> _transactions { get; set; }
 
         public virtual Account Account { get; set; }
@@ -222,7 +224,7 @@ namespace fita.ui.ViewModels.Transactions
         private bool EditTransfer(EntityModel model)
         {
             var viewModel = ViewModelSource.Create<TransferDetailsViewModel>();
-            viewModel.Transaction = model?.Entity ?? new Transaction {AccountId = Account.AccountId};
+            viewModel.Transaction = model?.Entity ?? new Transaction {AccountId = Account.AccountId, Date = _lastTransactionDate};
             viewModel.Account = Account;
 
             var document = ModalDocumentManagerService.CreateDocument(nameof(TransferDetailsView), viewModel, null, this);
@@ -230,19 +232,23 @@ namespace fita.ui.ViewModels.Transactions
             document.DestroyOnClose = true;
             document.Show();
 
+            _lastTransactionDate = viewModel.Transaction.Date;
+
             return viewModel.Saved;
         }
 
         private bool EditTransaction(EntityModel model)
         {
             var viewModel = ViewModelSource.Create<TransactionDetailsViewModel>();
-            viewModel.Entity = model?.Entity ?? new Transaction {AccountId = Account.AccountId};
+            viewModel.Entity = model?.Entity ?? new Transaction {AccountId = Account.AccountId, Date = _lastTransactionDate};
             viewModel.Account = Account;
 
             var document = ModalDocumentManagerService.CreateDocument(nameof(TransactionDetailsView), viewModel, null, this);
 
             document.DestroyOnClose = true;
             document.Show();
+
+            _lastTransactionDate = viewModel.Entity.Date;
 
             return viewModel.Saved;
         }

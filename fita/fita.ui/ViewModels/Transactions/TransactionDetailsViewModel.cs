@@ -62,7 +62,8 @@ namespace fita.ui.ViewModels.Transactions
         }
 
         [UsedImplicitly]
-        public void Cancel() => DocumentOwner?.Close(this);
+        public void Cancel() 
+            => DocumentOwner?.Close(this);
 
         [UsedImplicitly]
         public async Task Save()
@@ -72,6 +73,16 @@ namespace fita.ui.ViewModels.Transactions
             try
             {
                  Entity.Category = SelectedCategory;
+
+                 if (Entity.Deposit is 0m)
+                 {
+                     Entity.Deposit = null;
+                 }
+                 
+                 if (Entity.Payment is 0m)
+                 {
+                     Entity.Payment = null;
+                 }
                 
                  Messenger.Default.Send(await TransactionRepoService.SaveAsync(Entity) == Result.Fail
                      ? new NotificationMessage("Failed to save transaction.", NotificationStatusEnum.Error)
@@ -85,5 +96,9 @@ namespace fita.ui.ViewModels.Transactions
                 IsBusy = false;
             }
         }
+
+        [UsedImplicitly]
+        public bool CanSave() 
+            => Entity.Deposit.HasValue || Entity.Payment.HasValue;
     }
 }
