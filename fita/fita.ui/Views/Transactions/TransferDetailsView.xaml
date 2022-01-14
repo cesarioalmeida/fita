@@ -72,7 +72,7 @@
                 <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
                     <dxlc:LayoutItem
                         AddColonToLabel="True"
-                        Label="Date"
+                        Label="Transfer Date"
                         LabelPosition="Top">
                         <dxe:DateEdit EditValue="{Binding Transaction.Date, UpdateSourceTrigger=PropertyChanged}">
                             <dxmvvm:Interaction.Behaviors>
@@ -114,6 +114,16 @@
                                 <dxmvvm:KeyToCommand Command="{Binding SaveCommand}" KeyGesture="Enter" />
                             </dxmvvm:Interaction.Behaviors>
                         </dxe:TextEdit>
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem
+                        AddColonToLabel="True"
+                        Label="Received Date"
+                        LabelPosition="Top">
+                        <dxe:DateEdit EditValue="{Binding OtherTransaction.Date, UpdateSourceTrigger=PropertyChanged}">
+                            <dxmvvm:Interaction.Behaviors>
+                                <dxmvvm:FocusBehavior />
+                            </dxmvvm:Interaction.Behaviors>
+                        </dxe:DateEdit>
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem
                         AddColonToLabel="True"

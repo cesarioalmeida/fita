@@ -29,13 +29,15 @@ namespace fita.ui.ViewModels.Transactions
 
         public LockableCollection<Category> Categories { get; set; } = new();
 
-        public Category SelectedCategory { get; set; }
+        public virtual Category SelectedCategory { get; set; }
 
         public bool Saved { get; private set; }
         
         public CategoryRepoService CategoryRepoService { get; set; }
         
         public TransactionRepoService TransactionRepoService { get; set; }
+        
+        public virtual bool IsPayment { get; set; }
 
         [UsedImplicitly]
         public async Task RefreshData()
@@ -100,5 +102,9 @@ namespace fita.ui.ViewModels.Transactions
         [UsedImplicitly]
         public bool CanSave() 
             => Entity.Deposit.HasValue || Entity.Payment.HasValue;
+
+        [UsedImplicitly]
+        protected void OnSelectedCategoryChanged(Category oldCategory) 
+            => IsPayment = SelectedCategory.Group is CategoryGroupEnum.PersonalExpenses or CategoryGroupEnum.BusinessExpenses;
     }
 }

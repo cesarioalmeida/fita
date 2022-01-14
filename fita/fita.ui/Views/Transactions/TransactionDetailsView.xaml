@@ -131,6 +131,7 @@
                     <dxlc:LayoutItem
                         AddColonToLabel="True"
                         Label="Payment"
+                        IsEnabled="{Binding IsPayment}"
                         LabelPosition="Top">
                         <dxe:TextEdit
                             EditValue="{Binding Entity.Payment, UpdateSourceTrigger=PropertyChanged}"
@@ -146,6 +147,7 @@
                     </dxlc:LayoutItem>
                     <dxlc:LayoutItem
                         AddColonToLabel="True"
+                        IsEnabled="{Binding IsPayment, Converter={dxmvvm:BooleanNegationConverter}}"
                         Label="Deposit"
                         LabelPosition="Top">
                         <dxe:TextEdit

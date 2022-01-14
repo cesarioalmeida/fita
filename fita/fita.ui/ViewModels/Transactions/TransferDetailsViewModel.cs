@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
@@ -86,9 +87,11 @@ namespace fita.ui.ViewModels.Transactions
                     // create new transaction and link both
                     OtherTransaction = new Transaction
                     {
-                        TransferTransactionId = Transaction.TransactionId
+                        TransferTransactionId = Transaction.TransactionId,
+                        Date = DateTime.Now
                     };
 
+                    Transaction.Date = DateTime.Now;
                     Transaction.TransferTransactionId = OtherTransaction.TransactionId;
                     PaymentCulture = Account.Currency.Culture;
                 }
@@ -129,7 +132,6 @@ namespace fita.ui.ViewModels.Transactions
                     Transaction.Deposit = DepositAmount;
                 }
 
-                OtherTransaction.Date = Transaction.Date;
                 OtherTransaction.Notes = Transaction.Notes;
 
                 if (await TransactionRepoService.SaveAsync(Transaction) == Result.Success &&
