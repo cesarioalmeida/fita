@@ -106,13 +106,11 @@ namespace fita.ui.ViewModels.Reports
                 switch (transaction.Category.Group)
                 {
                     case CategoryGroupEnum.PersonalExpenses:
-                    case CategoryGroupEnum.BusinessExpenses:
                         var payment = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
                             transaction.Payment.GetValueOrDefault());
                         totalExpenses += payment;
                         break;
                     case CategoryGroupEnum.PersonalIncome:
-                    case CategoryGroupEnum.BusinessIncome:
                         var deposit = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
                             transaction.Deposit.GetValueOrDefault());
                         totalIncome += deposit;

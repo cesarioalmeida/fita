@@ -16,12 +16,6 @@ namespace fita.data.Enums
         [Display(Name = "Transfers Out")]
         TransfersOut,
         
-        [Display(Name = "Business Expenses")]
-        BusinessExpenses,
-        
-        [Display(Name = "Business Income")]
-        BusinessIncome,
-        
         [Display(Name = "Trade Buy")]
         TradeBuy,
         

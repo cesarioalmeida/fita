@@ -105,6 +105,6 @@ namespace fita.ui.ViewModels.Transactions
 
         [UsedImplicitly]
         protected void OnSelectedCategoryChanged(Category oldCategory) 
-            => IsPayment = SelectedCategory.Group is CategoryGroupEnum.PersonalExpenses or CategoryGroupEnum.BusinessExpenses;
+            => IsPayment = SelectedCategory.Group is CategoryGroupEnum.PersonalExpenses;
     }
 }

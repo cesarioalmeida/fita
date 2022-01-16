@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
@@ -52,7 +53,7 @@ namespace fita.ui.ViewModels.Categories
             {
                 var categories = await CategoryRepoService.AllAsync();
 
-                Data.AddRange(categories);
+                Data.AddRange(categories.OrderBy(c => c.Group).ThenBy(x => x.Name));
             }
             finally
             {

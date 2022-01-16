@@ -79,16 +79,6 @@
                                         PredefinedFormatName="LightRedFillWithDarkRedText"
                                         Value1="{x:Static enums:CategoryGroupEnum.PersonalExpenses}"
                                         ValueRule="Equal" />
-                                    <dxg:FormatCondition
-                                        FieldName="Group"
-                                        PredefinedFormatName="YellowFillWithDarkYellowText"
-                                        Value1="{x:Static enums:CategoryGroupEnum.BusinessExpenses}"
-                                        ValueRule="Equal" />
-                                    <dxg:FormatCondition
-                                        FieldName="Group"
-                                        PredefinedFormatName="LightGreenFill"
-                                        Value1="{x:Static enums:CategoryGroupEnum.BusinessIncome}"
-                                        ValueRule="Equal" />
                                 </dxg:TableView.FormatConditions>
                                 <dxmvvm:Interaction.Behaviors>
                                     <dxmvvm:EventToCommand

@@ -89,44 +89,6 @@ namespace fita.services.Repositories
                 {"Computer:Hardware", CategoryGroupEnum.PersonalExpenses}
             }.OrderBy(x => x.Key);
 
-            var businessIncome = new Dictionary<string, CategoryGroupEnum>
-            {
-                {"Sales", CategoryGroupEnum.BusinessIncome},
-                {"Consulting", CategoryGroupEnum.BusinessIncome},
-                {"Capital Gains", CategoryGroupEnum.BusinessIncome},
-                {"Interest", CategoryGroupEnum.BusinessIncome},
-                {"Other", CategoryGroupEnum.BusinessIncome}
-            }.OrderBy(x => x.Key);
-
-            var businessExpenses = new Dictionary<string, CategoryGroupEnum>
-            {
-                {"Advertising", CategoryGroupEnum.BusinessExpenses},
-                {"Wages:Employees", CategoryGroupEnum.BusinessExpenses},
-                {"Contract Labor", CategoryGroupEnum.BusinessExpenses},
-                {"Legal", CategoryGroupEnum.BusinessExpenses},
-                {"Travel:Dining", CategoryGroupEnum.BusinessExpenses},
-                {"Travel:Entertainment", CategoryGroupEnum.BusinessExpenses},
-                {"Travel:Lodging", CategoryGroupEnum.BusinessExpenses},
-                {"Gifts", CategoryGroupEnum.BusinessExpenses},
-                {"Repairs & Maintenance", CategoryGroupEnum.BusinessExpenses},
-                {"Healthcare", CategoryGroupEnum.BusinessExpenses},
-                {"Auto:Fuel", CategoryGroupEnum.BusinessExpenses},
-                {"Auto:Parking", CategoryGroupEnum.BusinessExpenses},
-                {"Auto:Repair & Maintenance", CategoryGroupEnum.BusinessExpenses},
-                {"Auto:Toll Charges", CategoryGroupEnum.BusinessExpenses},
-                {"Insurance:Other", CategoryGroupEnum.BusinessExpenses},
-                {"Insurance:Health", CategoryGroupEnum.BusinessExpenses},
-                {"Other", CategoryGroupEnum.BusinessExpenses},
-                {"Rent & Lease", CategoryGroupEnum.BusinessExpenses},
-                {"Bank:Service Charge", CategoryGroupEnum.BusinessExpenses},
-                {"Bank:Interest", CategoryGroupEnum.BusinessExpenses},
-                {"Taxes", CategoryGroupEnum.BusinessExpenses},
-                {"Utilities", CategoryGroupEnum.BusinessExpenses},
-                {"Supplies", CategoryGroupEnum.BusinessExpenses},
-                {"IT:Software", CategoryGroupEnum.BusinessExpenses},
-                {"IT:Hardware", CategoryGroupEnum.BusinessExpenses}
-            }.OrderBy(x => x.Key);
-
             var transfers = new Dictionary<string, CategoryGroupEnum>
             {
                 {"Transfers In", CategoryGroupEnum.TransfersIn},
@@ -141,8 +103,6 @@ namespace fita.services.Repositories
 
             return personalIncome
                 .Concat(personalExpenses)
-                .Concat(businessIncome)
-                .Concat(businessExpenses)
                 .Concat(transfers)
                 .Concat(trades)
                 .Select(x => new Category {Name = x.Key, Group = x.Value});
