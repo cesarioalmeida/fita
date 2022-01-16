@@ -97,14 +97,14 @@ namespace fita.ui.ViewModels.Reports
                             -position.ProfitLoss);
                         TotalExpenses += loss;
                         Expenses.Add(
-                            new Model(account.Name, position.SellDate, "Capital Loss", "Closed Position", loss));
+                            new Model(account.Name, position.SellDate, "Capital Loses", "Closed Position", loss));
                     }
                     else
                     {
                         var gain = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
                             position.ProfitLoss);
                         TotalIncome += gain;
-                        Income.Add(new Model(account.Name, position.SellDate, "Capital Gain", "Closed Position", gain));
+                        Income.Add(new Model(account.Name, position.SellDate, "Capital Gains", "Closed Position", gain));
                     }
                 }
 

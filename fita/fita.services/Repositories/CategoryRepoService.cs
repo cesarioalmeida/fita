@@ -86,7 +86,8 @@ namespace fita.services.Repositories
                 {"Bank:Interest", CategoryGroupEnum.PersonalExpenses},
                 {"Clothes", CategoryGroupEnum.PersonalExpenses},
                 {"Computer:Software", CategoryGroupEnum.PersonalExpenses},
-                {"Computer:Hardware", CategoryGroupEnum.PersonalExpenses}
+                {"Computer:Hardware", CategoryGroupEnum.PersonalExpenses},
+                {"Capital Loses", CategoryGroupEnum.PersonalExpenses}
             }.OrderBy(x => x.Key);
 
             var transfers = new Dictionary<string, CategoryGroupEnum>

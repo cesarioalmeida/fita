@@ -72,8 +72,10 @@ namespace fita.ui.ViewModels
                 "../Resources/Icons/Reports_24x24.png"),
             new HamburgerMenuItemViewModel("PL (Month)", "PLMonthReportView",
                 "../Resources/Icons/Reports_24x24.png"),
-            new HamburgerMenuItemViewModel("Net Worth", "NetWorthReportView",
-                "../Resources/Icons/Reports_24x24.png")
+            new HamburgerMenuItemViewModel("Category (Month)", "CategoryEvolutionReportView",
+                "../Resources/Icons/Reports_24x24.png"),
+            // new HamburgerMenuItemViewModel("Net Worth", "NetWorthReportView",
+            //     "../Resources/Icons/Reports_24x24.png")
         };
 
         protected IDocumentManagerService ModalDocumentService =>
@@ -204,25 +206,7 @@ namespace fita.ui.ViewModels
             }
         }
 
-        public class HamburgerMenuItemViewModel
-        {
-            public string Caption { get; set; }
-
-            public string Icon { get; set; }
-
-            public string View { get; set; }
-
-            public Account Account { get; set; }
-
-            public bool IsChecked { get; set; }
-
-            public HamburgerMenuItemViewModel(string caption, string view, string icon = null, Account account = null)
-            {
-                Caption = caption;
-                View = view;
-                Icon = icon;
-                Account = account;
-            }
-        }
+        public record HamburgerMenuItemViewModel(string Caption, string View, string Icon = null,
+            Account Account = null, bool IsChecked = false);
     }
 }
