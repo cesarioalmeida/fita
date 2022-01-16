@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
 using System.Timers;
+using System.Windows;
+using DevExpress.Xpf.WindowsUI;
 using fita.data.Enums;
 using fita.data.Models;
 using fita.services.Repositories;
@@ -12,6 +16,7 @@ using fita.ui.Messages;
 using JetBrains.Annotations;
 using LiteDB;
 using twentySix.Framework.Core.Messages;
+using twentySix.Framework.Core.Services.Interfaces;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.Interfaces;
 using twentySix.Framework.Core.UI.ViewModels;
@@ -33,6 +38,8 @@ namespace fita.ui.ViewModels
         private Timer _messageTimer = new();
 
         private List<HamburgerMenuItemViewModel> _accountItems = new();
+        
+        public IDBHelperService DbHelperService { get; set; }
 
         public NotificationMessage Message { get; set; }
 
@@ -142,6 +149,39 @@ namespace fita.ui.ViewModels
         public void Navigate(HamburgerMenuItemViewModel hamburgerItem)
         {
             NavigationService?.Navigate(hamburgerItem.View, hamburgerItem.Account, this);
+        }
+
+        [UsedImplicitly]
+        public void BackupDb()
+        {
+            if (string.IsNullOrEmpty(DbHelperService?.DBLocation))
+            {
+                return;
+            }
+            
+            var dbFile = DbHelperService.DBLocation;
+            var backupFile = Path.Join(Path.GetDirectoryName(dbFile),
+                Path.GetFileNameWithoutExtension(dbFile) + "-backup" + Path.GetExtension(dbFile));
+
+            try
+            {
+                File.Copy(dbFile, backupFile, true);
+
+                WinUIMessageBox.Show(
+                    "The data was backed up successfully.",
+                    "Backup DB",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                WinUIMessageBox.Show(
+                    $"There was a problem while backing up the data. {ex.Message}",
+                    "Backup DB",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            
         }
 
         public void OnClose()

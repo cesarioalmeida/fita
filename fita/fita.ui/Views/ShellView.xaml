@@ -65,6 +65,9 @@
                 Command="{Binding ShowModalViewCommand}"
                 CommandParameter="SecuritiesView"
                 Content="Securities" />
+            <dxb:BarSubItem
+                Command="{Binding BackupDbCommand}"
+                Content="Backup" />
         </dxb:MainMenuControl>
     </dx:ThemedWindow.ToolbarItems>
 
