@@ -111,6 +111,11 @@
                                     <Setter Property="ArgumentScaleType" Value="Qualitative" />
                                     <Setter Property="ArgumentDataMember" Value="Month" />
                                     <Setter Property="ValueDataMember" Value="Value" />
+                                    <Setter Property="Model">
+                                        <Setter.Value>
+                                            <dxc:FlatBar2DModel />
+                                        </Setter.Value>
+                                    </Setter>
                                 </Style>
                             </dxc:XYDiagram2D.Resources>
                             <dxc:XYDiagram2D.AxisX>
