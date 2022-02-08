@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using fita.data.Models;
-using LiteDB;
+﻿using fita.data.Models;
 using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.Repositories
@@ -20,44 +16,6 @@ namespace fita.services.Repositories
             Collection.EnsureIndex(x => x.Name);
             Collection.EnsureIndex(x => x.Symbol);
             Collection.EnsureIndex(x => x.Type);
-        }
-
-        public override Task<Security> DetailsEnrichedAsync(ObjectId id)
-        {
-            return Task.Run(
-                () =>
-                {
-                    try
-                    {
-                        return Collection
-                            .Include(x => x.Currency)
-                            .FindById(id);
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Warn($"{nameof(DetailsEnrichedAsync)}: {ex}");
-                        return null;
-                    }
-                });
-        }
-
-        public override Task<IEnumerable<Security>> AllEnrichedAsync()
-        {
-            return Task.Run(
-                () =>
-                {
-                    try
-                    {
-                        return Collection
-                            .Include(x => x.Currency)
-                            .FindAll();
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Warn($"{nameof(AllEnrichedAsync)}: {ex}");
-                        return null;
-                    }
-                });
         }
     }
 }

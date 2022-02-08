@@ -21,44 +21,6 @@ namespace fita.services.Repositories
             Collection.EnsureIndex(x => x.AccountId);
         }
 
-        public override Task<SecurityPosition> DetailsEnrichedAsync(ObjectId id)
-        {
-            return Task.Run(
-                () =>
-                {
-                    try
-                    {
-                        return Collection
-                            .Include(x => x.Security)
-                            .FindById(id);
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Warn($"{nameof(DetailsEnrichedAsync)}: {ex}");
-                        return null;
-                    }
-                });
-        }
-
-        public override Task<IEnumerable<SecurityPosition>> AllEnrichedAsync()
-        {
-            return Task.Run(
-                () =>
-                {
-                    try
-                    {
-                        return Collection
-                            .Include(x => x.Security)
-                            .FindAll();
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Warn($"{nameof(AllEnrichedAsync)}: {ex}");
-                        return null;
-                    }
-                });
-        }
-        
         public Task<IEnumerable<SecurityPosition>> AllEnrichedForAccountAsync(ObjectId accountId)
         {
             return Task.Run(

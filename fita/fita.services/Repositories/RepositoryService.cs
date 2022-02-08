@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using LiteDB;
 using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.Repositories
 {
-    public class RepositoryService<T> : IRepositoryService<T> where T : class 
+    public class RepositoryService<T> : IRepositoryService<T> where T : class
     {
-        public RepositoryService(IDBHelperService dbHelperService, ILoggingService loggingService)
+        private readonly List<Expression<Func<T, object>>> _expressionsToInclude = GetExpressionsToInclude();
+
+        protected RepositoryService(IDBHelperService dbHelperService, ILoggingService loggingService)
         {
             DBHelperService = dbHelperService;
             LoggingService = loggingService;
@@ -83,7 +87,21 @@ namespace fita.services.Repositories
 
         public virtual Task<T> DetailsEnrichedAsync(ObjectId id)
         {
-            return DetailsAsync(id);
+            return Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        var collection = _expressionsToInclude
+                            .Aggregate(Collection, (current, expression) => current.Include(expression));
+                        return collection.FindById(id);
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Warn($"{nameof(DetailsEnrichedAsync)}: {ex}");
+                        return null;
+                    }
+                });
         }
 
         public virtual Task<IEnumerable<T>> AllAsync()
@@ -105,7 +123,39 @@ namespace fita.services.Repositories
 
         public virtual Task<IEnumerable<T>> AllEnrichedAsync()
         {
-            return AllAsync();
+            return Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        var collection = _expressionsToInclude
+                            .Aggregate(Collection, (current, expression) => current.Include(expression));
+                        return collection.FindAll();
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Warn($"{nameof(AllEnrichedAsync)}: {ex}");
+                        return null;
+                    }
+                });
+        }
+
+        private static List<Expression<Func<T, object>>> GetExpressionsToInclude()
+        {
+            var result = new List<Expression<Func<T, object>>>();
+            
+            var propertiesRequireLoading = typeof(T).GetProperties().Where(x => Attribute.IsDefined(x, typeof(BsonRefAttribute)));
+            
+            foreach (var propertyInfo in propertiesRequireLoading)
+            {
+                var entityType = propertyInfo.DeclaringType;
+                var parameter = Expression.Parameter(entityType!, "x");
+                var property = Expression.Property(parameter, propertyInfo);
+                var conversion = Expression.Convert(property, typeof(object));
+                result.Add(Expression.Lambda<Func<T, object>>(conversion, parameter));
+            }
+
+            return result;
         }
     }
 }

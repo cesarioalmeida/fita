@@ -17,7 +17,7 @@ namespace fita.ui.ViewModels.Reports
     public class CategoryEvolutionReportViewModel : ReportBaseViewModel
     {
         public virtual DateTime FromDate { get; set; } =
-            new(DateTime.Now.AddMonths(-6).Year, DateTime.Now.AddMonths(-6).Month, 1);
+            new(DateTime.Now.AddMonths(-6).Year, DateTime.Now.AddMonths(-9).Month, 1);
 
         public virtual DateTime ToDate { get; set; } = DateTime.Now;
 

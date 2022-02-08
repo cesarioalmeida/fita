@@ -23,25 +23,6 @@ namespace fita.services.Repositories
             Collection.EnsureIndex(x => x.Action);
         }
 
-        public override Task<Trade> DetailsEnrichedAsync(ObjectId id)
-        {
-            return Task.Run(
-                () =>
-                {
-                    try
-                    {
-                        return Collection
-                            .Include(x => x.Security)
-                            .FindById(id);
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Warn($"{nameof(DetailsEnrichedAsync)}: {ex}");
-                        return null;
-                    }
-                });
-        }
-
         public override async Task<IEnumerable<Trade>> AllAsync()
         {
             return (await base.AllAsync())
