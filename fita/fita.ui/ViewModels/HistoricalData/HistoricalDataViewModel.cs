@@ -39,12 +39,12 @@ namespace fita.ui.ViewModels.HistoricalData
         [UsedImplicitly]
         public void Close() => DocumentOwner?.Close(this);
 
+        [UsedImplicitly]
         public async Task Edit(HistoricalDataPoint historical)
         {
             if (historical is null)
             {
                 historical = new HistoricalDataPoint {Date = DateTime.Now, Value = 0m};
-                Model.DataPoints.Add(historical);
             }
 
             var viewModel = ViewModelSource.Create<HistoricalPointViewModel>();
@@ -56,6 +56,8 @@ namespace fita.ui.ViewModels.HistoricalData
 
             if (viewModel.Saved)
             {
+                Model.DataPoints.Add(historical);
+                
                 var failed = await HistoricalDataRepoService.SaveAsync(Model) == Result.Fail;
 
                 Messenger.Default.Send(failed
