@@ -1,17 +1,17 @@
 ﻿<UserControl
+    DataContext="{dxmvvm:ViewModelSource Type=reports:NetWorthReportViewModel}"
+    d:DataContext="{d:DesignInstance reports:NetWorthReportViewModel}"
+    mc:Ignorable="d"
     x:Class="fita.ui.Views.Reports.NetWorthReportView"
+    x:Name="this"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:reports="clr-namespace:fita.ui.ViewModels.Reports"
-    x:Name="this"
-    d:DataContext="{d:DesignInstance reports:NetWorthReportViewModel}"
-    DataContext="{dxmvvm:ViewModelSource Type=reports:NetWorthReportViewModel}"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -31,14 +31,14 @@
             </Grid.RowDefinitions>
 
             <Border
+                Background="{StaticResource BgStartBrush}"
                 Grid.Row="0"
-                Height="50"
-                Background="{StaticResource BgStartBrush}">
+                Height="50">
                 <Grid>
                     <StackPanel
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
                         <TextBlock
                             Foreground="{StaticResource White1Brush}"
                             Style="{StaticResource H1}"
@@ -48,9 +48,9 @@
             </Border>
 
             <dxc:ChartControl
-                Grid.Row="1"
                 AnimationMode="OnLoad"
-                DataSource="{Binding Data}">
+                DataSource="{Binding Data}"
+                Grid.Row="1">
                 <dxc:ChartControl.Diagram>
                     <dxc:XYDiagram2D>
                         <dxc:XYDiagram2D.AxisX>
@@ -77,32 +77,24 @@
                             </dxc:AxisY2D>
                         </dxc:XYDiagram2D.AxisY>
                         <dxc:XYDiagram2D.Series>
-                            <dxc:LineSeries2D
-                                ArgumentDataMember="Date"
-                                CrosshairLabelPattern="{}{S}: {V:c2}"
-                                DisplayName="Banks"
-                                ValueDataMember="Banks" />
-                            <dxc:LineSeries2D
-                                ArgumentDataMember="Date"
-                                CrosshairLabelPattern="{}{S}: {V:c2}"
-                                DisplayName="Assets"
-                                ValueDataMember="Assets" />
-                            <dxc:LineSeries2D
-                                ArgumentDataMember="Date"
-                                CrosshairLabelPattern="{}{S}: {V:c2}"
-                                DisplayName="Credit Cards"
-                                ValueDataMember="CreditCards" />
-                            <dxc:LineSeries2D
-                                ArgumentDataMember="Date"
-                                CrosshairLabelPattern="{}{S}: {V:c2}"
-                                DisplayName="Investments"
-                                ValueDataMember="Investments" />
-                            <dxc:LineSeries2D
-                                ArgumentDataMember="Date"
-                                CrosshairLabelPattern="{}{S}: {V:c2}"
-                                DisplayName="Net Worth"
-                                ValueDataMember="NetWorth" />
+                            <dxc:SplineSeries2D DisplayName="Banks" ValueDataMember="Banks" />
+                            <dxc:SplineSeries2D DisplayName="Credit Cards" ValueDataMember="CreditCards" />
+                            <dxc:SplineSeries2D DisplayName="Assets" ValueDataMember="Assets" />
+                            <dxc:SplineSeries2D DisplayName="Investments" ValueDataMember="Investments" />
+                            <dxc:SplineSeries2D DisplayName="Net Worth" ValueDataMember="NetWorth" />
                         </dxc:XYDiagram2D.Series>
+                        <dxc:XYDiagram2D.Resources>
+                            <Style TargetType="dxc:SplineSeries2D">
+                                <Setter Property="ArgumentDataMember" Value="Date" />
+                                <Setter Property="CrosshairLabelPattern" Value="{}{S}: {V:c2}" />
+                                <Setter Property="LineTension" Value="0.7" />
+                                <Setter Property="LineStyle">
+                                    <Setter.Value>
+                                        <dxc:LineStyle Thickness="3" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </dxc:XYDiagram2D.Resources>
                     </dxc:XYDiagram2D>
                 </dxc:ChartControl.Diagram>
                 <dxc:ChartControl.Legend>

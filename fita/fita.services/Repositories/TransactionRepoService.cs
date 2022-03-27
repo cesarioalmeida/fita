@@ -94,5 +94,47 @@ namespace fita.services.Repositories
                     }
                 });
         }
+        
+        public Task<IEnumerable<Transaction>> AllEnrichedToDateAsync(DateTime endDate)
+        {
+            return Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        return Collection
+                            .Include(x => x.Category)
+                            .Find(x => x.Date <= endDate)
+                            .OrderBy(x => x.Date)
+                            .AsEnumerable();
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Warn($"{nameof(AllEnrichedToDateAsync)}: {ex}");
+                        return null;
+                    }
+                });
+        }
+        
+        public Task<IEnumerable<Transaction>> AllEnrichedToDateForAccountAsync(DateTime endDate, ObjectId accountId)
+        {
+            return Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        return Collection
+                            .Include(x => x.Category)
+                            .Find(x => x.Date <= endDate && x.AccountId == accountId)
+                            .OrderBy(x => x.Date)
+                            .AsEnumerable();
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Warn($"{nameof(AllEnrichedToDateForAccountAsync)}: {ex}");
+                        return null;
+                    }
+                });
+        }
     }
 }
