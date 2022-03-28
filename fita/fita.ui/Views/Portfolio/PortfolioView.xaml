@@ -1,7 +1,10 @@
 ﻿<UserControl
+    DataContext="{dxmvvm:ViewModelSource Type=portfolio:PortfolioViewModel}"
+    d:DataContext="{d:DesignInstance portfolio:PortfolioViewModel}"
+    mc:Ignorable="d"
     x:Class="fita.ui.Views.Portfolio.PortfolioView"
+    x:Name="this"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:fita.ui.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
@@ -10,10 +13,7 @@
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:portfolio="clr-namespace:fita.ui.ViewModels.Portfolio"
-    x:Name="this"
-    d:DataContext="{d:DesignInstance portfolio:PortfolioViewModel}"
-    DataContext="{dxmvvm:ViewModelSource Type=portfolio:PortfolioViewModel}"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,18 +21,18 @@
             </ResourceDictionary.MergedDictionaries>
 
             <dxe:TextEditSettings
-                x:Key="Currency2EditSettings"
                 Mask="c2"
                 MaskCulture="{Binding Account.Currency.Culture}"
                 MaskType="Numeric"
-                MaskUseAsDisplayFormat="True" />
+                MaskUseAsDisplayFormat="True"
+                x:Key="Currency2EditSettings" />
 
             <dxe:TextEditSettings
-                x:Key="Currency4EditSettings"
                 Mask="c4"
                 MaskCulture="{Binding Account.Currency.Culture}"
                 MaskType="Numeric"
-                MaskUseAsDisplayFormat="True" />
+                MaskUseAsDisplayFormat="True"
+                x:Key="Currency4EditSettings" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -46,15 +46,15 @@
             </Grid.RowDefinitions>
 
             <Border
+                Background="{StaticResource BgStartBrush}"
                 Grid.Row="0"
-                Height="50"
-                Background="{StaticResource BgStartBrush}">
+                Height="50">
 
                 <Grid>
                     <StackPanel
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
                         <TextBlock
                             Foreground="{StaticResource White1Brush}"
                             Style="{StaticResource H1}"
@@ -71,9 +71,9 @@
             </Border>
 
             <dxg:GridControl
-                x:Name="grid"
                 Grid.Row="1"
-                ItemsSource="{Binding Data}">
+                ItemsSource="{Binding Data}"
+                x:Name="grid">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="Entity.Security.Name" Header="Security" />
                     <dxg:GridColumn FieldName="Entity.Quantity" Header="Quantity" />
@@ -84,7 +84,7 @@
                     <dxg:GridColumn
                         EditSettings="{StaticResource Currency4EditSettings}"
                         FieldName="Entity.BreakEvenPrice"
-                        Header="BreakEvenPrice" />
+                        Header="Break-Even Price" />
                     <dxg:GridColumn
                         EditSettings="{StaticResource Currency4EditSettings}"
                         FieldName="CurrentPrice"
@@ -133,9 +133,9 @@
             </dxg:GridControl>
 
             <Border
+                Background="{StaticResource BgStartBrush}"
                 Grid.Row="2"
-                Height="40"
-                Background="{StaticResource BgStartBrush}">
+                Height="40">
                 <Grid Margin="4">
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                         <controls:ViewRadioButton

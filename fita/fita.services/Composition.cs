@@ -26,6 +26,7 @@ namespace fita.services
             serviceRegistry.Register<ISecurityService, SecurityService>();
             serviceRegistry.Register<IAccountService, AccountService>();
             serviceRegistry.Register<IPortfolioService, PortfolioService>();
+            serviceRegistry.Register<IInvestmentPricingService, InvestmentPricingService>();
         }
     }
 }

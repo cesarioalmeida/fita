@@ -49,6 +49,7 @@
 
             <dxc:ChartControl
                 AnimationMode="OnLoad"
+                BorderThickness="0"
                 DataSource="{Binding Data}"
                 Grid.Row="1">
                 <dxc:ChartControl.Diagram>
@@ -97,6 +98,9 @@
                         </dxc:XYDiagram2D.Resources>
                     </dxc:XYDiagram2D>
                 </dxc:ChartControl.Diagram>
+                <dxc:ChartControl.CrosshairOptions>
+                    <dxc:CrosshairOptions GroupHeaderPattern="{}{A:dd.MMM.yyyy}" />
+                </dxc:ChartControl.CrosshairOptions>
                 <dxc:ChartControl.Legend>
                     <dxc:Legend HorizontalPosition="Left" MarkerMode="CheckBox" />
                 </dxc:ChartControl.Legend>

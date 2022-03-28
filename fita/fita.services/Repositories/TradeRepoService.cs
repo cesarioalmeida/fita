@@ -71,5 +71,26 @@ namespace fita.services.Repositories
                     }
                 });
         }
+        
+        public Task<IEnumerable<Trade>> AllEnrichedToDateForAccountAsync(DateTime endDate, ObjectId accountId)
+        {
+            return Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        return Collection
+                            .Include(x => x.Security)
+                            .Find(x => x.AccountId == accountId && x.Date<= endDate)
+                            .OrderBy(x => x.Date)
+                            .AsEnumerable();
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Warn($"{nameof(AllEnrichedToDateForAccountAsync)}: {ex}");
+                        return null;
+                    }
+                });
+        }
     }
 }
