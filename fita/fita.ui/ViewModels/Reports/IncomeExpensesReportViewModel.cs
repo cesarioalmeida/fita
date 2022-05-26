@@ -40,7 +40,6 @@ namespace fita.ui.ViewModels.Reports
 
         public IExchangeRateService ExchangeRateService { get; set; }
         
-
         public override async Task RefreshData()
         {
             IsBusy = true;
@@ -54,7 +53,7 @@ namespace fita.ui.ViewModels.Reports
                 Income.Clear();
                 Expenses.Clear();
 
-                var baseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
+                BaseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
                 var accounts = (await AccountRepoService.AllEnrichedAsync()).ToList();
                 var transactions =
                     (await TransactionRepoService.AllEnrichedBetweenDatesAsync(FromDate, ToDate)).ToList();
@@ -71,14 +70,14 @@ namespace fita.ui.ViewModels.Reports
                     switch (transaction.Category.Group)
                     {
                         case CategoryGroupEnum.PersonalExpenses:
-                            var payment = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                            var payment = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                                 transaction.Payment.GetValueOrDefault());
                             TotalExpenses += payment;
                             Expenses.Add(new(account.Name, transaction.Date, transaction.Category.Name,
                                 transaction.Description, payment));
                             break;
                         case CategoryGroupEnum.PersonalIncome:
-                            var deposit = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                            var deposit = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                                 transaction.Deposit.GetValueOrDefault());
                             TotalIncome += deposit;
                             Income.Add(new(account.Name, transaction.Date, transaction.Category.Name,
@@ -93,7 +92,7 @@ namespace fita.ui.ViewModels.Reports
 
                     if (position.ProfitLoss <= 0)
                     {
-                        var loss = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                        var loss = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                             -position.ProfitLoss);
                         TotalExpenses += loss;
                         Expenses.Add(
@@ -101,7 +100,7 @@ namespace fita.ui.ViewModels.Reports
                     }
                     else
                     {
-                        var gain = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                        var gain = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                             position.ProfitLoss);
                         TotalIncome += gain;
                         Income.Add(new Model(account.Name, position.SellDate, "Capital Gains", "Closed Position", gain));

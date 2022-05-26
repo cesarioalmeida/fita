@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using DevExpress.Mvvm;
+using fita.data.Models;
 using fita.ui.Messages;
 using twentySix.Framework.Core.UI.ViewModels;
 
@@ -12,6 +13,8 @@ namespace fita.ui.ViewModels.Reports
             Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
             Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData(); });
         }
+        
+        public virtual Currency BaseCurrency { get; set; }
 
         public abstract Task RefreshData();
     }

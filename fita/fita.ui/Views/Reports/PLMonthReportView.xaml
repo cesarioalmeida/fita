@@ -93,7 +93,7 @@
                     Grid.Row="0"
                     HorizontalAlignment="Center"
                     Style="{StaticResource H2}"
-                    Text="PL" />
+                    Text="{Binding BaseCurrency.Symbol, StringFormat=PL ({0})}" />
 
                 <dxc:ChartControl
                     AnimationMode="OnLoad"

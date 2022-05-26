@@ -89,7 +89,7 @@ namespace fita.ui.ViewModels.Reports
 
         private async Task<Tuple<decimal, decimal>> GetModel(DateTime fromDate, DateTime toDate)
         {
-            var baseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
+            BaseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
             var accounts = (await AccountRepoService.AllEnrichedAsync()).ToList();
             var transactions =
                 (await TransactionRepoService.AllEnrichedBetweenDatesAsync(fromDate, toDate)).ToList();
@@ -106,12 +106,12 @@ namespace fita.ui.ViewModels.Reports
                 switch (transaction.Category.Group)
                 {
                     case CategoryGroupEnum.PersonalExpenses:
-                        var payment = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                        var payment = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                             transaction.Payment.GetValueOrDefault());
                         totalExpenses += payment;
                         break;
                     case CategoryGroupEnum.PersonalIncome:
-                        var deposit = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                        var deposit = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                             transaction.Deposit.GetValueOrDefault());
                         totalIncome += deposit;
                         break;
@@ -124,13 +124,13 @@ namespace fita.ui.ViewModels.Reports
 
                 if (position.ProfitLoss <= 0)
                 {
-                    var loss = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                    var loss = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                         -position.ProfitLoss);
                     totalExpenses += loss;
                 }
                 else
                 {
-                    var gain = await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                    var gain = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                         position.ProfitLoss);
                     totalIncome += gain;
                 }

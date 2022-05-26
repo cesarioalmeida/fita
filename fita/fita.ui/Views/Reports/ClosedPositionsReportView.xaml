@@ -28,6 +28,15 @@
                     MaskType="Numeric"
                     MaskUseAsDisplayFormat="True" />
             </DataTemplate>
+            <DataTemplate x:Key="CurrencyBase2Template">
+                <dxe:TextEdit
+                    Name="PART_Editor"
+                    HorizontalAlignment="Right"
+                    Mask="c2"
+                    MaskCulture="{Binding RowData.Row.BaseCulture}"
+                    MaskType="Numeric"
+                    MaskUseAsDisplayFormat="True" />
+            </DataTemplate>
             <DataTemplate x:Key="Currency4Template">
                 <dxe:TextEdit
                     Name="PART_Editor"
@@ -112,6 +121,11 @@
                         CellTemplate="{StaticResource Currency2Template}"
                         FieldName="Position.ProfitLoss"
                         Header="P/L" />
+                    <dxg:GridColumn
+                        Width="70"
+                        CellTemplate="{StaticResource CurrencyBase2Template}"
+                        FieldName="ProfitLossBaseCurrency"
+                        Header="{Binding BaseCurrency.Symbol, StringFormat=P/L ({0})}" />
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
                     <dxg:TableView
@@ -121,6 +135,7 @@
                         RowMinHeight="24"
                         ShowGroupPanel="True"
                         ShowIndicator="False"
+                        ShowTotalSummary="True"
                         ShowSearchPanelMode="Always"
                         VerticalScrollbarVisibility="Auto" />
                 </dxg:GridControl.View>
@@ -129,7 +144,21 @@
                         DisplayFormat="Total = {0:c2}"
                         FieldName="Position.ProfitLoss"
                         SummaryType="Sum" />
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="ProfitLossBaseCurrency"
+                        SummaryType="Sum" />
                 </dxg:GridControl.GroupSummary>
+                <dxg:GridControl.TotalSummary>
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="Position.ProfitLoss"
+                        SummaryType="Sum" />
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="ProfitLossBaseCurrency"
+                        SummaryType="Sum" />
+                </dxg:GridControl.TotalSummary>
             </dxg:GridControl>
 
         </Grid>

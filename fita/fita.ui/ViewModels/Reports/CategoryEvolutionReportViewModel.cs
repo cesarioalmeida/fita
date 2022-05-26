@@ -92,7 +92,7 @@ namespace fita.ui.ViewModels.Reports
 
         private async Task<decimal> GetModel(DateTime fromDate, DateTime toDate)
         {
-            var baseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
+            BaseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
             var accounts = (await AccountRepoService.AllEnrichedAsync()).ToList();
             var transactions =
                 (await TransactionRepoService.AllEnrichedBetweenDatesAsync(fromDate, toDate)).ToList();
@@ -110,11 +110,11 @@ namespace fita.ui.ViewModels.Reports
                     switch (position.ProfitLoss)
                     {
                         case <= 0 when SelectedCategory.IsCapitalLoses():
-                            total += await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                            total += await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                                 -position.ProfitLoss);
                             break;
                         case > 0 when SelectedCategory.IsCapitalGains():
-                            total += await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                            total += await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                                 position.ProfitLoss);
                             break;
                     }
@@ -127,7 +127,7 @@ namespace fita.ui.ViewModels.Reports
             {
                 var account = accounts.Single(x => x.AccountId == transaction.AccountId);
 
-                total += await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                total += await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
                     transaction.Payment.GetValueOrDefault() + transaction.Deposit.GetValueOrDefault());
             }
 

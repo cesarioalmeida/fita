@@ -28,6 +28,15 @@
                     MaskType="Numeric"
                     MaskUseAsDisplayFormat="True" />
             </DataTemplate>
+            <DataTemplate x:Key="CurrencyBase2Template">
+                <dxe:TextEdit
+                    Name="PART_Editor"
+                    HorizontalAlignment="Right"
+                    Mask="c2"
+                    MaskCulture="{Binding RowData.Row.BaseCulture}"
+                    MaskType="Numeric"
+                    MaskUseAsDisplayFormat="True" />
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
     <dxmvvm:Interaction.Behaviors>
@@ -95,12 +104,23 @@
                         CellTemplate="{StaticResource Currency2Template}"
                         FieldName="Transaction.Deposit"
                         Header="Deposit" />
+                    <dxg:GridColumn
+                        Width="70"
+                        CellTemplate="{StaticResource CurrencyBase2Template}"
+                        FieldName="PaymentBaseCurrency"
+                        Header="{Binding BaseCurrency.Symbol, StringFormat=Payment ({0})}" />
+                    <dxg:GridColumn
+                        Width="70"
+                        CellTemplate="{StaticResource CurrencyBase2Template}"
+                        FieldName="DepositBaseCurrency"
+                        Header="{Binding BaseCurrency.Symbol, StringFormat=Deposit ({0})}" />
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
                     <dxg:TableView
                         AllowEditing="False"
                         AutoWidth="True"
                         GroupSummaryDisplayMode="AlignByColumns"
+                        ShowTotalSummary="True"
                         RowMinHeight="24"
                         ShowGroupPanel="True"
                         ShowIndicator="False"
@@ -116,7 +136,33 @@
                         DisplayFormat="Total = {0:c2}"
                         FieldName="Transaction.Deposit"
                         SummaryType="Sum" />
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="PaymentBaseCurrency"
+                        SummaryType="Sum" />
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="DepositBaseCurrency"
+                        SummaryType="Sum" />
                 </dxg:GridControl.GroupSummary>
+                <dxg:GridControl.TotalSummary>
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="Transaction.Payment"
+                        SummaryType="Sum" />
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="Transaction.Deposit"
+                        SummaryType="Sum" />
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="PaymentBaseCurrency"
+                        SummaryType="Sum" />
+                    <dxg:GridSummaryItem
+                        DisplayFormat="Total = {0:c2}"
+                        FieldName="DepositBaseCurrency"
+                        SummaryType="Sum" />
+                </dxg:GridControl.TotalSummary>
             </dxg:GridControl>
 
         </Grid>

@@ -152,7 +152,7 @@
                             Width="70"
                             CellTemplate="{StaticResource Currency2Template}"
                             FieldName="Amount"
-                            Header="Amount" />
+                            Header="{Binding BaseCurrency.Symbol, StringFormat=Amount ({0})}" />
                     </dxg:GridControl.Columns>
                     <dxg:GridControl.View>
                         <dxg:TableView
@@ -163,6 +163,7 @@
                             ShowGroupPanel="True"
                             ShowIndicator="False"
                             ShowSearchPanelMode="Always"
+                            ShowTotalSummary="True"
                             VerticalScrollbarVisibility="Auto" />
                     </dxg:GridControl.View>
                     <dxg:GridControl.GroupSummary>
@@ -171,6 +172,12 @@
                             FieldName="Amount"
                             SummaryType="Sum" />
                     </dxg:GridControl.GroupSummary>
+                    <dxg:GridControl.TotalSummary>
+                        <dxg:GridSummaryItem
+                            DisplayFormat="Total = {0:c2}"
+                            FieldName="Amount"
+                            SummaryType="Sum" />
+                    </dxg:GridControl.TotalSummary>
                 </dxg:GridControl>
 
                 <dxg:GridControl
@@ -203,7 +210,7 @@
                             Width="70"
                             CellTemplate="{StaticResource Currency2Template}"
                             FieldName="Amount"
-                            Header="Amount" />
+                            Header="{Binding BaseCurrency.Symbol, StringFormat=Amount ({0})}" />
                     </dxg:GridControl.Columns>
                     <dxg:GridControl.View>
                         <dxg:TableView
@@ -214,6 +221,7 @@
                             ShowGroupPanel="True"
                             ShowIndicator="False"
                             ShowSearchPanelMode="Always"
+                            ShowTotalSummary="True"
                             VerticalScrollbarVisibility="Auto" />
                     </dxg:GridControl.View>
                     <dxg:GridControl.GroupSummary>
@@ -222,6 +230,12 @@
                             FieldName="Amount"
                             SummaryType="Sum" />
                     </dxg:GridControl.GroupSummary>
+                    <dxg:GridControl.TotalSummary>
+                        <dxg:GridSummaryItem
+                            DisplayFormat="Total = {0:c2}"
+                            FieldName="Amount"
+                            SummaryType="Sum" />
+                    </dxg:GridControl.TotalSummary>
                 </dxg:GridControl>
 
                 <dxc:ChartControl

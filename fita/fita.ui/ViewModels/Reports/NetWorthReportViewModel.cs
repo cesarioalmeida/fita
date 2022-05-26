@@ -18,8 +18,6 @@ namespace fita.ui.ViewModels.Reports
 
         public LockableCollection<Model> Data { get; set; } = new();
 
-        public virtual Currency BaseCurrency { get; set; }
-        
         public AccountRepoService AccountRepoService { get; set; }
         
         public TransactionRepoService TransactionRepoService { get; set; }

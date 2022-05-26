@@ -63,8 +63,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="twentySix.Framework.Core" Version="6.3.0" />
-      <PackageReference Include="twentySix.Framework.Theme" Version="6.3.0" />
+      <PackageReference Include="twentySix.Framework.Core" Version="6.4.0" />
+      <PackageReference Include="twentySix.Framework.Theme" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
