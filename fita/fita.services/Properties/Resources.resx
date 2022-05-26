@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExchangeRateApi" xml:space="preserve">
-    <value>http://api.exchangeratesapi.io/v1/latest</value>
+    <value>https://fixer-fixer-currency-v1.p.rapidapi.com/latest</value>
   </data>
 </root>

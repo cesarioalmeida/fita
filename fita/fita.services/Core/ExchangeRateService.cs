@@ -33,7 +33,7 @@ namespace fita.services.Core
 
                     try
                     {
-                        var (day, rate) = DownloadData(exchangeRate, date);
+                        var (day, rate) = await DownloadData(exchangeRate, date);
 
                         if (exchangeRate.Rate is null)
                         {
@@ -91,15 +91,28 @@ namespace fita.services.Core
             }
         }
 
-        private static HistoricalElement DownloadData(ExchangeRate exchangeRate, DateTime? date = null)
+        private static async Task<HistoricalElement> DownloadData(ExchangeRate exchangeRate, DateTime? date = null)
         {
             var requestUrl = date is null
-                ? $"{Properties.Resources.ExchangeRateApi}?access_key={configuration["ExchangeRatesApi"]}&base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}"
-                : $"{Properties.Resources.ExchangeRateApi}?access_key={configuration["ExchangeRatesApi"]}&start_at={date.Value:YYYY-MM-dd}&end_at={date.Value:YYYY-MM-dd}&base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}";
-
+                ? $"{Properties.Resources.ExchangeRateApi}?base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}"
+                : $"{Properties.Resources.ExchangeRateApi}?start_at={date.Value:YYYY-MM-dd}&end_at={date.Value:YYYY-MM-dd}&base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}";
+            
             using var client = new HttpClient {Timeout = TimeSpan.FromSeconds(5)};
-
-            var json = client.GetStringAsync(requestUrl).Result;
+            
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(requestUrl),
+                Headers =
+                {
+                    { "X-RapidAPI-Host", "fixer-fixer-currency-v1.p.rapidapi.com" },
+                    { "X-RapidAPI-Key", $"{configuration["ExchangeRatesApi"]}" },
+                },
+            };
+            
+            using var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
             dynamic parsedJson = JObject.Parse(json);
 
             return new HistoricalElement((DateTime) Convert.ToDateTime(parsedJson.date),
