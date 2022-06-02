@@ -192,7 +192,15 @@
                                 <dxc:AxisY2D
                                     GridLinesMinorVisible="False"
                                     GridLinesVisible="True"
-                                    Interlaced="False" />
+                                    Interlaced="False">
+                                    <dxc:AxisY2D.ConstantLinesInFront>
+                                        <dxc:ConstantLine Value="{Binding Average, UpdateSourceTrigger=PropertyChanged}">  
+                                            <dxc:ConstantLine.Title>
+                                                <dxc:ConstantLineTitle Content="{DXBinding '$string.Format(`Average: {0:c0}`, Average)'}" />
+                                            </dxc:ConstantLine.Title>  
+                                        </dxc:ConstantLine>
+                                    </dxc:AxisY2D.ConstantLinesInFront>  
+                                </dxc:AxisY2D>
                             </dxc:XYDiagram2D.AxisY>
                             <dxc:XYDiagram2D.Series>
                                 <dxc:BarSideBySideSeries2D DataSource="{Binding Data, UpdateSourceTrigger=PropertyChanged}">

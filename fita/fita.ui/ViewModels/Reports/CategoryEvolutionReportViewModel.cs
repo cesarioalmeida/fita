@@ -27,6 +27,8 @@ namespace fita.ui.ViewModels.Reports
 
         public LockableCollection<Model> Data { get; set; } = new();
 
+        public virtual decimal? Average { get; set; }
+
         public AccountRepoService AccountRepoService { get; set; }
 
         public CategoryRepoService CategoryRepoService { get; set; }
@@ -77,6 +79,12 @@ namespace fita.ui.ViewModels.Reports
             finally
             {
                 Data.EndUpdate();
+
+                if (Data?.Any() ?? false)
+                {
+                    Average = Data?.Average(x => x.Value);
+                }
+                
                 IsBusy = false;
             }
         }
