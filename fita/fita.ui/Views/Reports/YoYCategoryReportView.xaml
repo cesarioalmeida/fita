@@ -1,0 +1,164 @@
+﻿<UserControl
+    DataContext="{dxmvvm:ViewModelSource Type=reports:YoYCategoryReportViewModel}"
+    d:DataContext="{d:DesignInstance reports:YoYCategoryReportViewModel}"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d"
+    x:Class="fita.ui.Views.Reports.YoYCategoryReportView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:reports="clr-namespace:fita.ui.ViewModels.Reports"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="ChartItemTemplate">
+                <dxc:ChartControl
+                    AnimationMode="OnLoad"
+                    BorderBrush="#2333"
+                    BorderThickness="1"
+                    Height="300"
+                    Width="300">
+                    <dxc:ChartControl.Titles>
+                        <dxc:Title
+                            Content="{Binding Category}"
+                            Dock="Top"
+                            HorizontalAlignment="Center" />
+                    </dxc:ChartControl.Titles>
+                    <dxc:ChartControl.Diagram>
+                        <dxc:XYDiagram2D>
+                            <dxc:XYDiagram2D.Resources>
+                                <Style TargetType="dxc:BarSideBySideSeries2D">
+                                    <Setter Property="AnimationAutoStartMode" Value="PlayOnce" />
+                                    <Setter Property="LabelsVisibility" Value="True" />
+                                    <Setter Property="CrosshairLabelPattern" Value="{}{A}: {V:c0}" />
+                                    <Setter Property="ArgumentScaleType" Value="Qualitative" />
+                                    <Setter Property="ArgumentDataMember" Value="Item1" />
+                                    <Setter Property="ValueDataMember" Value="Item2" />
+                                    <Setter Property="Model">
+                                        <Setter.Value>
+                                            <dxc:FlatBar2DModel />
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </dxc:XYDiagram2D.Resources>
+                            <dxc:XYDiagram2D.AxisX>
+                                <dxc:AxisX2D GridLinesVisible="False" />
+                            </dxc:XYDiagram2D.AxisX>
+                            <dxc:XYDiagram2D.AxisY>
+                                <dxc:AxisY2D
+                                    GridLinesMinorVisible="False"
+                                    GridLinesVisible="True"
+                                    Interlaced="False" />
+                            </dxc:XYDiagram2D.AxisY>
+                            <dxc:XYDiagram2D.Series>
+                                <dxc:BarSideBySideSeries2D DataSource="{Binding ChartData, UpdateSourceTrigger=PropertyChanged}">
+                                    <dxc:BarSideBySideSeries2D.Label>
+                                        <dxc:SeriesLabel TextPattern="{}{V:c0}" />
+                                    </dxc:BarSideBySideSeries2D.Label>
+                                </dxc:BarSideBySideSeries2D>
+                            </dxc:XYDiagram2D.Series>
+                        </dxc:XYDiagram2D>
+                    </dxc:ChartControl.Diagram>
+                </dxc:ChartControl>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand Command="{Binding OnViewLoadedCommand}" EventName="Loaded" />
+    </dxmvvm:Interaction.Behaviors>
+
+    <dx:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border
+                Background="{StaticResource BgStartBrush}"
+                Grid.Row="0"
+                Height="50">
+
+                <Grid>
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Foreground="{StaticResource White1Brush}"
+                            Style="{StaticResource H1}"
+                            Text="Report: YoY Categories" />
+                    </StackPanel>
+                </Grid>
+
+            </Border>
+
+            <Grid Grid.Row="1">
+                <GroupBox
+                    Header="Period"
+                    HorizontalAlignment="Center"
+                    Margin="10">
+                    <dxlc:LayoutControl Orientation="Horizontal">
+                        <dxlc:LayoutGroup
+                            GroupBoxDisplayMode="Light"
+                            HorizontalAlignment="Center"
+                            ItemSpace="20"
+                            Orientation="Horizontal">
+                            <dxlc:LayoutItem Label="From">
+                                <dxe:DateEdit
+                                    EditValue="{Binding FromDate, UpdateSourceTrigger=PropertyChanged}"
+                                    ShowToday="True"
+                                    ShowWeekNumbers="True"
+                                    Width="100" />
+                            </dxlc:LayoutItem>
+                            <dxlc:LayoutItem Label="To">
+                                <dxe:DateEdit
+                                    EditValue="{Binding ToDate, UpdateSourceTrigger=PropertyChanged}"
+                                    ShowToday="True"
+                                    ShowWeekNumbers="True"
+                                    Width="100" />
+                            </dxlc:LayoutItem>
+                        </dxlc:LayoutGroup>
+                    </dxlc:LayoutControl>
+                </GroupBox>
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    FontSize="30"
+                    Grid.Row="0"
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource H2}"
+                    Text="{Binding BaseCurrency.Symbol, StringFormat=PL ({0})}" />
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemTemplate="{StaticResource ChartItemTemplate}" ItemsSource="{Binding Data}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+
+        </Grid>
+    </dx:LoadingDecorator>
+
+</UserControl>
