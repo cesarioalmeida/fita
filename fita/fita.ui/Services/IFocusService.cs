@@ -1,7 +1,6 @@
-﻿namespace fita.ui.Services
+﻿namespace fita.ui.Services;
+
+public interface IFocusService
 {
-    public interface IFocusService
-    {
-        void Focus();
-    }
+    void Focus();
 }

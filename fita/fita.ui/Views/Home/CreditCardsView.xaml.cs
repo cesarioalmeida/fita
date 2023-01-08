@@ -1,10 +1,9 @@
-﻿namespace fita.ui.Views.Home
+﻿namespace fita.ui.Views.Home;
+
+public partial class CreditCardsView
 {
-    public partial class CreditCardsView
+    public CreditCardsView()
     {
-        public CreditCardsView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

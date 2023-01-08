@@ -1,10 +1,9 @@
-﻿namespace fita.ui.Views.Portfolio
+﻿namespace fita.ui.Views.Portfolio;
+
+public partial class PortfolioView
 {
-    public partial class PortfolioView
+    public PortfolioView()
     {
-        public PortfolioView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

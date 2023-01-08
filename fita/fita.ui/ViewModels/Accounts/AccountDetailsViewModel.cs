@@ -1,13 +1,14 @@
-﻿using System.Linq;
+﻿using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
 using fita.data.Models;
-using fita.services;
 using fita.services.Repositories;
 using fita.ui.Common;
 using JetBrains.Annotations;
+using twentySix.Framework.Core.Common;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.UI.Enums;
@@ -22,8 +23,10 @@ namespace fita.ui.ViewModels.Accounts
 
         public int Height => 600;
 
+        [Import]
         public AccountRepoService AccountRepoService { get; set; }
 
+        [Import]
         public CurrencyRepoService CurrencyRepoService { get; set; }
 
         public Account Entity { get; set; }
@@ -44,7 +47,7 @@ namespace fita.ui.ViewModels.Accounts
 
             try
             {
-                var currencies = await CurrencyRepoService.AllAsync();
+                var currencies = await CurrencyRepoService.GetAll();
                 Currencies.AddRange(currencies);
 
                 SelectedCurrency = Currencies.SingleOrDefault(x => x.CurrencyId == Entity.Currency?.CurrencyId);
@@ -68,7 +71,7 @@ namespace fita.ui.ViewModels.Accounts
             {
                 Entity.Currency = SelectedCurrency;
 
-                Messenger.Default.Send(await AccountRepoService.SaveAsync(Entity) == Result.Fail
+                Messenger.Default.Send(await AccountRepoService.Save(Entity) == Result.Fail
                     ? new NotificationMessage("Failed to save account.", NotificationStatusEnum.Error)
                     : new NotificationMessage($"Account {Entity.Name} saved.", NotificationStatusEnum.Success));
 

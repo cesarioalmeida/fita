@@ -1,10 +1,9 @@
-﻿namespace fita.ui.Views.Home
+﻿namespace fita.ui.Views.Home;
+
+public partial class BanksView
 {
-    public partial class BanksView
+    public BanksView()
     {
-        public BanksView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -1,10 +1,9 @@
-﻿namespace fita.ui.Views.Currencies
+﻿namespace fita.ui.Views.Currencies;
+
+public partial class CurrencyDetailsView
 {
-    public partial class CurrencyDetailsView
+    public CurrencyDetailsView()
     {
-        public CurrencyDetailsView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

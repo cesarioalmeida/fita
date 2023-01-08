@@ -1,10 +1,9 @@
-﻿namespace fita.ui.Views.Home
+﻿namespace fita.ui.Views.Home;
+
+public partial class HomeView
 {
-    public partial class HomeView
+    public HomeView()
     {
-        public HomeView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

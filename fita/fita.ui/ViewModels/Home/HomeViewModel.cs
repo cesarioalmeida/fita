@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm;
@@ -10,167 +11,173 @@ using fita.data.Models;
 using fita.services.Core;
 using fita.services.Repositories;
 using fita.ui.Messages;
-using twentySix.Framework.Core.UI.Interfaces;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.UI.ViewModels;
 
-namespace fita.ui.ViewModels.Home
+namespace fita.ui.ViewModels.Home;
+
+[POCOViewModel]
+public class HomeViewModel : ComposedViewModelBase, IDisposable
 {
-    [POCOViewModel]
-    public class HomeViewModel : ComposedViewModelBase, IDependsOnClose
+    private NetWorth _netWorth;
+    
+    public virtual BanksViewModel BanksViewModel { get; set; }
+
+    public virtual CreditCardsViewModel CreditCardsViewModel { get; set; }
+
+    public virtual AssetsViewModel AssetsViewModel { get; set; }
+
+    public virtual InvestmentsViewModel InvestmentsViewModel { get; set; }
+
+    public virtual decimal NetWorth => BanksViewModel.TotalAmount + CreditCardsViewModel.TotalAmount +
+                                       AssetsViewModel.TotalAmount + InvestmentsViewModel.TotalAmount;
+
+    [Import]
+    public TransactionRepoService TransactionRepoService { get; set; }
+
+    [Import]
+    public AccountRepoService AccountRepoService { get; set; }
+
+    [Import]
+    public FileSettingsRepoService FileSettingsRepoService { get; set; }
+
+    [Import]
+    public ClosedPositionRepoService ClosedPositionRepoService { get; set; }
+
+    [Import]
+    public NetWorthRepoService NetWorthRepoService { get; set; }
+
+    [Import]
+    public IExchangeRateService ExchangeRateService { get; set; }
+
+    public virtual decimal IncomeMonth { get; set; }
+
+    public virtual decimal ExpensesMonth { get; set; }
+
+    public virtual decimal PLMonth { get; set; }
+
+    public HomeViewModel()
     {
-        private NetWorth _netWorth;
+        BanksViewModel = ViewModelSource.Create<BanksViewModel>();
+        CreditCardsViewModel = ViewModelSource.Create<CreditCardsViewModel>();
+        AssetsViewModel = ViewModelSource.Create<AssetsViewModel>();
+        InvestmentsViewModel = ViewModelSource.Create<InvestmentsViewModel>();
 
-        public virtual BanksViewModel BanksViewModel { get; set; }
+        BanksViewModel.PropertyChanged += OnChildrenPropertyChanged;
+        CreditCardsViewModel.PropertyChanged += OnChildrenPropertyChanged;
+        AssetsViewModel.PropertyChanged += OnChildrenPropertyChanged;
+        InvestmentsViewModel.PropertyChanged += OnChildrenPropertyChanged;
 
-        public virtual CreditCardsViewModel CreditCardsViewModel { get; set; }
+        RefreshData().ConfigureAwait(false);
 
-        public virtual AssetsViewModel AssetsViewModel { get; set; }
+        Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData().ConfigureAwait(false); });
+        Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData().ConfigureAwait(false); });
+        Messenger.Default.Register<SecuritiesChanged>(this, _ => { RefreshData().ConfigureAwait(false); });
+    }
 
-        public virtual InvestmentsViewModel InvestmentsViewModel { get; set; }
+    public async Task RefreshData()
+    {
+        IsBusy = true;
 
-        public virtual decimal NetWorth => BanksViewModel.TotalAmount + CreditCardsViewModel.TotalAmount +
-                                           AssetsViewModel.TotalAmount + InvestmentsViewModel.TotalAmount;
-
-        public TransactionRepoService TransactionRepoService { get; set; }
-
-        public AccountRepoService AccountRepoService { get; set; }
-
-        public FileSettingsRepoService FileSettingsRepoService { get; set; }
-
-        public ClosedPositionRepoService ClosedPositionRepoService { get; set; }
-
-        public NetWorthRepoService NetWorthRepoService { get; set; }
-
-        public IExchangeRateService ExchangeRateService { get; set; }
-
-        public virtual decimal IncomeMonth { get; set; }
-
-        public virtual decimal ExpensesMonth { get; set; }
-
-        public virtual decimal PLMonth { get; set; }
-
-        public HomeViewModel()
+        try
         {
-            BanksViewModel = ViewModelSource.Create<BanksViewModel>();
-            CreditCardsViewModel = ViewModelSource.Create<CreditCardsViewModel>();
-            AssetsViewModel = ViewModelSource.Create<AssetsViewModel>();
-            InvestmentsViewModel = ViewModelSource.Create<InvestmentsViewModel>();
+            var baseCurrency = (await FileSettingsRepoService.GetAll(true)).First().BaseCurrency;
 
-            BanksViewModel.PropertyChanged += OnChildrenPropertyChanged;
-            CreditCardsViewModel.PropertyChanged += OnChildrenPropertyChanged;
-            AssetsViewModel.PropertyChanged += OnChildrenPropertyChanged;
-            InvestmentsViewModel.PropertyChanged += OnChildrenPropertyChanged;
+            var accounts = (await AccountRepoService.GetAll(true)).ToList();
 
-            RefreshData();
-
-            Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
-            Messenger.Default.Register<AccountsChanged>(this, _ => { RefreshData(); });
-        }
-
-        private async void OnChildrenPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e?.PropertyName?.Equals("TotalAmount") ?? false)
-            {
-                RaisePropertyChanged(() => NetWorth);
-                await SaveNetWorth();
-            }
-        }
-
-        public async Task RefreshData()
-        {
-            IsBusy = true;
-
-            try
-            {
-                var baseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
-
-                var accounts = (await AccountRepoService.AllEnrichedAsync()).ToList();
-
-                var transactions =
-                    (await TransactionRepoService.AllEnrichedBetweenDatesAsync(new DateTime(DateTime.Now.Year,
-                        DateTime.Now.Month, 1))).ToList();
-
-                var closedPositions = (await ClosedPositionRepoService.AllEnrichedBetweenDatesAsync(new DateTime(
-                    DateTime.Now.Year,
+            var transactions =
+                (await TransactionRepoService.AllEnrichedBetweenDates(new DateTime(DateTime.Now.Year,
                     DateTime.Now.Month, 1))).ToList();
 
-                var expenses = 0m;
-                var income = 0m;
+            var closedPositions = (await ClosedPositionRepoService.AllEnrichedBetweenDates(new DateTime(
+                DateTime.Now.Year,
+                DateTime.Now.Month, 1))).ToList();
 
-                foreach (var transaction in transactions)
-                {
-                    var account = accounts.Single(x => x.AccountId == transaction.AccountId);
+            var expenses = 0m;
+            var income = 0m;
 
-                    switch (transaction.Category.Group)
-                    {
-                        case CategoryGroupEnum.PersonalExpenses:
-                            expenses += await ExchangeRateService.Exchange(account.Currency, baseCurrency,
-                                transaction.Payment.GetValueOrDefault());
-                            break;
-                        case CategoryGroupEnum.PersonalIncome:
-                            income += await ExchangeRateService.Exchange(account.Currency, baseCurrency,
-                                transaction.Deposit.GetValueOrDefault());
-                            break;
-                    }
-                }
-
-                foreach (var position in closedPositions)
-                {
-                    var account = accounts.Single(x => x.AccountId == position.AccountId);
-
-                    if (position.ProfitLoss <= 0)
-                    {
-                        expenses += await ExchangeRateService.Exchange(account.Currency, baseCurrency, -position.ProfitLoss);
-                    }
-                    else
-                    {
-                        income += await ExchangeRateService.Exchange(account.Currency, baseCurrency, position.ProfitLoss);
-                    }
-                }
-
-                ExpensesMonth = expenses;
-                IncomeMonth = income;
-                PLMonth = IncomeMonth - ExpensesMonth;
-            }
-            finally
+            foreach (var transaction in transactions)
             {
-                IsBusy = false;
+                var account = accounts.Single(x => x.AccountId == transaction.AccountId);
+
+                switch (transaction.Category.Group)
+                {
+                    case CategoryGroupEnum.PersonalExpenses:
+                        expenses += await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                            transaction.Payment.GetValueOrDefault());
+                        break;
+                    case CategoryGroupEnum.PersonalIncome:
+                        income += await ExchangeRateService.Exchange(account.Currency, baseCurrency,
+                            transaction.Deposit.GetValueOrDefault());
+                        break;
+                }
             }
+
+            foreach (var position in closedPositions)
+            {
+                var account = accounts.Single(x => x.AccountId == position.AccountId);
+
+                if (position.ProfitLoss <= 0)
+                {
+                    expenses += await ExchangeRateService.Exchange(account.Currency, baseCurrency, -position.ProfitLoss);
+                }
+                else
+                {
+                    income += await ExchangeRateService.Exchange(account.Currency, baseCurrency, position.ProfitLoss);
+                }
+            }
+
+            ExpensesMonth = expenses;
+            IncomeMonth = income;
+            PLMonth = IncomeMonth - ExpensesMonth;
         }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
         
-        private async Task SaveNetWorth()
+    public void Dispose()
+    {
+        if (BanksViewModel is not null)
+            BanksViewModel.PropertyChanged -= OnChildrenPropertyChanged;
+
+        if (CreditCardsViewModel is not null)
+            CreditCardsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
+
+        if (AssetsViewModel is not null)
+            AssetsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
+
+        if (InvestmentsViewModel is not null)
+            InvestmentsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
+    }
+        
+    private async Task SaveNetWorth()
+    {
+        _netWorth ??= await NetWorthRepoService.GetForDate(DateTime.Today) ?? new();
+
+        if (_netWorth.Total != NetWorth || _netWorth.Banks != BanksViewModel.TotalAmount ||
+            _netWorth.CreditCards != CreditCardsViewModel.TotalAmount ||
+            _netWorth.Investments != InvestmentsViewModel.TotalAmount ||
+            _netWorth.Assets != AssetsViewModel.TotalAmount)
         {
-            _netWorth ??= await NetWorthRepoService.GetForDateAsync(DateTime.Today) ?? new();
+            _netWorth.Date = DateTime.Today;
+            _netWorth.Total = NetWorth;
+            _netWorth.Banks = BanksViewModel.TotalAmount;
+            _netWorth.CreditCards = CreditCardsViewModel.TotalAmount;
+            _netWorth.Investments = InvestmentsViewModel.TotalAmount;
+            _netWorth.Assets = AssetsViewModel.TotalAmount;
 
-            if (_netWorth.Total != NetWorth || _netWorth.Banks != BanksViewModel.TotalAmount ||
-                _netWorth.CreditCards != CreditCardsViewModel.TotalAmount ||
-                _netWorth.Investments != InvestmentsViewModel.TotalAmount ||
-                _netWorth.Assets != AssetsViewModel.TotalAmount)
-            {
-                _netWorth.Date = DateTime.Today;
-                _netWorth.Total = NetWorth;
-                _netWorth.Banks = BanksViewModel.TotalAmount;
-                _netWorth.CreditCards = CreditCardsViewModel.TotalAmount;
-                _netWorth.Investments = InvestmentsViewModel.TotalAmount;
-                _netWorth.Assets = AssetsViewModel.TotalAmount;
-
-                await NetWorthRepoService.SaveAsync(_netWorth);
-            }
+            await NetWorthRepoService.Save(_netWorth);
         }
-
-        public void OnClose()
+    }
+        
+    private async void OnChildrenPropertyChanged([CanBeNull] object sender, PropertyChangedEventArgs e)
+    {
+        if (e?.PropertyName?.Equals("TotalAmount") ?? false)
         {
-            if (BanksViewModel is not null)
-                BanksViewModel.PropertyChanged -= OnChildrenPropertyChanged;
-
-            if (CreditCardsViewModel is not null)
-                CreditCardsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
-
-            if (AssetsViewModel is not null)
-                AssetsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
-
-            if (InvestmentsViewModel is not null)
-                InvestmentsViewModel.PropertyChanged -= OnChildrenPropertyChanged;
+            RaisePropertyChanged(() => NetWorth);
+            await SaveNetWorth();
         }
     }
 }

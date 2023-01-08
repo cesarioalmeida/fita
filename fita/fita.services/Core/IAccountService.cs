@@ -2,12 +2,11 @@
 using System.Threading.Tasks;
 using fita.data.Models;
 
-namespace fita.services.Core
-{
-    public interface IAccountService
-    {
-        Task<decimal> CalculateBalance(Account account, List<Transaction> transactions);
+namespace fita.services.Core;
 
-        Task<decimal> CalculateBalance(Transaction transaction, decimal previousBalance);
-    }
+public interface IAccountService
+{
+    Task<decimal> CalculateBalance(Account account, List<Transaction> transactions);
+
+    Task<decimal> CalculateBalance(Transaction transaction, decimal previousBalance);
 }

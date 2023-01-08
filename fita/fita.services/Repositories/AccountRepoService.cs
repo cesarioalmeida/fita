@@ -1,20 +1,22 @@
-﻿using fita.data.Models;
+﻿using System.ComponentModel.Composition;
+using fita.data.Models;
+using twentySix.Framework.Core.Services;
 using twentySix.Framework.Core.Services.Interfaces;
 
-namespace fita.services.Repositories
-{
-    public class AccountRepoService : RepositoryService<Account>
-    {
-        public AccountRepoService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(dbHelperService, loggingService)
-        {
-            IndexData();
-        }
+namespace fita.services.Repositories;
 
-        public sealed override void IndexData()
-        {
-            Collection.EnsureIndex(x => x.AccountId);
-            Collection.EnsureIndex(x => x.Name);
-            Collection.EnsureIndex(x => x.Type);
-        }
+[Export]
+public class AccountRepoService : RepositoryService<Account>
+{
+    public AccountRepoService([Import] DBHelperServiceFactory dbHelperServiceFactory,
+        [Import] ILoggingService loggingService)
+        : base(dbHelperServiceFactory.GetInstance(), loggingService) 
+        => IndexData();
+
+    public sealed override void IndexData()
+    {
+        Collection.EnsureIndex(x => x.AccountId);
+        Collection.EnsureIndex(x => x.Name);
+        Collection.EnsureIndex(x => x.Type);
     }
 }

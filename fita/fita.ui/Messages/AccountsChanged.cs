@@ -1,6 +1,5 @@
-﻿namespace fita.ui.Messages
+﻿namespace fita.ui.Messages;
+
+public class AccountsChanged
 {
-    public class AccountsChanged
-    {
-    }
 }

@@ -1,7 +1,6 @@
-﻿namespace fita.ui.Services
+﻿namespace fita.ui.Services;
+
+public interface IGridControlService
 {
-    public interface IGridControlService
-    {
-        void Refresh();
-    }
+    void Refresh();
 }

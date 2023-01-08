@@ -1,76 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using twentySix.Framework.Core.Services.Interfaces;
 
-namespace fita.services.Core
+namespace fita.services.Core;
+
+[Export(typeof(IAccountService))]
+public class AccountService : IAccountService
 {
-    public class AccountService : IAccountService
+    [Import]
+    public ILoggingService LoggingService { get; set; }
+
+    public Task<decimal> CalculateBalance(Account account, List<Transaction> transactions)
     {
-        public ILoggingService LoggingService { get; set; }
+        return Task.Run(
+            () =>
+            {
+                var balance = 0m;
 
-        public Task<decimal> CalculateBalance(Account account, List<Transaction> transactions)
-        {
-            return Task.Run(
-                () =>
+                if (account is null)
                 {
-                    var balance = 0m;
+                    return balance;
+                }
 
-                    if (account is null)
+                try
+                {
+                    balance += account.InitialBalance;
+
+                    if (transactions is null)
                     {
                         return balance;
                     }
 
-                    try
+                    foreach (var transaction in transactions.OrderBy(x => x.Date))
                     {
-                        balance += account.InitialBalance;
-
-                        if (transactions is null)
-                        {
-                            return balance;
-                        }
-
-                        foreach (var transaction in transactions.OrderBy(x => x.Date))
-                        {
-                            balance += transaction.Deposit.GetValueOrDefault();
-                            balance -= transaction.Payment.GetValueOrDefault();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Warn($"{nameof(CalculateBalance)}: {ex}");
-                    }
-
-                    return balance;
-                });
-        }
-
-        public Task<decimal> CalculateBalance(Transaction transaction, decimal previousBalance)
-        {
-            return Task.Run(
-                () =>
-                {
-                    var balance = previousBalance;
-
-                    try
-                    {
-                        if (transaction is null)
-                        {
-                            return balance;
-                        }
-
                         balance += transaction.Deposit.GetValueOrDefault();
                         balance -= transaction.Payment.GetValueOrDefault();
                     }
-                    catch (Exception ex)
+                }
+                catch (Exception ex)
+                {
+                    LoggingService.Warn($"{nameof(CalculateBalance)}: {ex}");
+                }
+
+                return balance;
+            });
+    }
+
+    public Task<decimal> CalculateBalance(Transaction transaction, decimal previousBalance)
+    {
+        return Task.Run(
+            () =>
+            {
+                var balance = previousBalance;
+
+                try
+                {
+                    if (transaction is null)
                     {
-                        LoggingService.Warn($"{nameof(CalculateBalance)}: {ex}");
+                        return balance;
                     }
 
-                    return balance;
-                });
-        }
+                    balance += transaction.Deposit.GetValueOrDefault();
+                    balance -= transaction.Payment.GetValueOrDefault();
+                }
+                catch (Exception ex)
+                {
+                    LoggingService.Warn($"{nameof(CalculateBalance)}: {ex}");
+                }
+
+                return balance;
+            });
     }
 }

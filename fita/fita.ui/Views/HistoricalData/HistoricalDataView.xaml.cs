@@ -1,10 +1,9 @@
-﻿namespace fita.ui.Views.HistoricalData
+﻿namespace fita.ui.Views.HistoricalData;
+
+public partial class HistoricalDataView
 {
-    public partial class HistoricalDataView
+    public HistoricalDataView()
     {
-        public HistoricalDataView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

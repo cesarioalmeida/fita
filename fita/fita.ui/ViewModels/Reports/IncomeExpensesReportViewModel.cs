@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm.DataAnnotations;
@@ -9,133 +10,137 @@ using fita.services.Repositories;
 using JetBrains.Annotations;
 using twentySix.Framework.Core.Extensions;
 
-namespace fita.ui.ViewModels.Reports
+namespace fita.ui.ViewModels.Reports;
+
+[POCOViewModel]
+public class IncomeExpensesReportViewModel : ReportBaseViewModel
 {
-    [POCOViewModel]
-    public class IncomeExpensesReportViewModel : ReportBaseViewModel
-    {
-        public virtual DateTime FromDate { get; set; } = new(DateTime.Now.Year, DateTime.Now.Month, 1);
+    public virtual DateTime FromDate { get; set; } = new(DateTime.Now.Year, DateTime.Now.Month, 1);
 
-        public virtual DateTime ToDate { get; set; } = DateTime.Now;
+    public virtual DateTime ToDate { get; set; } = DateTime.Now;
 
-        public LockableCollection<Model> Income { get; set; } = new();
+    public LockableCollection<Model> Income { get; set; } = new();
 
-        public LockableCollection<Model> Expenses { get; set; } = new();
+    public LockableCollection<Model> Expenses { get; set; } = new();
 
-        public LockableCollection<PieModel> IncomePie { get; set; } = new();
+    public LockableCollection<PieModel> IncomePie { get; set; } = new();
 
-        public LockableCollection<PieModel> ExpensesPie { get; set; } = new();
+    public LockableCollection<PieModel> ExpensesPie { get; set; } = new();
 
-        public decimal? TotalIncome { get; set; }
+    public decimal? TotalIncome { get; set; }
 
-        public decimal? TotalExpenses { get; set; }
+    public decimal? TotalExpenses { get; set; }
 
-        public AccountRepoService AccountRepoService { get; set; }
+    [Import]
+    public AccountRepoService AccountRepoService { get; set; }
 
-        public ClosedPositionRepoService ClosedPositionRepoService { get; set; }
+    [Import]
+    public ClosedPositionRepoService ClosedPositionRepoService { get; set; }
 
-        public TransactionRepoService TransactionRepoService { get; set; }
+    [Import]
+    public TransactionRepoService TransactionRepoService { get; set; }
 
-        public FileSettingsRepoService FileSettingsRepoService { get; set; }
+    [Import]
+    public FileSettingsRepoService FileSettingsRepoService { get; set; }
 
-        public IExchangeRateService ExchangeRateService { get; set; }
+    [Import]
+    public IExchangeRateService ExchangeRateService { get; set; }
         
-        public override async Task RefreshData()
+    public override async Task RefreshData()
+    {
+        IsBusy = true;
+        Income.BeginUpdate();
+        Expenses.BeginUpdate();
+        IncomePie.BeginUpdate();
+        ExpensesPie.BeginUpdate();
+
+        try
         {
-            IsBusy = true;
-            Income.BeginUpdate();
-            Expenses.BeginUpdate();
-            IncomePie.BeginUpdate();
-            ExpensesPie.BeginUpdate();
+            Income.Clear();
+            Expenses.Clear();
 
-            try
+            BaseCurrency = (await FileSettingsRepoService.GetAll(true)).First().BaseCurrency;
+            var accounts = (await AccountRepoService.GetAll(true)).ToList();
+            var transactions =
+                (await TransactionRepoService.AllEnrichedBetweenDates(FromDate, ToDate)).ToList();
+            var closedPositions = (await ClosedPositionRepoService.AllEnrichedBetweenDates(FromDate, ToDate))
+                .ToList();
+
+            TotalIncome = 0m;
+            TotalExpenses = 0m;
+
+            foreach (var transaction in transactions.OrderBy(x => x.Date))
             {
-                Income.Clear();
-                Expenses.Clear();
+                var account = accounts.Single(x => x.AccountId == transaction.AccountId);
 
-                BaseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
-                var accounts = (await AccountRepoService.AllEnrichedAsync()).ToList();
-                var transactions =
-                    (await TransactionRepoService.AllEnrichedBetweenDatesAsync(FromDate, ToDate)).ToList();
-                var closedPositions = (await ClosedPositionRepoService.AllEnrichedBetweenDatesAsync(FromDate, ToDate))
-                    .ToList();
-
-                TotalIncome = 0m;
-                TotalExpenses = 0m;
-
-                foreach (var transaction in transactions.OrderBy(x => x.Date))
+                switch (transaction.Category.Group)
                 {
-                    var account = accounts.Single(x => x.AccountId == transaction.AccountId);
-
-                    switch (transaction.Category.Group)
-                    {
-                        case CategoryGroupEnum.PersonalExpenses:
-                            var payment = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
-                                transaction.Payment.GetValueOrDefault());
-                            TotalExpenses += payment;
-                            Expenses.Add(new(account.Name, transaction.Date, transaction.Category.Name,
-                                transaction.Description, payment));
-                            break;
-                        case CategoryGroupEnum.PersonalIncome:
-                            var deposit = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
-                                transaction.Deposit.GetValueOrDefault());
-                            TotalIncome += deposit;
-                            Income.Add(new(account.Name, transaction.Date, transaction.Category.Name,
-                                transaction.Description, deposit));
-                            break;
-                    }
+                    case CategoryGroupEnum.PersonalExpenses:
+                        var payment = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
+                            transaction.Payment.GetValueOrDefault());
+                        TotalExpenses += payment;
+                        Expenses.Add(new(account.Name, transaction.Date, transaction.Category.Name,
+                            transaction.Description, payment));
+                        break;
+                    case CategoryGroupEnum.PersonalIncome:
+                        var deposit = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
+                            transaction.Deposit.GetValueOrDefault());
+                        TotalIncome += deposit;
+                        Income.Add(new(account.Name, transaction.Date, transaction.Category.Name,
+                            transaction.Description, deposit));
+                        break;
                 }
-
-                foreach (var position in closedPositions)
-                {
-                    var account = accounts.Single(x => x.AccountId == position.AccountId);
-
-                    if (position.ProfitLoss <= 0)
-                    {
-                        var loss = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
-                            -position.ProfitLoss);
-                        TotalExpenses += loss;
-                        Expenses.Add(
-                            new Model(account.Name, position.SellDate, "Capital Loses", "Closed Position", loss));
-                    }
-                    else
-                    {
-                        var gain = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
-                            position.ProfitLoss);
-                        TotalIncome += gain;
-                        Income.Add(new Model(account.Name, position.SellDate, "Capital Gains", "Closed Position", gain));
-                    }
-                }
-
-                // pie charts
-                IncomePie.Clear();
-                ExpensesPie.Clear();
-
-                IncomePie.AddRange(Income.GroupBy(x => x.Category)
-                    .Select(x => new PieModel(x.Key, x.Sum(_ => _.Amount))));
-                ExpensesPie.AddRange(Expenses.GroupBy(x => x.Category)
-                    .Select(x => new PieModel(x.Key, x.Sum(_ => _.Amount))));
             }
-            finally
+
+            foreach (var position in closedPositions)
             {
-                Income.EndUpdate();
-                Expenses.EndUpdate();
-                IncomePie.EndUpdate();
-                ExpensesPie.EndUpdate();
-                IsBusy = false;
+                var account = accounts.Single(x => x.AccountId == position.AccountId);
+
+                if (position.ProfitLoss <= 0)
+                {
+                    var loss = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
+                        -position.ProfitLoss);
+                    TotalExpenses += loss;
+                    Expenses.Add(
+                        new Model(account.Name, position.SellDate, "Capital Loses", "Closed Position", loss));
+                }
+                else
+                {
+                    var gain = await ExchangeRateService.Exchange(account.Currency, BaseCurrency,
+                        position.ProfitLoss);
+                    TotalIncome += gain;
+                    Income.Add(new Model(account.Name, position.SellDate, "Capital Gains", "Closed Position", gain));
+                }
             }
+
+            // pie charts
+            IncomePie.Clear();
+            ExpensesPie.Clear();
+
+            IncomePie.AddRange(Income.GroupBy(x => x.Category)
+                .Select(x => new PieModel(x.Key, x.Sum(_ => _.Amount))));
+            ExpensesPie.AddRange(Expenses.GroupBy(x => x.Category)
+                .Select(x => new PieModel(x.Key, x.Sum(_ => _.Amount))));
         }
-
-        [UsedImplicitly]
-        protected void OnFromDateChanged(DateTime oldDate) => RefreshData();
-
-        [UsedImplicitly]
-        protected void OnToDateChanged(DateTime oldDate) => RefreshData();
-
-        [UsedImplicitly]
-        public record Model(string Account, DateTime? Date, string Category, string Description, decimal Amount);
-
-        [UsedImplicitly]
-        public record PieModel(string Category, decimal Amount);
+        finally
+        {
+            Income.EndUpdate();
+            Expenses.EndUpdate();
+            IncomePie.EndUpdate();
+            ExpensesPie.EndUpdate();
+            IsBusy = false;
+        }
     }
+
+    [UsedImplicitly]
+    protected void OnFromDateChanged(DateTime oldDate) => RefreshData().ConfigureAwait(false);
+
+    [UsedImplicitly]
+    protected void OnToDateChanged(DateTime oldDate) => RefreshData().ConfigureAwait(false);
+
+    [UsedImplicitly]
+    public record Model(string Account, DateTime? Date, string Category, string Description, decimal Amount);
+
+    [UsedImplicitly]
+    public record PieModel(string Category, decimal Amount);
 }

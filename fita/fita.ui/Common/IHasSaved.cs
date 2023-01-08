@@ -1,7 +1,6 @@
-﻿namespace fita.ui.Common
+﻿namespace fita.ui.Common;
+
+public interface IHasSaved
 {
-    public interface IHasSaved
-    {
-        bool Saved { get; }
-    }
+    bool Saved { get; }
 }

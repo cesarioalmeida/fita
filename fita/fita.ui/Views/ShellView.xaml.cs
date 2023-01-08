@@ -1,10 +1,12 @@
-﻿namespace fita.ui.Views
+﻿using System.ComponentModel.Composition;
+
+namespace fita.ui.Views;
+
+[Export]
+public partial class ShellView
 {
-    public partial class ShellView
+    public ShellView()
     {
-        public ShellView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

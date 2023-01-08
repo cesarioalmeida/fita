@@ -1,10 +1,9 @@
-﻿namespace fita.ui.Views.Categories
+﻿namespace fita.ui.Views.Categories;
+
+public partial class CategoryDetailsView
 {
-    public partial class CategoryDetailsView
+    public CategoryDetailsView()
     {
-        public CategoryDetailsView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

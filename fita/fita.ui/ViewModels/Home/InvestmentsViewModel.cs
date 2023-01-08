@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
@@ -10,79 +11,89 @@ using fita.ui.Messages;
 using JetBrains.Annotations;
 using twentySix.Framework.Core.UI.ViewModels;
 
-namespace fita.ui.ViewModels.Home
+namespace fita.ui.ViewModels.Home;
+
+[POCOViewModel]
+public class InvestmentsViewModel : ComposedViewModelBase
 {
-    [POCOViewModel]
-    public class InvestmentsViewModel : ComposedViewModelBase
+    public virtual LockableCollection<EntityModel> Data { get; set; } = new();
+
+    public virtual decimal TotalAmount { get; set; }
+
+    public virtual string BaseCulture {get; set;}
+
+    [Import]
+    public AccountRepoService AccountRepoService { get; set; }
+
+    [Import]
+    public TransactionRepoService TransactionRepoService { get; set; }
+
+    [Import]
+    public FileSettingsRepoService FileSettingsRepoService { get; set; }
+
+    [Import]
+    public SecurityPositionRepoService SecurityPositionRepoService { get; set; }
+
+    [Import]
+    public SecurityHistoryRepoService SecurityHistoryRepoService { get; set; }
+
+    [Import]
+    public IExchangeRateService ExchangeRateService { get; set; }
+
+    [Import]
+    public IAccountService AccountService { get; set; }
+
+    public InvestmentsViewModel()
     {
-        public virtual LockableCollection<EntityModel> Data { get; set; } = new();
+        Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData().ConfigureAwait(false); });
+        Messenger.Default.Register<SecuritiesChanged>(this, _ => { RefreshData().ConfigureAwait(false); });
+    }
 
-        public virtual decimal TotalAmount { get; set; }
+    public async Task RefreshData()
+    {
+        IsBusy = true;
 
-        public virtual string BaseCulture {get; set;}
+        Data.BeginUpdate();
+        Data.Clear();
 
-        public AccountRepoService AccountRepoService { get; set; }
+        TotalAmount = 0;
 
-        public TransactionRepoService TransactionRepoService { get; set; }
-
-        public FileSettingsRepoService FileSettingsRepoService { get; set; }
-
-        public SecurityPositionRepoService SecurityPositionRepoService { get; set; }
-
-        public SecurityHistoryRepoService SecurityHistoryRepoService { get; set; }
-
-        public IExchangeRateService ExchangeRateService { get; set; }
-
-        public IAccountService AccountService { get; set; }
-
-        public InvestmentsViewModel() => Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
-
-        public async Task RefreshData()
+        try
         {
-            IsBusy = true;
+            var accounts = await AccountRepoService.GetAll(true);
+            var baseCurrency = (await FileSettingsRepoService.GetAll(true)).First().BaseCurrency;
+            BaseCulture = baseCurrency.Culture;
 
-            Data.BeginUpdate();
-            Data.Clear();
-
-            TotalAmount = 0;
-
-            try
+            foreach (var account in accounts.Where(x => x.Type == AccountTypeEnum.Investment))
             {
-                var accounts = await AccountRepoService.AllEnrichedAsync();
-                var baseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
-                BaseCulture = baseCurrency.Culture;
+                var transactions = (await TransactionRepoService.AllEnrichedForAccount(account.AccountId)).ToList();
+                var balance = await AccountService.CalculateBalance(account, transactions);
+                Data.Add(new EntityModel(account.Name, account.Currency.Culture, balance));
 
-                foreach (var account in accounts.Where(x => x.Type == AccountTypeEnum.Investment))
+                TotalAmount += await ExchangeRateService.Exchange(account.Currency, baseCurrency, balance);
+
+                // positions
+                var positions = await SecurityPositionRepoService.AllEnrichedForAccount(account.AccountId);
+                var totalPositions = 0m;
+
+                foreach (var position in positions)
                 {
-                    var transactions = (await TransactionRepoService.AllEnrichedForAccountAsync(account.AccountId)).ToList();
-                    var balance = await AccountService.CalculateBalance(account, transactions);
-                    Data.Add(new EntityModel(account.Name, account.Currency.Culture, balance));
-
-                    TotalAmount += await ExchangeRateService.Exchange(account.Currency, baseCurrency, balance);
-
-                    // positions
-                    var positions = await SecurityPositionRepoService.AllEnrichedForAccountAsync(account.AccountId);
-                    var totalPositions = 0m;
-
-                    foreach (var position in positions)
-                    {
-                        totalPositions += ((await SecurityHistoryRepoService.FromSecurityEnrichedAsync(position.Security))?
-                            .Price?.LatestValue ?? 0m) * position.Quantity;
-                    }
-
-                    Data.Add(new EntityModel(account.Name + " - Portfolio", account.Currency.Culture, totalPositions));
-
-                    TotalAmount += await ExchangeRateService.Exchange(account.Currency, baseCurrency, totalPositions);
+                    totalPositions += ((await SecurityHistoryRepoService.FromSecurityEnriched(position.Security))?
+                        .Price?.LatestValue ?? 0m) * position.Quantity;
                 }
-            }
-            finally
-            {
-                Data.EndUpdate();
-                IsBusy = false;
+
+                Data.Add(new EntityModel(account.Name + " - Portfolio", account.Currency.Culture, totalPositions));
+
+                TotalAmount += await ExchangeRateService.Exchange(account.Currency, baseCurrency, totalPositions);
             }
         }
-
-        [UsedImplicitly]
-        public record EntityModel(string Name, string Culture, decimal Balance);
+        finally
+        {
+            Data.EndUpdate();
+            IsBusy = false;
+        }
     }
+
+    [UsedImplicitly]
+    public record EntityModel(string Name, string Culture, decimal Balance);
 }

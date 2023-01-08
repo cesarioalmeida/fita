@@ -1,9 +1,8 @@
 ﻿using LiteDB;
 
-namespace fita.data.Models
+namespace fita.data.Models;
+
+public class AppSettings
 {
-    public class AppSettings
-    {
-        public ObjectId AppSettingsId { get; set; }
-    }
+    public ObjectId AppSettingsId { get; set; }
 }

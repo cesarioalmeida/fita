@@ -3,6 +3,7 @@ using fita.data.Models;
 using fita.services.Core;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using twentySix.Framework.Core.Common;
 
 namespace fita.services.tests.Core
 {

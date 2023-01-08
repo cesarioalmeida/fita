@@ -1,9 +1,8 @@
-﻿namespace fita.ui.Common
-{
-    public interface IDesiredSize
-    {
-        int Width { get; }
+﻿namespace fita.ui.Common;
 
-        int Height { get; }
-    }
+public interface IDesiredSize
+{
+    int Width { get; }
+
+    int Height { get; }
 }

@@ -1,15 +1,14 @@
 ﻿using LiteDB;
 
-namespace fita.data.Models
+namespace fita.data.Models;
+
+public class SecurityHistory
 {
-    public class SecurityHistory
-    {
-        public ObjectId SecurityHistoryId { get; set; } = ObjectId.NewObjectId();
+    public ObjectId SecurityHistoryId { get; set; } = ObjectId.NewObjectId();
 
-        [BsonRef("security")]
-        public Security Security { get; set; }
+    [BsonRef("security")]
+    public Security Security { get; set; }
 
-        [BsonRef("historicaldata")]
-        public HistoricalData Price { get; set; }
-    }
+    [BsonRef("historicaldata")]
+    public HistoricalData Price { get; set; }
 }

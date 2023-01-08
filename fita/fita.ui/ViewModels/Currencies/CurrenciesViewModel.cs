@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -9,7 +10,6 @@ using DevExpress.Mvvm.POCO;
 using DevExpress.Xpf.Core;
 using DevExpress.Xpf.WindowsUI;
 using fita.data.Models;
-using fita.services;
 using fita.services.Core;
 using fita.services.Repositories;
 using fita.ui.Messages;
@@ -17,350 +17,358 @@ using fita.ui.ViewModels.HistoricalData;
 using fita.ui.Views.Currencies;
 using fita.ui.Views.HistoricalData;
 using JetBrains.Annotations;
+using twentySix.Framework.Core.Common;
 using twentySix.Framework.Core.Extensions;
 using twentySix.Framework.Core.Messages;
-using twentySix.Framework.Core.Services;
+using twentySix.Framework.Core.Services.Interfaces;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
 
-namespace fita.ui.ViewModels.Currencies
+namespace fita.ui.ViewModels.Currencies;
+
+[POCOViewModel]
+public class CurrenciesViewModel : ComposedDocumentViewModelBase
 {
-    [POCOViewModel]
-    public class CurrenciesViewModel : ComposedDocumentViewModelBase
+    private bool _fireChangeNotification;
+
+    [Import]
+    public ILoggingService LoggingService { get; set; }
+
+    [Import]
+    public FileSettingsRepoService FileSettingsRepoService { get; set; }
+
+    [Import]
+    public CurrencyRepoService CurrencyRepoService { get; set; }
+
+    [Import]
+    public ExchangeRateRepoService ExchangeRateRepoService { get; set; }
+
+    [Import]
+    public HistoricalDataRepoService HistoricalDataRepoService { get; set; }
+
+    [Import]
+    public IExchangeRateService ExchangeRateService { get; set; }
+
+    protected IDocumentManagerService DocumentManagerService =>
+        this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
+
+    public virtual LockableCollection<CurrenciesModel> Data { get; set; } = new();
+
+    public virtual FileSettings FileSettings { get; set; }
+
+    [UsedImplicitly]
+    public void Close()
     {
-        private bool _fireChangeNotification;
-
-        public LoggingService LoggingService { get; set; }
-
-        public FileSettingsRepoService FileSettingsRepoService { get; set; }
-
-        public CurrencyRepoService CurrencyRepoService { get; set; }
-
-        public ExchangeRateRepoService ExchangeRateRepoService { get; set; }
-
-        public HistoricalDataRepoService HistoricalDataRepoService { get; set; }
-
-        public IExchangeRateService ExchangeRateService { get; set; }
-
-        protected IDocumentManagerService DocumentManagerService =>
-            this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
-
-        public virtual LockableCollection<CurrenciesModel> Data { get; set; } = new();
-
-        public virtual FileSettings FileSettings { get; set; }
-
-        [UsedImplicitly]
-        public void Close()
+        if (_fireChangeNotification)
         {
+            Messenger.Default.Send(new BaseCurrencyChanged());
+        }
+
+        Data.Clear();
+        DocumentOwner?.Close(this);
+    }
+
+    public async Task RefreshData()
+    {
+        IsBusy = true;
+
+        Data.BeginUpdate();
+        Data.Clear();
+
+        try
+        {
+            FileSettings = (await FileSettingsRepoService.GetAll(true))?.FirstOrDefault();
+
+            var currencies = (await CurrencyRepoService.GetAll()).ToList();
+
+            // if there's no base currency and there's at least one currency => set base currency
+            if (FileSettings?.BaseCurrency is null)
+            {
+                if (currencies.Any())
+                {
+                    await SetBaseInternal(currencies.First(), false);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            var exchangeRates =
+                await ExchangeRateRepoService.AllFromCurrencyEnriched(FileSettings?.BaseCurrency);
+
+            var data = currencies.Select(c =>
+                new CurrenciesModel(FileSettings.BaseCurrency, c,
+                    exchangeRates.FirstOrDefault(x => x.ToCurrency.CurrencyId == c.CurrencyId)));
+
+            Data.AddRange(data);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Error($"@CurrenciesViewModel.RefreshData(): {ex.Message}");
+        }
+        finally
+        {
+            Data.EndUpdate();
+            IsBusy = false;
+
             if (_fireChangeNotification)
             {
                 Messenger.Default.Send(new BaseCurrencyChanged());
             }
+        }
+    }
 
-            Data.Clear();
-            DocumentOwner?.Close(this);
+    [UsedImplicitly]
+    public async Task Edit(Currency currency)
+    {
+        var viewModel = ViewModelSource.Create<CurrencyDetailsViewModel>();
+        viewModel.Currency = currency ?? new Currency();
+
+        var document = DocumentManagerService.CreateDocument(nameof(CurrencyDetailsView), viewModel, null, this);
+        document.DestroyOnClose = true;
+        document.Show();
+
+        if (viewModel.Saved)
+        {
+            _fireChangeNotification = true;
+
+            await RefreshData();
+        }
+    }
+
+    [UsedImplicitly]
+    public async Task Delete(Currency currency)
+    {
+        if (currency is null)
+        {
+            return;
         }
 
-        public async Task RefreshData()
+        if (WinUIMessageBox.Show(
+                $"Are you sure you want to delete the currency {currency.Name}?",
+                "Delete currency",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Question) != MessageBoxResult.OK)
         {
-            IsBusy = true;
-
-            Data.BeginUpdate();
-            Data.Clear();
-
-            try
-            {
-                FileSettings = (await FileSettingsRepoService.AllEnrichedAsync())?.FirstOrDefault();
-
-                var currencies = await CurrencyRepoService.AllAsync();
-
-                // if there's no base currency and there's at least one currency => set base currency
-                if (FileSettings?.BaseCurrency == null)
-                {
-                    if (currencies.Any())
-                    {
-                        await SetBase(currencies.First(), false);
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-
-                var exchangeRates =
-                    await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings?.BaseCurrency);
-
-                var data = currencies.Select(c =>
-                    new CurrenciesModel(FileSettings.BaseCurrency, c,
-                        exchangeRates.FirstOrDefault(x => x.ToCurrency.CurrencyId == c.CurrencyId)));
-
-                Data.AddRange(data);
-            }
-            catch (Exception ex)
-            {
-                LoggingService.Error($"@CurrenciesViewModel.RefreshData(): {ex.Message}");
-            }
-            finally
-            {
-                Data.EndUpdate();
-                IsBusy = false;
-
-                if (_fireChangeNotification)
-                {
-                    Messenger.Default.Send(new BaseCurrencyChanged());
-                }
-            }
+            return;
         }
 
-        [UsedImplicitly]
-        public async Task Edit(Currency currency)
+        IsBusy = true;
+
+        try
         {
-            var viewModel = ViewModelSource.Create<CurrencyDetailsViewModel>();
-            viewModel.Currency = currency ?? new Currency();
+            var exchangeRatesToDelete = await ExchangeRateRepoService.AllWithCurrencyEnriched(currency);
 
-            var document = DocumentManagerService.CreateDocument(nameof(CurrencyDetailsView), viewModel, null, this);
-            document.DestroyOnClose = true;
-            document.Show();
-
-            if (viewModel.Saved)
+            if (exchangeRatesToDelete is not null)
             {
-                _fireChangeNotification = true;
+                foreach (var rate in exchangeRatesToDelete)
+                {
+                    await HistoricalDataRepoService.Delete(rate.Rate.HistoricalDataId);
+                    await ExchangeRateRepoService.Delete(rate.ExchangeRateId);
+                }
+            }
 
+            Messenger.Default.Send(await CurrencyRepoService.Delete(currency.CurrencyId) == Result.Fail
+                ? new NotificationMessage("Failed to delete currency.", NotificationStatusEnum.Error)
+                : new NotificationMessage($"Currency {currency.Name} deleted.", NotificationStatusEnum.Success));
+
+            await RefreshData();
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Error($"{nameof(Delete)}: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [UsedImplicitly]
+    public bool CanDelete(Currency currency) 
+        => currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
+
+    public async Task SetBase(Currency currency)
+    {
+        if (currency is null)
+        {
+            return;
+        }
+
+        IsBusy = true;
+
+        try
+        {
+            FileSettings.BaseCurrency = currency;
+
+            Messenger.Default.Send(await FileSettingsRepoService.Save(FileSettings) == Result.Fail
+                ? new NotificationMessage("Failed to save base currency.", NotificationStatusEnum.Error)
+                : new NotificationMessage($"Base currency set to {currency.Name}.",
+                    NotificationStatusEnum.Success));
+
+            _fireChangeNotification = true;
+
+            await RefreshData();
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Error($"{nameof(SetBase)}: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private async Task SetBaseInternal(Currency currency, bool refresh = true)
+    {
+        if (currency is null)
+        {
+            return;
+        }
+
+        IsBusy = true;
+
+        try
+        {
+            FileSettings.BaseCurrency = currency;
+
+            Messenger.Default.Send(await FileSettingsRepoService.Save(FileSettings) == Result.Fail
+                ? new NotificationMessage("Failed to save base currency.", NotificationStatusEnum.Error)
+                : new NotificationMessage($"Base currency set to {currency.Name}.",
+                    NotificationStatusEnum.Success));
+
+            _fireChangeNotification = true;
+
+            if (refresh)
+            {
                 await RefreshData();
             }
         }
-
-        [UsedImplicitly]
-        public async Task Delete(Currency currency)
+        catch (Exception ex)
         {
-            if (currency is null)
-            {
-                return;
-            }
-
-            if (WinUIMessageBox.Show(
-                    $"Are you sure you want to delete the currency {currency.Name}?",
-                    "Delete currency",
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Question) != MessageBoxResult.OK)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
-            try
-            {
-                var exchangeRatesToDelete = await ExchangeRateRepoService.AllWithCurrencyEnrichedAsync(currency);
-
-                if (exchangeRatesToDelete is not null)
-                {
-                    foreach (var rate in exchangeRatesToDelete)
-                    {
-                        await HistoricalDataRepoService.DeleteAsync(rate.Rate.HistoricalDataId);
-                        await ExchangeRateRepoService.DeleteAsync(rate.ExchangeRateId);
-                    }
-                }
-
-                Messenger.Default.Send(await CurrencyRepoService.DeleteAsync(currency.CurrencyId) == Result.Fail
-                    ? new NotificationMessage("Failed to delete currency.", NotificationStatusEnum.Error)
-                    : new NotificationMessage($"Currency {currency.Name} deleted.", NotificationStatusEnum.Success));
-
-                await RefreshData();
-            }
-            catch (Exception ex)
-            {
-                LoggingService.Error($"{nameof(Delete)}: {ex.Message}");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            LoggingService.Error($"{nameof(SetBase)}: {ex.Message}");
         }
-
-        [UsedImplicitly]
-        public bool CanDelete(Currency currency) => currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
-
-        public async Task SetBase(Currency currency)
+        finally
         {
-            if (currency is null)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
-            try
-            {
-                FileSettings.BaseCurrency = currency;
-
-                Messenger.Default.Send(await FileSettingsRepoService.SaveAsync(FileSettings) == Result.Fail
-                    ? new NotificationMessage("Failed to save base currency.", NotificationStatusEnum.Error)
-                    : new NotificationMessage($"Base currency set to {currency.Name}.",
-                        NotificationStatusEnum.Success));
-
-                _fireChangeNotification = true;
-
-                await RefreshData();
-            }
-            catch (Exception ex)
-            {
-                LoggingService.Error($"{nameof(SetBase)}: {ex.Message}");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            IsBusy = false;
         }
+    }
 
-        private async Task SetBase(Currency currency, bool refresh = true)
+    [UsedImplicitly]
+    public bool CanSetBase(Currency currency) 
+        => currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
+
+    public async Task Update()
+    {
+        IsBusy = true;
+
+        try
         {
-            if (currency is null)
+            _fireChangeNotification = true;
+
+            var currentExchangeRates =
+                (await ExchangeRateRepoService.AllFromCurrencyEnriched(FileSettings.BaseCurrency)).ToList();
+
+            foreach (var currency in Data.Select(x => x.Currency)
+                         .Where(x => x.CurrencyId != FileSettings.BaseCurrency.CurrencyId))
             {
-                return;
-            }
+                var exchangeRate =
+                    currentExchangeRates.SingleOrDefault(x => x.ToCurrency.CurrencyId == currency.CurrencyId) ??
+                    GetNewExchangeRate(currency);
 
-            IsBusy = true;
+                Messenger.Default.Send(new NotificationMessage($"Updating currency {currency.Name}..."));
 
-            try
-            {
-                FileSettings.BaseCurrency = currency;
-
-                Messenger.Default.Send(await FileSettingsRepoService.SaveAsync(FileSettings) == Result.Fail
-                    ? new NotificationMessage("Failed to save base currency.", NotificationStatusEnum.Error)
-                    : new NotificationMessage($"Base currency set to {currency.Name}.",
-                        NotificationStatusEnum.Success));
-
-                _fireChangeNotification = true;
-
-                if (refresh)
+                if (await ExchangeRateService.Update(exchangeRate) == Result.Fail)
                 {
-                    await RefreshData();
+                    Messenger.Default.Send(new NotificationMessage($"Could not update currency {currency.Name}",
+                        NotificationStatusEnum.Error));
                 }
             }
-            catch (Exception ex)
-            {
-                LoggingService.Error($"{nameof(SetBase)}: {ex.Message}");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+
+            await RefreshData();
         }
-
-        [UsedImplicitly]
-        public bool CanSetBase(Currency currency) => currency?.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
-
-        public async Task Update()
+        catch (Exception ex)
         {
-            IsBusy = true;
-
-            try
-            {
-                _fireChangeNotification = true;
-
-                var currentExchangeRates =
-                    (await ExchangeRateRepoService.AllFromCurrencyEnrichedAsync(FileSettings.BaseCurrency)).ToList();
-
-                foreach (var currency in Data.Select(x => x.Currency)
-                             .Where(x => x.CurrencyId != FileSettings.BaseCurrency.CurrencyId))
-                {
-                    var exchangeRate =
-                        currentExchangeRates.SingleOrDefault(x => x.ToCurrency.CurrencyId == currency.CurrencyId) ??
-                        GetNewExchangeRate(currency);
-
-                    Messenger.Default.Send(new NotificationMessage($"Updating currency {currency.Name}..."));
-
-                    if (await ExchangeRateService.Update(exchangeRate) == Result.Fail)
-                    {
-                        Messenger.Default.Send(new NotificationMessage($"Could not update currency {currency.Name}",
-                            NotificationStatusEnum.Error));
-                    }
-                }
-
-                await RefreshData();
-            }
-            catch (Exception ex)
-            {
-                LoggingService.Error($"{nameof(Update)}: {ex.Message}");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            LoggingService.Error($"{nameof(Update)}: {ex.Message}");
         }
-
-        [UsedImplicitly]
-        public async Task UpdateAll()
+        finally
         {
-            IsBusy = true;
+            IsBusy = false;
+        }
+    }
 
-            try
+    [UsedImplicitly]
+    public async Task UpdateAll()
+    {
+        IsBusy = true;
+
+        try
+        {
+            var baseCurrencyId = FileSettings.BaseCurrency.CurrencyId;
+
+            foreach (var currency in Data.Select(x => x.Currency).ToList())
             {
-                var baseCurrencyId = FileSettings.BaseCurrency.CurrencyId;
-
-                foreach (var currency in Data.Select(x => x.Currency).ToList())
-                {
-                    await SetBase(currency);
-                    await Update();
-                }
-
-                await SetBase(Data.Select(x => x.Currency).Single(x => x.CurrencyId == baseCurrencyId));
+                await SetBase(currency);
                 await Update();
             }
-            catch (Exception ex)
-            {
-                LoggingService.Error($"{nameof(UpdateAll)}: {ex.Message}");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
 
-        [UsedImplicitly]
-        public async Task History(CurrenciesModel model)
+            await SetBase(Data.Select(x => x.Currency).Single(x => x.CurrencyId == baseCurrencyId));
+            await Update();
+        }
+        catch (Exception ex)
         {
-            var viewModel = ViewModelSource.Create<HistoricalDataViewModel>();
-            viewModel.Model = model.ExchangeRate?.Rate ?? GetNewExchangeRate(model.Currency).Rate;
+            LoggingService.Error($"{nameof(UpdateAll)}: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
 
-            var document = DocumentManagerService.CreateDocument(nameof(HistoricalDataView), viewModel, null, this);
-            document.DestroyOnClose = true;
-            document.Show();
+    [UsedImplicitly]
+    public async Task History(CurrenciesModel model)
+    {
+        var viewModel = ViewModelSource.Create<HistoricalDataViewModel>();
+        viewModel.Model = model.ExchangeRate?.Rate ?? GetNewExchangeRate(model.Currency).Rate;
 
-            if (viewModel.Saved)
+        var document = DocumentManagerService.CreateDocument(nameof(HistoricalDataView), viewModel, null, this);
+        document.DestroyOnClose = true;
+        document.Show();
+
+        if (viewModel.Saved)
+        {
+            _fireChangeNotification = true;
+
+            await RefreshData();
+        }
+    }
+
+    [UsedImplicitly]
+    public bool CanHistory(CurrenciesModel model) 
+        => model?.Currency.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
+
+    private ExchangeRate GetNewExchangeRate(Currency currency)
+    {
+        return new()
+        {
+            FromCurrency = FileSettings.BaseCurrency, ToCurrency = currency,
+            Rate = new data.Models.HistoricalData
             {
-                _fireChangeNotification = true;
-
-                await RefreshData();
+                Name = $"Exchange rate {FileSettings.BaseCurrency.Name} => {currency.Name}"
             }
-        }
+        };
+    }
 
-        [UsedImplicitly]
-        public bool CanHistory(CurrenciesModel model) =>
-            model?.Currency.CurrencyId != FileSettings.BaseCurrency.CurrencyId;
+    [UsedImplicitly]
+    public record CurrenciesModel(Currency BaseCurrency, Currency Currency, ExchangeRate ExchangeRate)
+    {
+        public DateTime? LatestDate => ExchangeRate?.Rate.LatestDate;
 
-        private ExchangeRate GetNewExchangeRate(Currency currency)
-        {
-            return new()
-            {
-                FromCurrency = FileSettings.BaseCurrency, ToCurrency = currency,
-                Rate = new data.Models.HistoricalData
-                {
-                    Name = $"Exchange rate {FileSettings.BaseCurrency.Name} => {currency.Name}"
-                }
-            };
-        }
+        public decimal? LatestValue => ExchangeRate?.Rate.LatestValue;
 
-        [UsedImplicitly]
-        public record CurrenciesModel(Currency BaseCurrency, Currency Currency, ExchangeRate ExchangeRate)
-        {
-            public DateTime? LatestDate => ExchangeRate?.Rate.LatestDate;
-
-            public decimal? LatestValue => ExchangeRate?.Rate.LatestValue;
-
-            public IEnumerable<decimal> History =>
-                ExchangeRate?.Rate.DataPoints.OrderByDescending(x => x.Date).Select(x => x.Value);
-        }
+        public IEnumerable<decimal> History =>
+            ExchangeRate?.Rate.DataPoints.OrderByDescending(x => x.Date).Select(x => x.Value);
     }
 }

@@ -1,55 +1,35 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
-using LightInject;
-using Moq;
+using DryIoc;
+using DryIoc.MefAttributedModel;
 using twentySix.Framework.Core.Helpers;
-using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.tests;
 
-public class ContainerFixture : IDisposable
+public class ContainerFixture
 {
     public ContainerFixture()
     {
         ApplicationHelper.SetApplicationDetails("twentySix", "fita.tests");
+        ApplicationHelper.StartUp(new Container().WithMef().WithMefAttributedModel());
 
-        var container = CreateContainer();
-        Configure(container);
-
-        container.RegisterAssembly("twentySix.Framework.*.dll");
-        container.RegisterAssembly("fita.data.dll");
-        container.RegisterAssembly("fita.services.dll");
-
-        // mocked services
-        container.Register(_ => new Mock<ILoggingService>().Object);
-
-        ServiceFactory = container.BeginScope();
-        InjectPrivateFields();
+        Container.RegisterExports(GetAssemblies());
     }
 
-    private void InjectPrivateFields()
-    {
-        var privateInstanceFields = GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+    public static IContainer Container => ApplicationHelper.Container;
 
-        foreach (var privateInstanceField in privateInstanceFields)
-        {
-            privateInstanceField.SetValue(this, GetInstance(privateInstanceField));
-        }
-    }
-
-    internal Scope ServiceFactory { get; }
-
-    public void Dispose() => ServiceFactory.Dispose();
-
-    public TService GetInstance<TService>(string name = "") 
-        => ServiceFactory.GetInstance<TService>(name);
-
-    private object GetInstance(FieldInfo field)
-        => ServiceFactory.TryGetInstance(field.FieldType) ?? ServiceFactory.GetInstance(field.FieldType, field.Name);
-
-    internal IServiceContainer CreateContainer() => new ServiceContainer();
-
-    internal void Configure(IServiceRegistry serviceRegistry)
-    {
-    }
+    private static IEnumerable<Assembly> GetAssemblies()
+        => from frameworkAssembly in new[]
+            {
+                "twentySix.Framework.Core.dll",
+                "twentySix.Framework.Theme.dll",
+                "fita.data.dll",
+                "fita.services.dll"
+            }
+            select ApplicationHelper.GetFullPath(frameworkAssembly)
+            into fullPath
+            where File.Exists(fullPath)
+            select Assembly.LoadFrom(fullPath);
 }

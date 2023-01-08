@@ -1,96 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using LiteDB;
+using twentySix.Framework.Core.Services;
 using twentySix.Framework.Core.Services.Interfaces;
 
-namespace fita.services.Repositories
+namespace fita.services.Repositories;
+
+[Export]
+public class TradeRepoService : RepositoryService<Trade>
 {
-    public class TradeRepoService : RepositoryService<Trade>
+    public TradeRepoService([Import] DBHelperServiceFactory dbHelperServiceFactory,
+        [Import] ILoggingService loggingService)
+        : base(dbHelperServiceFactory.GetInstance(), loggingService)
+        => IndexData();
+
+    public sealed override void IndexData()
     {
-        public TradeRepoService(IDBHelperService dbHelperService, ILoggingService loggingService) : base(dbHelperService, loggingService)
-        {
-            IndexData();
-        }
-
-        public sealed override void IndexData()
-        {
-            Collection.EnsureIndex(x => x.TradeId);
-            Collection.EnsureIndex(x => x.AccountId);
-            Collection.EnsureIndex(x => x.Date);
-            Collection.EnsureIndex(x => x.Action);
-        }
-
-        public override async Task<IEnumerable<Trade>> AllAsync()
-        {
-            return (await base.AllAsync())
-                .OrderBy(x => x.Date)
-                .AsEnumerable();
-        }
-
-        public override Task<IEnumerable<Trade>> AllEnrichedAsync()
-        {
-            return Task.Run(
-                () =>
-                {
-                    try
-                    {
-                        return Collection
-                            .Include(x => x.Security)
-                            .FindAll()
-                            .OrderBy(x => x.Date)
-                            .AsEnumerable();
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Warn($"{nameof(AllEnrichedAsync)}: {ex}");
-                        return null;
-                    }
-                });
-        }
-
-        public Task<IEnumerable<Trade>> AllEnrichedForAccountAsync(ObjectId accountId)
-        {
-            return Task.Run(
-                () =>
-                {
-                    try
-                    {
-                        return Collection
-                            .Include(x => x.Security)
-                            .Find(x => x.AccountId == accountId)
-                            .OrderBy(x => x.Date)
-                            .AsEnumerable();
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Warn($"{nameof(AllEnrichedForAccountAsync)}: {ex}");
-                        return null;
-                    }
-                });
-        }
-        
-        public Task<IEnumerable<Trade>> AllEnrichedToDateForAccountAsync(DateTime endDate, ObjectId accountId)
-        {
-            return Task.Run(
-                () =>
-                {
-                    try
-                    {
-                        return Collection
-                            .Include(x => x.Security)
-                            .Find(x => x.AccountId == accountId && x.Date<= endDate)
-                            .OrderBy(x => x.Date)
-                            .AsEnumerable();
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Warn($"{nameof(AllEnrichedToDateForAccountAsync)}: {ex}");
-                        return null;
-                    }
-                });
-        }
+        Collection.EnsureIndex(x => x.TradeId);
+        Collection.EnsureIndex(x => x.AccountId);
+        Collection.EnsureIndex(x => x.Date);
+        Collection.EnsureIndex(x => x.Action);
     }
+
+    public override async Task<IEnumerable<Trade>> GetAll(bool enriched = false)
+        => (await base.GetAll(enriched))
+            .OrderBy(x => x.Date)
+            .AsEnumerable();
+
+    public Task<IEnumerable<Trade>> AllEnrichedForAccount(ObjectId accountId)
+        => Task.Run(
+            () =>
+            {
+                try
+                {
+                    return Collection
+                        .Include(x => x.Security)
+                        .Find(x => x.AccountId == accountId)
+                        .OrderBy(x => x.Date)
+                        .AsEnumerable();
+                }
+                catch (Exception ex)
+                {
+                    LoggingService.Warn($"{nameof(AllEnrichedForAccount)}: {ex}");
+                    return null;
+                }
+            });
+
+    public Task<IEnumerable<Trade>> AllEnrichedToDateForAccount(DateTime endDate, ObjectId accountId)
+        => Task.Run(
+            () =>
+            {
+                try
+                {
+                    return Collection
+                        .Include(x => x.Security)
+                        .Find(x => x.AccountId == accountId && x.Date <= endDate)
+                        .OrderBy(x => x.Date)
+                        .AsEnumerable();
+                }
+                catch (Exception ex)
+                {
+                    LoggingService.Warn($"{nameof(AllEnrichedToDateForAccount)}: {ex}");
+                    return null;
+                }
+            });
 }

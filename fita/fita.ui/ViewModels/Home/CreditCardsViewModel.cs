@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.DataAnnotations;
@@ -10,77 +11,80 @@ using fita.services.Repositories;
 using fita.ui.Messages;
 using twentySix.Framework.Core.UI.ViewModels;
 
-namespace fita.ui.ViewModels.Home
+namespace fita.ui.ViewModels.Home;
+
+[POCOViewModel]
+public class CreditCardsViewModel : ComposedViewModelBase
 {
-    [POCOViewModel]
-    public class CreditCardsViewModel : ComposedViewModelBase
+    public virtual LockableCollection<EntityModel> Data { get; set; } = new();
+
+    public virtual decimal TotalAmount { get; set; }
+
+    public virtual string BaseCulture { get; set; }
+
+    [Import]
+    public AccountRepoService AccountRepoService { get; set; }
+
+    [Import]
+    public TransactionRepoService TransactionRepoService { get; set; }
+
+    [Import]
+    public FileSettingsRepoService FileSettingsRepoService { get; set; }
+
+    [Import]
+    public IExchangeRateService ExchangeRateService { get; set; }
+
+    [Import]
+    public IAccountService AccountService { get; set; }
+
+    public CreditCardsViewModel() 
+        => Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData().ConfigureAwait(false); });
+
+    public async Task RefreshData()
     {
-        public virtual LockableCollection<EntityModel> Data { get; set; } = new();
+        IsBusy = true;
 
-        public virtual decimal TotalAmount { get; set; }
+        Data.BeginUpdate();
+        Data.Clear();
 
-        public virtual string BaseCulture {get; set;}
+        TotalAmount = 0;
 
-        public AccountRepoService AccountRepoService { get; set; }
-
-        public TransactionRepoService TransactionRepoService { get; set; }
-
-        public FileSettingsRepoService FileSettingsRepoService { get; set; }
-
-        public IExchangeRateService ExchangeRateService { get; set; }
-
-        public IAccountService AccountService { get; set; }
-
-        public CreditCardsViewModel()
+        try
         {
-            Messenger.Default.Register<BaseCurrencyChanged>(this, _ => { RefreshData(); });
-        }
-        
-        public async Task RefreshData()
-        {
-            IsBusy = true;
+            var accounts = await AccountRepoService.GetAll(true);
+            var baseCurrency = (await FileSettingsRepoService.GetAll(true)).First().BaseCurrency;
+            BaseCulture = baseCurrency.Culture;
 
-            Data.BeginUpdate();
-            Data.Clear();
-
-            TotalAmount = 0;
-
-            try
+            foreach (var account in accounts.Where(x => x.Type == AccountTypeEnum.CreditCard))
             {
-                var accounts = await AccountRepoService.AllEnrichedAsync();
-                var baseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
-                BaseCulture = baseCurrency.Culture;
+                var transactions =
+                    (await TransactionRepoService.AllEnrichedForAccount(account.AccountId)).ToList();
+                var balance = await AccountService.CalculateBalance(account, transactions);
+                Data.Add(new EntityModel(account, balance));
 
-                foreach (var account in accounts.Where(x => x.Type == AccountTypeEnum.CreditCard))
-                {
-                    var transactions = (await TransactionRepoService.AllEnrichedForAccountAsync(account.AccountId)).ToList();
-                    var balance = await AccountService.CalculateBalance(account, transactions);
-                    Data.Add(new EntityModel(account, balance));
-
-                    TotalAmount += await ExchangeRateService.Exchange(account.Currency, baseCurrency, balance);
-                }
-            }
-            finally
-            {
-                Data.EndUpdate();
-                IsBusy = false;
+                TotalAmount += await ExchangeRateService.Exchange(account.Currency, baseCurrency, balance);
             }
         }
-
-        public record EntityModel
+        finally
         {
-            public EntityModel(Account account, decimal balance)
-            {
-                Name = account.Name;
-                Balance = balance;
-                Culture = account.Currency.Culture;
-            }
-
-            public string Name { get; }
-
-            public decimal Balance { get; }
-
-            public string Culture { get; }
+            Data.EndUpdate();
+            IsBusy = false;
         }
+    }
+
+    public record EntityModel
+    {
+        public EntityModel(Account account, decimal balance)
+        {
+            Name = account.Name;
+            Balance = balance;
+            Culture = account.Currency.Culture;
+        }
+
+        public string Name { get; }
+
+        public decimal Balance { get; }
+
+        public string Culture { get; }
     }
 }

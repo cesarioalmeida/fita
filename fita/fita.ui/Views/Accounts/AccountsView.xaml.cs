@@ -1,10 +1,9 @@
-﻿namespace fita.ui.Views.Accounts
+﻿namespace fita.ui.Views.Accounts;
+
+public partial class AccountsView
 {
-    public partial class AccountsView
+    public AccountsView()
     {
-        public AccountsView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

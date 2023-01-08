@@ -1,8 +1,7 @@
-﻿namespace fita.data.Enums
+﻿namespace fita.data.Enums;
+
+public enum TradeActionEnum
 {
-    public enum TradeActionEnum
-    {
-        Buy,
-        Sell
-    }
+    Buy,
+    Sell
 }

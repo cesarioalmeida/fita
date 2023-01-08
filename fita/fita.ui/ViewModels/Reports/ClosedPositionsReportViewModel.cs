@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Xpf.Core;
@@ -7,50 +8,53 @@ using fita.services.Core;
 using fita.services.Repositories;
 using JetBrains.Annotations;
 
-namespace fita.ui.ViewModels.Reports
+namespace fita.ui.ViewModels.Reports;
+
+[POCOViewModel]
+public class ClosedPositionsReportViewModel : ReportBaseViewModel
 {
-    [POCOViewModel]
-    public class ClosedPositionsReportViewModel : ReportBaseViewModel
+    public LockableCollection<Model> Data { get; set; } = new();
+        
+    [Import]
+    public AccountRepoService AccountRepoService { get; set; }
+
+    [Import]
+    public ClosedPositionRepoService ClosedPositionRepoService { get; set; }
+        
+    [Import]
+    public FileSettingsRepoService FileSettingsRepoService { get; set; }
+        
+    [Import]
+    public IExchangeRateService ExchangeRateService { get; set; }
+        
+    public override async Task RefreshData()
     {
-        public LockableCollection<Model> Data { get; set; } = new();
-        
-        public AccountRepoService AccountRepoService { get; set; }
+        IsBusy = true;
+        BaseCurrency = (await FileSettingsRepoService.GetAll(true)).First().BaseCurrency;
+        Data.BeginUpdate();
 
-        public ClosedPositionRepoService ClosedPositionRepoService { get; set; }
-        
-        public FileSettingsRepoService FileSettingsRepoService { get; set; }
-        
-        public IExchangeRateService ExchangeRateService { get; set; }
-        
-        public override async Task RefreshData()
+        try
         {
-            IsBusy = true;
-            BaseCurrency = (await FileSettingsRepoService.AllEnrichedAsync()).First().BaseCurrency;
-            Data.BeginUpdate();
+            Data.Clear();
 
-            try
+            var accounts = (await AccountRepoService.GetAll(true)).ToList();
+            var closedPositions = await ClosedPositionRepoService.GetAll(true);
+
+            foreach (var position in closedPositions.OrderBy(x => x.SellDate))
             {
-                Data.Clear();
-
-                var accounts = (await AccountRepoService.AllEnrichedAsync()).ToList();
-                var closedPositions = await ClosedPositionRepoService.AllEnrichedAsync();
-
-                foreach (var position in closedPositions.OrderBy(x => x.SellDate))
-                {
-                    var account = accounts.Single(x => x.AccountId == position.AccountId);
-                    var profitLoss = await ExchangeRateService.Exchange(account.Currency, BaseCurrency, position.ProfitLoss);
+                var account = accounts.Single(x => x.AccountId == position.AccountId);
+                var profitLoss = await ExchangeRateService.Exchange(account.Currency, BaseCurrency, position.ProfitLoss);
                     
-                    Data.Add(new(position, account, profitLoss, BaseCurrency.Culture));
-                }
-            }
-            finally
-            {
-                Data.EndUpdate();
-                IsBusy = false;
+                Data.Add(new(position, account, profitLoss, BaseCurrency.Culture));
             }
         }
-
-        [UsedImplicitly]
-        public record Model(ClosedPosition Position, Account Account, decimal ProfitLossBaseCurrency, string BaseCulture);
+        finally
+        {
+            Data.EndUpdate();
+            IsBusy = false;
+        }
     }
+
+    [UsedImplicitly]
+    public record Model(ClosedPosition Position, Account Account, decimal ProfitLossBaseCurrency, string BaseCulture);
 }
