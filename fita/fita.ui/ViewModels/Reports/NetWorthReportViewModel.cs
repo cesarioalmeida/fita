@@ -73,7 +73,7 @@ public class NetWorthReportViewModel : ReportBaseViewModel
         // banks
         foreach (var account in accounts.Where(x => x.Type == AccountTypeEnum.Bank))
         {
-            var transactions = (await TransactionRepoService.AllEnrichedToDateForAccount(date, account.AccountId)).ToList();
+            var transactions = (await TransactionRepoService.GetAllToDateForAccount(date, account.AccountId)).ToList();
             var balance = await AccountService.CalculateBalance(account, transactions);
             model.Banks += await ExchangeRateService.Exchange(account.Currency, BaseCurrency, balance);
         }
@@ -81,7 +81,7 @@ public class NetWorthReportViewModel : ReportBaseViewModel
         // credit cards
         foreach (var account in accounts.Where(x => x.Type == AccountTypeEnum.CreditCard))
         {
-            var transactions = (await TransactionRepoService.AllEnrichedToDateForAccount(date, account.AccountId)).ToList();
+            var transactions = (await TransactionRepoService.GetAllToDateForAccount(date, account.AccountId)).ToList();
             var balance = await AccountService.CalculateBalance(account, transactions);
             model.CreditCards += await ExchangeRateService.Exchange(account.Currency, BaseCurrency, balance);
         }
@@ -89,7 +89,7 @@ public class NetWorthReportViewModel : ReportBaseViewModel
         // assets
         foreach (var account in accounts.Where(x => x.Type == AccountTypeEnum.Asset))
         {
-            var transactions = (await TransactionRepoService.AllEnrichedToDateForAccount(date, account.AccountId)).ToList();
+            var transactions = (await TransactionRepoService.GetAllToDateForAccount(date, account.AccountId)).ToList();
             var balance = await AccountService.CalculateBalance(account, transactions);
             model.Assets += await ExchangeRateService.Exchange(account.Currency, BaseCurrency, balance);
         }
@@ -97,11 +97,11 @@ public class NetWorthReportViewModel : ReportBaseViewModel
         // investments
         foreach (var account in accounts.Where(x => x.Type == AccountTypeEnum.Investment))
         {
-            var transactions = (await TransactionRepoService.AllEnrichedToDateForAccount(date, account.AccountId)).ToList();
+            var transactions = (await TransactionRepoService.GetAllToDateForAccount(date, account.AccountId)).ToList();
             var balance = await AccountService.CalculateBalance(account, transactions);
             model.Investments += await ExchangeRateService.Exchange(account.Currency, BaseCurrency, balance);
                 
-            var trades = (await TradeRepoService.AllEnrichedToDateForAccount(date, account.AccountId)).ToList();
+            var trades = (await TradeRepoService.GetAllToDateForAccount(date, account.AccountId)).ToList();
             var positions = trades.GroupBy(x => x.Security)
                 .ToDictionary(x => x.Key, x => x.Sum(_ => _.Quantity * (_.Action == TradeActionEnum.Buy ? 1m : -1m)));
 

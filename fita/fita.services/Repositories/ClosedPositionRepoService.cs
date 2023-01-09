@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using LiteDB;
@@ -14,7 +15,7 @@ public class ClosedPositionRepoService : RepositoryService<ClosedPosition>
 {
     public ClosedPositionRepoService([Import] DBHelperServiceFactory dbHelperServiceFactory,
         [Import] ILoggingService loggingService)
-        : base(dbHelperServiceFactory.GetInstance(), loggingService)  
+        : base(dbHelperServiceFactory.GetInstance(), loggingService)
         => IndexData();
 
     public sealed override void IndexData()
@@ -22,63 +23,32 @@ public class ClosedPositionRepoService : RepositoryService<ClosedPosition>
         Collection.EnsureIndex(x => x.ClosedPositionId);
         Collection.EnsureIndex(x => x.Security);
     }
-        
-    public Task<IEnumerable<ClosedPosition>> AllEnrichedForSecurity(ObjectId securityId)
+
+    public async Task<IEnumerable<ClosedPosition>> GetAllForSecurity(ObjectId securityId)
     {
-        return Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.Security)
-                        .Find(x => x.Security.SecurityId == securityId);
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllEnrichedForSecurity)}: {ex}");
-                    return null;
-                }
-            });
+        try
+        {
+            return (await GetAll(true)).Where(x => x.Security.SecurityId == securityId);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetAllForSecurity)}: {ex}");
+            return null;
+        }
     }
 
-    public Task<IEnumerable<ClosedPosition>> AllEnrichedBetweenDates(DateTime startDate, DateTime? endDate = null)
+    public async Task<IEnumerable<ClosedPosition>> GetAllBetweenDates(DateTime startDate, DateTime? endDate = null)
     {
-        return Task.Run(
-            () =>
-            {
-                try
-                {
-                    endDate ??= DateTime.MaxValue;
+        try
+        {
+            endDate ??= DateTime.MaxValue;
 
-                    return Collection
-                        .Include(x => x.Security)
-                        .Find(x => x.SellDate >= startDate && x.SellDate <= endDate);
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllEnrichedBetweenDates)}: {ex}");
-                    return null;
-                }
-            });
-    }
-        
-    public Task<IEnumerable<ClosedPosition>> AllEnrichedToDate(DateTime endDate)
-    {
-        return Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.Security)
-                        .Find(x => x.SellDate <= endDate);
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllEnrichedToDate)}: {ex}");
-                    return null;
-                }
-            });
+            return (await GetAll(true)).Where(x => x.SellDate >= startDate && x.SellDate <= endDate);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetAllBetweenDates)}: {ex}");
+            return null;
+        }
     }
 }

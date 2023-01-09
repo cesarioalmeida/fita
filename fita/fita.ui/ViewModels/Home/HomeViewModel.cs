@@ -86,10 +86,10 @@ public class HomeViewModel : ComposedViewModelBase, IDisposable
             var accounts = (await AccountRepoService.GetAll(true)).ToList();
 
             var transactions =
-                (await TransactionRepoService.AllEnrichedBetweenDates(new DateTime(DateTime.Now.Year,
+                (await TransactionRepoService.GetAllBetweenDates(new DateTime(DateTime.Now.Year,
                     DateTime.Now.Month, 1))).ToList();
 
-            var closedPositions = (await ClosedPositionRepoService.AllEnrichedBetweenDates(new DateTime(
+            var closedPositions = (await ClosedPositionRepoService.GetAllBetweenDates(new DateTime(
                 DateTime.Now.Year,
                 DateTime.Now.Month, 1))).ToList();
 

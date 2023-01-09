@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using LiteDB;
@@ -24,37 +25,29 @@ public class SecurityPositionRepoService : RepositoryService<SecurityPosition>
         Collection.EnsureIndex(x => x.AccountId);
     }
 
-    public Task<IEnumerable<SecurityPosition>> AllEnrichedForAccount(ObjectId accountId)
-        => Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.Security)
-                        .Find(x => x.AccountId == accountId && x.Quantity > 0);
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllEnrichedForAccount)}: {ex}");
-                    return null;
-                }
-            });
+    public async Task<IEnumerable<SecurityPosition>> GetAllForAccount(ObjectId accountId)
+    {
+        try
+        {
+            return (await GetAll(true)).Where(x => x.AccountId == accountId && x.Quantity > 0);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetAllForAccount)}: {ex}");
+            return null;
+        }
+    }
 
-    public Task<SecurityPosition> DetailsForSecurityEnriched(ObjectId securityId)
-        => Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.Security)
-                        .FindOne(x => x.Security.SecurityId == securityId);
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(DetailsForSecurityEnriched)}: {ex}");
-                    return null;
-                }
-            });
+    public async Task<SecurityPosition> GetSingleForSecurity(ObjectId securityId)
+    {
+        try
+        {
+            return (await GetAll(true)).Single(x => x.Security.SecurityId == securityId);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetSingleForSecurity)}: {ex}");
+            return null;
+        }
+    }
 }

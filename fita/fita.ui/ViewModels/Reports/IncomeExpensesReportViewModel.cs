@@ -62,8 +62,8 @@ public class IncomeExpensesReportViewModel : ReportBaseViewModel
             BaseCurrency = (await FileSettingsRepoService.GetAll(true)).First().BaseCurrency;
             var accounts = (await AccountRepoService.GetAll(true)).ToList();
             var transactions =
-                (await TransactionRepoService.AllEnrichedBetweenDates(FromDate, ToDate)).ToList();
-            var closedPositions = (await ClosedPositionRepoService.AllEnrichedBetweenDates(FromDate, ToDate))
+                (await TransactionRepoService.GetAllBetweenDates(FromDate, ToDate)).ToList();
+            var closedPositions = (await ClosedPositionRepoService.GetAllBetweenDates(FromDate, ToDate))
                 .ToList();
 
             TotalIncome = 0m;

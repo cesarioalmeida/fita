@@ -29,7 +29,7 @@ public class CurrencyRepoService : RepositoryService<Currency>, ISeedData
                 Culture = "pt-PT"
             };
 
-            if (Collection.FindOne(x => x.Name == euro.Name) == null)
+            if (Collection.FindOne(x => x.Name == euro.Name) is null)
             {
                 return await Save(euro);
             }

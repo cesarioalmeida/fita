@@ -50,11 +50,11 @@ public class PortfolioViewModel : ComposedViewModelBase
         try
         {
             Data.Clear();
-            var positions = await SecurityPositionRepoService.AllEnrichedForAccount(Account.AccountId);
+            var positions = await SecurityPositionRepoService.GetAllForAccount(Account.AccountId);
 
             foreach (var position in positions)
             {
-                var latestPrice = (await SecurityHistoryRepoService.FromSecurityEnriched(position.Security))?
+                var latestPrice = (await SecurityHistoryRepoService.GetFromSecurity(position.Security))?
                     .Price?.LatestValue ?? 0m;
                 Data.Add(new EntityModel(position, latestPrice, position.Quantity * latestPrice - position.Value));
             }

@@ -39,7 +39,7 @@ public class PortfolioService : IPortfolioService
                 }
 
                 var securityPosition =
-                    await SecurityPositionRepoService.DetailsForSecurityEnriched(trade.Security.SecurityId);
+                    await SecurityPositionRepoService.GetSingleForSecurity(trade.Security.SecurityId);
 
                 return trade.Quantity <= securityPosition.Quantity;
             });
@@ -107,7 +107,7 @@ public class PortfolioService : IPortfolioService
 
     private async Task<bool> PrepareSecurityPosition(Trade trade)
     {
-        var securityPosition = await SecurityPositionRepoService.DetailsForSecurityEnriched(trade.Security.SecurityId);
+        var securityPosition = await SecurityPositionRepoService.GetSingleForSecurity(trade.Security.SecurityId);
 
         if (trade.Action == TradeActionEnum.Buy)
         {
@@ -151,7 +151,7 @@ public class PortfolioService : IPortfolioService
 
     private async Task<bool> DeleteSecurityPosition(Trade trade)
     {
-        var securityPosition = await SecurityPositionRepoService.DetailsForSecurityEnriched(trade.Security.SecurityId);
+        var securityPosition = await SecurityPositionRepoService.GetSingleForSecurity(trade.Security.SecurityId);
 
         if (trade.Action == TradeActionEnum.Buy)
         {
@@ -174,7 +174,7 @@ public class PortfolioService : IPortfolioService
         }
 
         var closedPositionToDelete =
-            (await ClosedPositionRepoService.AllEnrichedForSecurity(trade.Security.SecurityId))
+            (await ClosedPositionRepoService.GetAllForSecurity(trade.Security.SecurityId))
             .SingleOrDefault(x => x.Quantity == trade.Quantity && x.SellDate == trade.Date);
 
         if (closedPositionToDelete is not null)

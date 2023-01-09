@@ -28,44 +28,18 @@ public class TradeRepoService : RepositoryService<Trade>
 
     public override async Task<IEnumerable<Trade>> GetAll(bool enriched = false)
         => (await base.GetAll(enriched))
-            .OrderBy(x => x.Date)
-            .AsEnumerable();
+            .OrderBy(x => x.Date);
 
-    public Task<IEnumerable<Trade>> AllEnrichedForAccount(ObjectId accountId)
-        => Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.Security)
-                        .Find(x => x.AccountId == accountId)
-                        .OrderBy(x => x.Date)
-                        .AsEnumerable();
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllEnrichedForAccount)}: {ex}");
-                    return null;
-                }
-            });
-
-    public Task<IEnumerable<Trade>> AllEnrichedToDateForAccount(DateTime endDate, ObjectId accountId)
-        => Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.Security)
-                        .Find(x => x.AccountId == accountId && x.Date <= endDate)
-                        .OrderBy(x => x.Date)
-                        .AsEnumerable();
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllEnrichedToDateForAccount)}: {ex}");
-                    return null;
-                }
-            });
+    public async Task<IEnumerable<Trade>> GetAllToDateForAccount(DateTime endDate, ObjectId accountId)
+    {
+        try
+        {
+            return (await GetAll(true)).Where(x => x.AccountId == accountId && x.Date <= endDate).OrderBy(x => x.Date);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetAllToDateForAccount)}: {ex}");
+            return null;
+        }
+    }
 }

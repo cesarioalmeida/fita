@@ -67,7 +67,7 @@ public class TransactionsViewModel : ComposedViewModelBase
                 return;
             }
 
-            _transactions = (await TransactionRepoService.AllEnrichedForAccount(Account.AccountId)).ToList();
+            _transactions = (await TransactionRepoService.GetAllForAccount(Account.AccountId)).ToList();
 
             Data.BeginUpdate();
             Data.Clear();

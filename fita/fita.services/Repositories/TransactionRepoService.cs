@@ -28,84 +28,46 @@ public class TransactionRepoService : RepositoryService<Transaction>
 
     public override async Task<IEnumerable<Transaction>> GetAll(bool enriched = false)
         => (await base.GetAll(enriched))
-            .OrderBy(x => x.Date)
-            .AsEnumerable();
+            .OrderBy(x => x.Date);
 
-    public Task<IEnumerable<Transaction>> AllEnrichedForAccount(ObjectId accountId)
-        => Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.Category)
-                        .Find(x => x.AccountId == accountId)
-                        .OrderBy(x => x.Date)
-                        .AsEnumerable();
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllEnrichedForAccount)}: {ex}");
-                    return null;
-                }
-            });
+    public async Task<IEnumerable<Transaction>> GetAllForAccount(ObjectId accountId)
+    {
+        try
+        {
+            return (await GetAll(true)).Where(x => x.AccountId == accountId).OrderBy(x => x.Date);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetAllForAccount)}: {ex}");
+            return null;
+        }
+    }
 
-    public Task<IEnumerable<Transaction>> AllEnrichedBetweenDates(DateTime startDate, DateTime? endDate = null)
-        => Task.Run(
-            () =>
-            {
-                try
-                {
-                    endDate ??= DateTime.MaxValue;
+    public async Task<IEnumerable<Transaction>> GetAllBetweenDates(DateTime startDate, DateTime? endDate = null)
+    {
+        try
+        {
+            endDate ??= DateTime.MaxValue;
 
-                    return Collection
-                        .Include(x => x.Category)
-                        .Find(x => x.Date >= startDate && x.Date <= endDate)
-                        .OrderBy(x => x.Date)
-                        .AsEnumerable();
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllEnrichedBetweenDates)}: {ex}");
-                    return null;
-                }
-            });
+            return (await GetAll(true)).Where(x => x.Date >= startDate && x.Date <= endDate).OrderBy(x => x.Date);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetAllBetweenDates)}: {ex}");
+            return null;
+        }
+    }
 
-    public Task<IEnumerable<Transaction>> AllEnrichedToDate(DateTime endDate)
-        => Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.Category)
-                        .Find(x => x.Date <= endDate)
-                        .OrderBy(x => x.Date)
-                        .AsEnumerable();
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllEnrichedToDate)}: {ex}");
-                    return null;
-                }
-            });
-
-    public Task<IEnumerable<Transaction>> AllEnrichedToDateForAccount(DateTime endDate, ObjectId accountId)
-        => Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.Category)
-                        .Find(x => x.Date <= endDate && x.AccountId == accountId)
-                        .OrderBy(x => x.Date)
-                        .AsEnumerable();
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllEnrichedToDateForAccount)}: {ex}");
-                    return null;
-                }
-            });
+    public async Task<IEnumerable<Transaction>> GetAllToDateForAccount(DateTime endDate, ObjectId accountId)
+    {
+        try
+        {
+            return (await GetAll(true)).Where(x => x.Date <= endDate && x.AccountId == accountId).OrderBy(x => x.Date);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetAllToDateForAccount)}: {ex}");
+            return null;
+        }
+    }
 }

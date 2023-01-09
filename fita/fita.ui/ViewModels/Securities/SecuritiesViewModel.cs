@@ -122,7 +122,7 @@ public class SecuritiesViewModel : ComposedDocumentViewModelBase
 
         try
         {
-            var historicalToDelete = await SecurityHistoryRepoService.FromSecurityEnriched(security);
+            var historicalToDelete = await SecurityHistoryRepoService.GetFromSecurity(security);
 
             if (historicalToDelete is not null)
             {

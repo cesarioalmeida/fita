@@ -15,7 +15,7 @@ public class InvestmentPricingService : IInvestmentPricingService
     
     public async Task<decimal> GetPrice(Security security, DateTime date)
     {
-        var existingData = await SecurityHistoryRepoService.FromSecurityEnriched(security);
+        var existingData = await SecurityHistoryRepoService.GetFromSecurity(security);
 
         return existingData.Price.DataPoints.LastOrDefault(x => x.Date <= date)?.Value ??
                existingData.Price.DataPoints.First().Value;

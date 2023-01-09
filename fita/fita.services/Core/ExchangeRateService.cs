@@ -71,7 +71,7 @@ public class ExchangeRateService : IExchangeRateService
     {
         try
         {
-            var exchangeRate = await ExchangeRateRepoService.FromToCurrencyEnriched(fromCurrency, toCurrency);
+            var exchangeRate = await ExchangeRateRepoService.GetSingleFromToCurrency(fromCurrency, toCurrency);
 
             if (date is null)
             {

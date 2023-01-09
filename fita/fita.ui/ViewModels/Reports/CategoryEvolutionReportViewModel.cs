@@ -110,8 +110,8 @@ public class CategoryEvolutionReportViewModel : ReportBaseViewModel
         BaseCurrency = (await FileSettingsRepoService.GetAll(true)).First().BaseCurrency;
         var accounts = (await AccountRepoService.GetAll(true)).ToList();
         var transactions =
-            (await TransactionRepoService.AllEnrichedBetweenDates(fromDate, toDate)).ToList();
-        var closedPositions = (await ClosedPositionRepoService.AllEnrichedBetweenDates(fromDate, toDate))
+            (await TransactionRepoService.GetAllBetweenDates(fromDate, toDate)).ToList();
+        var closedPositions = (await ClosedPositionRepoService.GetAllBetweenDates(fromDate, toDate))
             .ToList();
 
         var total = 0m;

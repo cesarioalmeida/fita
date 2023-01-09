@@ -95,7 +95,7 @@ public class CurrenciesViewModel : ComposedDocumentViewModelBase
             }
 
             var exchangeRates =
-                await ExchangeRateRepoService.AllFromCurrencyEnriched(FileSettings?.BaseCurrency);
+                await ExchangeRateRepoService.GetAllFromCurrency(FileSettings?.BaseCurrency);
 
             var data = currencies.Select(c =>
                 new CurrenciesModel(FileSettings.BaseCurrency, c,
@@ -158,7 +158,7 @@ public class CurrenciesViewModel : ComposedDocumentViewModelBase
 
         try
         {
-            var exchangeRatesToDelete = await ExchangeRateRepoService.AllWithCurrencyEnriched(currency);
+            var exchangeRatesToDelete = await ExchangeRateRepoService.GetAllWithCurrency(currency);
 
             if (exchangeRatesToDelete is not null)
             {
@@ -269,7 +269,7 @@ public class CurrenciesViewModel : ComposedDocumentViewModelBase
             _fireChangeNotification = true;
 
             var currentExchangeRates =
-                (await ExchangeRateRepoService.AllFromCurrencyEnriched(FileSettings.BaseCurrency)).ToList();
+                (await ExchangeRateRepoService.GetAllFromCurrency(FileSettings.BaseCurrency)).ToList();
 
             foreach (var currency in Data.Select(x => x.Currency)
                          .Where(x => x.CurrencyId != FileSettings.BaseCurrency.CurrencyId))

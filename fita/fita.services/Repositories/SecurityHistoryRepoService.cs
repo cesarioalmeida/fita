@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using twentySix.Framework.Core.Services;
@@ -12,7 +13,7 @@ public class SecurityHistoryRepoService : RepositoryService<SecurityHistory>
 {
     public SecurityHistoryRepoService([Import] DBHelperServiceFactory dbHelperServiceFactory,
         [Import] ILoggingService loggingService)
-        : base(dbHelperServiceFactory.GetInstance(), loggingService) 
+        : base(dbHelperServiceFactory.GetInstance(), loggingService)
         => IndexData();
 
     public sealed override void IndexData()
@@ -21,28 +22,21 @@ public class SecurityHistoryRepoService : RepositoryService<SecurityHistory>
         Collection.EnsureIndex(x => x.Security);
     }
 
-    public Task<SecurityHistory> FromSecurityEnriched(Security security)
+    public async Task<SecurityHistory> GetFromSecurity(Security security)
     {
         if (security is null)
         {
             return null;
         }
 
-        return Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.Security)
-                        .Include(x => x.Price)
-                        .FindOne(x => x.Security.SecurityId == security.SecurityId);
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(FromSecurityEnriched)}: {ex}");
-                    return null;
-                }
-            });
+        try
+        {
+            return (await GetAll(true)).Single(x => x.Security.SecurityId == security.SecurityId);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetFromSecurity)}: {ex}");
+            return null;
+        }
     }
 }

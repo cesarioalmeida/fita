@@ -66,19 +66,19 @@ public class InvestmentsViewModel : ComposedViewModelBase
 
             foreach (var account in accounts.Where(x => x.Type == AccountTypeEnum.Investment))
             {
-                var transactions = (await TransactionRepoService.AllEnrichedForAccount(account.AccountId)).ToList();
+                var transactions = (await TransactionRepoService.GetAllForAccount(account.AccountId)).ToList();
                 var balance = await AccountService.CalculateBalance(account, transactions);
                 Data.Add(new EntityModel(account.Name, account.Currency.Culture, balance));
 
                 TotalAmount += await ExchangeRateService.Exchange(account.Currency, baseCurrency, balance);
 
                 // positions
-                var positions = await SecurityPositionRepoService.AllEnrichedForAccount(account.AccountId);
+                var positions = await SecurityPositionRepoService.GetAllForAccount(account.AccountId);
                 var totalPositions = 0m;
 
                 foreach (var position in positions)
                 {
-                    totalPositions += ((await SecurityHistoryRepoService.FromSecurityEnriched(position.Security))?
+                    totalPositions += ((await SecurityHistoryRepoService.GetFromSecurity(position.Security))?
                         .Price?.LatestValue ?? 0m) * position.Quantity;
                 }
 

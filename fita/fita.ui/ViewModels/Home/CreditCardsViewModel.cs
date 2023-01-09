@@ -58,7 +58,7 @@ public class CreditCardsViewModel : ComposedViewModelBase
             foreach (var account in accounts.Where(x => x.Type == AccountTypeEnum.CreditCard))
             {
                 var transactions =
-                    (await TransactionRepoService.AllEnrichedForAccount(account.AccountId)).ToList();
+                    (await TransactionRepoService.GetAllForAccount(account.AccountId)).ToList();
                 var balance = await AccountService.CalculateBalance(account, transactions);
                 Data.Add(new EntityModel(account, balance));
 

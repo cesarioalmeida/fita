@@ -113,7 +113,7 @@ public class TradeDetailsViewModel : ComposedDocumentViewModelBase, IDesiredSize
         try
         {
             Trade.Price =
-                (await SecurityHistoryRepoService.FromSecurityEnriched(Security))?.Price?.LatestValue ?? 0m;
+                (await SecurityHistoryRepoService.GetFromSecurity(Security))?.Price?.LatestValue ?? 0m;
             RaisePropertyChanged(() => Trade);
         }
         finally

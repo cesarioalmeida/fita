@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using twentySix.Framework.Core.Services;
@@ -22,84 +23,60 @@ public class ExchangeRateRepoService : RepositoryService<ExchangeRate>
         Collection.EnsureIndex(x => x.FromCurrency);
         Collection.EnsureIndex(x => x.ToCurrency);
     }
-        
-    public Task<IEnumerable<ExchangeRate>> AllFromCurrencyEnriched(Currency fromCurrency)
+
+    public async Task<IEnumerable<ExchangeRate>> GetAllFromCurrency(Currency fromCurrency)
     {
         if (fromCurrency is null)
         {
             return null;
         }
 
-        return Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.FromCurrency)
-                        .Include(x => x.ToCurrency)
-                        .Include(x => x.Rate)
-                        .Find(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId);
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllFromCurrencyEnriched)}: {ex}");
-                    return null;
-                }
-            });
+        try
+        {
+            return (await GetAll(true)).Where(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetAllFromCurrency)}: {ex}");
+            return null;
+        }
     }
 
-    public Task<IEnumerable<ExchangeRate>> AllWithCurrencyEnriched(Currency currency)
+    public async Task<IEnumerable<ExchangeRate>> GetAllWithCurrency(Currency currency)
     {
         if (currency is null)
         {
             return null;
         }
 
-        return Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.FromCurrency)
-                        .Include(x => x.ToCurrency)
-                        .Include(x => x.Rate)
-                        .Find(x => x.FromCurrency.CurrencyId == currency.CurrencyId ||
-                                   x.ToCurrency.CurrencyId == currency.CurrencyId);
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(AllWithCurrencyEnriched)}: {ex}");
-                    return null;
-                }
-            });
+        try
+        {
+            return (await GetAll(true)).Where(x => x.FromCurrency.CurrencyId == currency.CurrencyId ||
+                                                   x.ToCurrency.CurrencyId == currency.CurrencyId);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetAllWithCurrency)}: {ex}");
+            return null;
+        }
     }
 
-    public Task<ExchangeRate> FromToCurrencyEnriched(Currency fromCurrency, Currency toCurrency)
+    public async Task<ExchangeRate> GetSingleFromToCurrency(Currency fromCurrency, Currency toCurrency)
     {
         if (fromCurrency is null || toCurrency is null)
         {
             return null;
         }
 
-        return Task.Run(
-            () =>
-            {
-                try
-                {
-                    return Collection
-                        .Include(x => x.FromCurrency)
-                        .Include(x => x.ToCurrency)
-                        .Include(x => x.Rate)
-                        .FindOne(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId &&
-                                      x.ToCurrency.CurrencyId == toCurrency.CurrencyId);
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Warn($"{nameof(FromToCurrencyEnriched)}: {ex}");
-                    return null;
-                }
-            });
+        try
+        {
+            return (await GetAll(true)).Single(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId &&
+                                                    x.ToCurrency.CurrencyId == toCurrency.CurrencyId);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.Warn($"{nameof(GetSingleFromToCurrency)}: {ex}");
+            return null;
+        }
     }
 }
