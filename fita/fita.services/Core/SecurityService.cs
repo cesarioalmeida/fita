@@ -65,21 +65,20 @@ public class SecurityService : ISecurityService
         List<YahooHistoryPrice> yahooHistorical = new();
 
         var numberOfTries = 0;
-        var selectedDate = date ?? DateTime.Now;
+        var startDate = date ?? DateTime.Now;
 
-        if (selectedDate.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+        if (startDate.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
         {
-            selectedDate = selectedDate.DayOfWeek == DayOfWeek.Saturday
-                ? selectedDate.AddDays(-1)
-                : selectedDate.AddDays(-2);
+            startDate = startDate.DayOfWeek == DayOfWeek.Saturday
+                ? startDate.AddDays(-1)
+                : startDate.AddDays(-2);
         }
 
         const int timeout = 5000;
 
         while (yahooHistorical.Count == 0 && numberOfTries < 3)
         {
-            var downloadTask =
-                YahooHistorical.GetPriceAsync(securityHistory.Security.Symbol, selectedDate.Date, selectedDate);
+            var downloadTask = YahooHistorical.GetPriceAsync(securityHistory.Security.Symbol, startDate.Date, DateTime.Now);
             if (await Task.WhenAny(downloadTask, Task.Delay(timeout)) == downloadTask)
             {
                 yahooHistorical = downloadTask.Result;
@@ -88,7 +87,7 @@ public class SecurityService : ISecurityService
             numberOfTries++;
         }
 
-        return new HistoricalElement(yahooHistorical.First().Date, (decimal) yahooHistorical.First().Close);
+        return new HistoricalElement(yahooHistorical.Last().Date, (decimal) yahooHistorical.Last().Close);
     }
 
     private static void PrepareHistoricalData(SecurityHistory securityHistory)
