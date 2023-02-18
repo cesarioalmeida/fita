@@ -34,7 +34,7 @@ public class TransactionRepoService : RepositoryService<Transaction>
     {
         try
         {
-            return (await GetAll(true)).Where(x => x.AccountId == accountId).OrderBy(x => x.Date);
+            return (await GetAllConditional(x => x.AccountId == accountId, true)).OrderBy(x => x.Date);
         }
         catch (Exception ex)
         {
@@ -49,7 +49,7 @@ public class TransactionRepoService : RepositoryService<Transaction>
         {
             endDate ??= DateTime.MaxValue;
 
-            return (await GetAll(true)).Where(x => x.Date >= startDate && x.Date <= endDate).OrderBy(x => x.Date);
+            return (await GetAllConditional(x => x.Date >= startDate && x.Date <= endDate, true)).OrderBy(x => x.Date);
         }
         catch (Exception ex)
         {
@@ -62,7 +62,7 @@ public class TransactionRepoService : RepositoryService<Transaction>
     {
         try
         {
-            return (await GetAll(true)).Where(x => x.Date <= endDate && x.AccountId == accountId).OrderBy(x => x.Date);
+            return (await GetAllConditional(x => x.Date <= endDate && x.AccountId == accountId, true)).OrderBy(x => x.Date);
         }
         catch (Exception ex)
         {

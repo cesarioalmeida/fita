@@ -34,7 +34,7 @@ public class TradeRepoService : RepositoryService<Trade>
     {
         try
         {
-            return (await GetAll(true)).Where(x => x.AccountId == accountId && x.Date <= endDate).OrderBy(x => x.Date);
+            return (await GetAllConditional(x => x.AccountId == accountId && x.Date <= endDate, true)).OrderBy(x => x.Date);
         }
         catch (Exception ex)
         {

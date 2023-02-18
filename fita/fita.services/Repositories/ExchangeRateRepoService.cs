@@ -33,7 +33,7 @@ public class ExchangeRateRepoService : RepositoryService<ExchangeRate>
 
         try
         {
-            return (await GetAll(true)).Where(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId);
+            return (await GetAllConditional(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId, true));
         }
         catch (Exception ex)
         {
@@ -51,8 +51,8 @@ public class ExchangeRateRepoService : RepositoryService<ExchangeRate>
 
         try
         {
-            return (await GetAll(true)).Where(x => x.FromCurrency.CurrencyId == currency.CurrencyId ||
-                                                   x.ToCurrency.CurrencyId == currency.CurrencyId);
+            return (await GetAllConditional(x => x.FromCurrency.CurrencyId == currency.CurrencyId ||
+                                                 x.ToCurrency.CurrencyId == currency.CurrencyId, true));
         }
         catch (Exception ex)
         {
@@ -70,8 +70,8 @@ public class ExchangeRateRepoService : RepositoryService<ExchangeRate>
 
         try
         {
-            return (await GetAll(true)).Single(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId &&
-                                                    x.ToCurrency.CurrencyId == toCurrency.CurrencyId);
+            return (await GetAllConditional(x => x.FromCurrency.CurrencyId == fromCurrency.CurrencyId &&
+                                                 x.ToCurrency.CurrencyId == toCurrency.CurrencyId, true)).Single();
         }
         catch (Exception ex)
         {

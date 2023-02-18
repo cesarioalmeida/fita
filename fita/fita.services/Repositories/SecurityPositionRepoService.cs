@@ -29,7 +29,7 @@ public class SecurityPositionRepoService : RepositoryService<SecurityPosition>
     {
         try
         {
-            return (await GetAll(true)).Where(x => x.AccountId == accountId && x.Quantity > 0);
+            return (await GetAllConditional(x => x.AccountId == accountId && x.Quantity > 0, true));
         }
         catch (Exception ex)
         {
@@ -42,7 +42,7 @@ public class SecurityPositionRepoService : RepositoryService<SecurityPosition>
     {
         try
         {
-            return (await GetAll(true)).Single(x => x.Security.SecurityId == securityId);
+            return (await GetAllConditional(x => x.Security.SecurityId == securityId, true)).Single();
         }
         catch (Exception ex)
         {

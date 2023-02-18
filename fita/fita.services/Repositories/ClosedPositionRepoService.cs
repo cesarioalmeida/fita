@@ -28,7 +28,7 @@ public class ClosedPositionRepoService : RepositoryService<ClosedPosition>
     {
         try
         {
-            return (await GetAll(true)).Where(x => x.Security.SecurityId == securityId);
+            return (await GetAllConditional(x => x.Security.SecurityId == securityId, true));
         }
         catch (Exception ex)
         {
@@ -43,7 +43,7 @@ public class ClosedPositionRepoService : RepositoryService<ClosedPosition>
         {
             endDate ??= DateTime.MaxValue;
 
-            return (await GetAll(true)).Where(x => x.SellDate >= startDate && x.SellDate <= endDate);
+            return (await GetAllConditional(x => x.SellDate >= startDate && x.SellDate <= endDate, true));
         }
         catch (Exception ex)
         {
