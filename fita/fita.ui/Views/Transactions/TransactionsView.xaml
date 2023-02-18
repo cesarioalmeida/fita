@@ -1,7 +1,10 @@
 ﻿<UserControl
+    DataContext="{dxmvvm:ViewModelSource Type=transactions:TransactionsViewModel}"
+    d:DataContext="{d:DesignInstance transactions:TransactionsViewModel}"
+    mc:Ignorable="d"
     x:Class="fita.ui.Views.Transactions.TransactionsView"
+    x:Name="this"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:fita.ui.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
@@ -11,10 +14,7 @@
     xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
-    x:Name="this"
-    d:DataContext="{d:DesignInstance transactions:TransactionsViewModel}"
-    DataContext="{dxmvvm:ViewModelSource Type=transactions:TransactionsViewModel}"
-    mc:Ignorable="d">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,24 +22,24 @@
             </ResourceDictionary.MergedDictionaries>
 
             <dxe:TextEditSettings
-                x:Key="CurrencyEditSettings"
                 Mask="c2"
                 MaskCulture="{Binding Account.Currency.Culture}"
                 MaskType="Numeric"
-                MaskUseAsDisplayFormat="True" />
-            
-            <dxmvvm:ObjectToObjectConverter x:Key="AccountTypeToVisibilityConverter" DefaultTarget="{x:Static Visibility.Hidden}">
+                MaskUseAsDisplayFormat="True"
+                x:Key="CurrencyEditSettings" />
+
+            <dxmvvm:ObjectToObjectConverter DefaultTarget="{x:Static Visibility.Hidden}" x:Key="AccountTypeToVisibilityConverter">
                 <dxmvvm:MapItem Source="{x:Static enums:AccountTypeEnum.Investment}" Target="{x:Static Visibility.Visible}" />
             </dxmvvm:ObjectToObjectConverter>
 
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <dxmvvm:Interaction.Behaviors>
-        <dxmvvm:KeyToCommand KeyGesture="Ctrl+T" Command="{Binding NewTransactionCommand}" />
-        <dxmvvm:KeyToCommand KeyGesture="Ctrl+Y" Command="{Binding NewTransferCommand}" />
+        <dxmvvm:KeyToCommand Command="{Binding NewTransactionCommand}" KeyGesture="Ctrl+T" />
+        <dxmvvm:KeyToCommand Command="{Binding NewTransferCommand}" KeyGesture="Ctrl+Y" />
     </dxmvvm:Interaction.Behaviors>
-    
+
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
         <Grid>
             <Grid.RowDefinitions>
@@ -49,15 +49,15 @@
             </Grid.RowDefinitions>
 
             <Border
+                Background="{StaticResource BgStartBrush}"
                 Grid.Row="0"
-                Height="50"
-                Background="{StaticResource BgStartBrush}">
+                Height="50">
 
                 <Grid>
                     <StackPanel
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
                         <TextBlock
                             Foreground="{StaticResource White1Brush}"
                             Style="{StaticResource H1}"
@@ -74,9 +74,9 @@
             </Border>
 
             <dxg:GridControl
-                x:Name="grid"
                 Grid.Row="1"
-                ItemsSource="{Binding Data}">
+                ItemsSource="{Binding Data}"
+                x:Name="grid">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn Width="Auto">
                         <dxg:GridColumn.CellTemplate>
@@ -95,9 +95,9 @@
                         </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
                     <dxg:GridColumn
-                        Width="50"
                         FieldName="Entity.Date"
-                        Header="Date">
+                        Header="Date"
+                        Width="50">
                         <dxg:GridColumn.EditSettings>
                             <dxe:DateEditSettings />
                         </dxg:GridColumn.EditSettings>
@@ -106,20 +106,20 @@
                     <dxg:GridColumn FieldName="Entity.Notes" Header="Notes" />
                     <dxg:GridColumn FieldName="Entity.Category.Name" Header="Category" />
                     <dxg:GridColumn
-                        Width="70"
                         EditSettings="{StaticResource CurrencyEditSettings}"
                         FieldName="Entity.Payment"
-                        Header="Payment" />
+                        Header="Payment"
+                        Width="70" />
                     <dxg:GridColumn
-                        Width="70"
                         EditSettings="{StaticResource CurrencyEditSettings}"
                         FieldName="Entity.Deposit"
-                        Header="Deposit" />
+                        Header="Deposit"
+                        Width="70" />
                     <dxg:GridColumn
-                        Width="70"
                         EditSettings="{StaticResource CurrencyEditSettings}"
                         FieldName="Balance"
-                        Header="Balance" />
+                        Header="Balance"
+                        Width="70" />
                 </dxg:GridControl.Columns>
                 <dxg:GridControl.SortInfo>
                     <dxg:GridSortInfo FieldName="Entity.Date" SortOrder="Descending" />
@@ -132,47 +132,48 @@
                         ShowGroupPanel="False"
                         ShowSearchPanelMode="Always">
                         <dxg:TableView.FormatConditions>
-                            <dxg:FormatCondition ValueRule="Greater" Value1="0" FieldName="Entity.Payment"
-                                                 PredefinedFormatName="LightRedFillWithDarkRedText" />
-                            <dxg:FormatCondition ValueRule="Greater" Value1="0" FieldName="Entity.Deposit"
-                                                 PredefinedFormatName="GreenFillWithDarkGreenText" />
+                            <dxg:FormatCondition
+                                FieldName="Entity.Payment"
+                                PredefinedFormatName="LightRedFillWithDarkRedText"
+                                Value1="0"
+                                ValueRule="Greater" />
+                            <dxg:FormatCondition
+                                FieldName="Entity.Deposit"
+                                PredefinedFormatName="GreenFillWithDarkGreenText"
+                                Value1="0"
+                                ValueRule="Greater" />
                         </dxg:TableView.FormatConditions>
                     </dxg:TableView>
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
-            <Border
-                Grid.Row="2"
-                Height="40"
-                Background="{StaticResource BgStartBrush}">
+            <Border Grid.Row="2" Height="40">
                 <Grid Margin="4">
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                         <controls:ViewRadioButton
                             Caption="Transactions"
-                            IsChecked="True"
                             GroupName="ViewGroup"
-                            Icon="../../Resources/Icons/Transactions_24x24.png" />
+                            Icon="../../Resources/Icons/Transactions_24x24.png"
+                            IsChecked="True" />
                         <controls:ViewRadioButton
                             Caption="Portfolio"
-                            GroupName="ViewGroup"
                             Command="{Binding NavigateToCommand}"
-                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}"
-                            Icon="../../Resources/Icons/Portfolio_24x24.png" />
+                            GroupName="ViewGroup"
+                            Icon="../../Resources/Icons/Portfolio_24x24.png"
+                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}" />
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                         <dxc:SimpleButton
-                            Background="LightGreen"
                             Command="{Binding TradeCommand}"
                             CommandParameter="{x:Static enums:TradeActionEnum.Buy}"
                             Content="Buy Security"
                             Style="{StaticResource ActionButton}"
                             Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}" />
                         <dxc:SimpleButton
-                            Margin="4,0,14,0"
-                            Background="LightSalmon"
                             Command="{Binding TradeCommand}"
                             CommandParameter="{x:Static enums:TradeActionEnum.Sell}"
                             Content="Sell Security"
+                            Margin="4,0,14,0"
                             Style="{StaticResource ActionButton}"
                             Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}" />
                         <dxc:SimpleButton

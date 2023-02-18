@@ -132,10 +132,7 @@
                 </dxg:GridControl.TotalSummary>
             </dxg:GridControl>
 
-            <Border
-                Background="{StaticResource BgStartBrush}"
-                Grid.Row="2"
-                Height="40">
+            <Border Grid.Row="2" Height="40">
                 <Grid Margin="4">
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                         <controls:ViewRadioButton
