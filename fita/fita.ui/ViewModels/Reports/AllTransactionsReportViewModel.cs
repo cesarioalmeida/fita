@@ -36,11 +36,11 @@ public class AllTransactionsReportViewModel : ReportBaseViewModel
         try
         {
             Data.Clear();
-
+            
             var accounts = (await AccountRepoService.GetAll(true)).ToList();
             var transactions = await TransactionRepoService.GetAll(true);
 
-            foreach (var transaction in transactions.OrderBy(x => x.Date))
+            foreach (var transaction in transactions)
             {
                 var account = accounts.Single(x => x.AccountId == transaction.AccountId);
                 var payment = await ExchangeRateService.Exchange(account.Currency, BaseCurrency, transaction.Payment.GetValueOrDefault());

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net.Http;
@@ -15,16 +16,16 @@ namespace fita.services.Core;
 [Export(typeof(IExchangeRateService))]
 public class ExchangeRateService : IExchangeRateService
 {
-    private static readonly IConfiguration Configuration = new ConfigurationBuilder().AddUserSecrets<ExchangeRateService>().Build();
+    private static readonly IConfiguration Configuration =
+        new ConfigurationBuilder().AddUserSecrets<ExchangeRateService>().Build();
 
-    [Import]
-    public ExchangeRateRepoService ExchangeRateRepoService { get; set; }
+    private readonly ConcurrentDictionary<string, ExchangeRate> _exchangeRatesCache = new();
 
-    [Import]
-    public HistoricalDataRepoService HistoricalDataRepoService { get; set; }
+    [Import] public ExchangeRateRepoService ExchangeRateRepoService { get; set; }
 
-    [Import]
-    public ILoggingService LoggingService { get; set; }
+    [Import] public HistoricalDataRepoService HistoricalDataRepoService { get; set; }
+
+    [Import] public ILoggingService LoggingService { get; set; }
 
     public Task<Result> Update(ExchangeRate exchangeRate, DateTime? date = null)
     {
@@ -36,6 +37,9 @@ public class ExchangeRateService : IExchangeRateService
                 {
                     return Result.Fail;
                 }
+                
+                // update cache
+                _exchangeRatesCache[$"{exchangeRate.FromCurrency.Symbol}-{exchangeRate.ToCurrency.Symbol}"] = exchangeRate;
 
                 try
                 {
@@ -46,7 +50,8 @@ public class ExchangeRateService : IExchangeRateService
                         PrepareHistoricalData(exchangeRate);
                     }
 
-                    if (exchangeRate.Rate?.DataPoints.SingleOrDefault(x => x.Date.Date == day.Date) is { } existingDataPoint)
+                    if (exchangeRate.Rate?.DataPoints.SingleOrDefault(x => x.Date.Date == day.Date) is
+                        { } existingDataPoint)
                     {
                         existingDataPoint.Value = rate;
                     }
@@ -71,8 +76,14 @@ public class ExchangeRateService : IExchangeRateService
     {
         try
         {
-            var exchangeRate = await ExchangeRateRepoService.GetSingleFromToCurrency(fromCurrency, toCurrency);
+            var key = $"{fromCurrency.Symbol}-{toCurrency.Symbol}";
 
+            if (!_exchangeRatesCache.TryGetValue(key, out var exchangeRate))
+            {
+                exchangeRate = await ExchangeRateRepoService.GetSingleFromToCurrency(fromCurrency, toCurrency);
+                _exchangeRatesCache[key] = exchangeRate;
+            }
+            
             if (date is null)
             {
                 return (exchangeRate is null ? 1m : exchangeRate.Rate.LatestValue ?? 1m) * value;
@@ -88,7 +99,8 @@ public class ExchangeRateService : IExchangeRateService
                 await Update(exchangeRate, date);
             }
 
-            return (exchangeRate.Rate.DataPoints.SingleOrDefault(x => x.Date.Date == date.Value.Date)?.Value ?? 1m) * value;
+            return (exchangeRate.Rate.DataPoints.SingleOrDefault(x => x.Date.Date == date.Value.Date)?.Value ?? 1m) *
+                   value;
         }
         catch (Exception ex)
         {
@@ -102,20 +114,20 @@ public class ExchangeRateService : IExchangeRateService
         var requestUrl = date is null
             ? $"{Properties.Resources.ExchangeRateApi}?base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}"
             : $"{Properties.Resources.ExchangeRateApi}?start_at={date.Value:YYYY-MM-dd}&end_at={date.Value:YYYY-MM-dd}&base={exchangeRate.FromCurrency.Symbol}&symbols={exchangeRate.ToCurrency.Symbol}";
-            
+
         using var client = new HttpClient {Timeout = TimeSpan.FromSeconds(5)};
-            
+
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri(requestUrl),
             Headers =
             {
-                { "X-RapidAPI-Host", "fixer-fixer-currency-v1.p.rapidapi.com" },
-                { "X-RapidAPI-Key", $"{Configuration["ExchangeRatesApi"]}" },
+                {"X-RapidAPI-Host", "fixer-fixer-currency-v1.p.rapidapi.com"},
+                {"X-RapidAPI-Key", $"{Configuration["ExchangeRatesApi"]}"},
             },
         };
-            
+
         using var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
         var json = await response.Content.ReadAsStringAsync();
@@ -127,7 +139,8 @@ public class ExchangeRateService : IExchangeRateService
 
     private static void PrepareHistoricalData(ExchangeRate rate)
     {
-        var historicalData = new HistoricalData { Name = $"Exchange rate {rate.FromCurrency.Name} => {rate.ToCurrency.Name}" };
+        var historicalData = new HistoricalData
+            {Name = $"Exchange rate {rate.FromCurrency.Name} => {rate.ToCurrency.Name}"};
         rate.Rate = historicalData;
     }
 
