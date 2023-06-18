@@ -38,11 +38,11 @@ public class SecurityPositionRepoService : RepositoryService<SecurityPosition>
         }
     }
 
-    public async Task<SecurityPosition> GetSingleForSecurity(ObjectId securityId)
+    public async Task<SecurityPosition> GetSingleForSecurity(ObjectId accountId, ObjectId securityId)
     {
         try
         {
-            return (await GetAllConditional(x => x.Security.SecurityId == securityId, true)).Single();
+            return (await GetAllConditional(x => x.AccountId == accountId && x.Security.SecurityId == securityId, true)).Single();
         }
         catch (Exception ex)
         {

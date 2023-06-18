@@ -38,8 +38,7 @@ public class PortfolioService : IPortfolioService
                     return true;
                 }
 
-                var securityPosition =
-                    await SecurityPositionRepoService.GetSingleForSecurity(trade.Security.SecurityId);
+                var securityPosition = await SecurityPositionRepoService.GetSingleForSecurity(trade.AccountId, trade.Security.SecurityId);
 
                 return trade.Quantity <= securityPosition.Quantity;
             });
@@ -107,7 +106,7 @@ public class PortfolioService : IPortfolioService
 
     private async Task<bool> PrepareSecurityPosition(Trade trade)
     {
-        var securityPosition = await SecurityPositionRepoService.GetSingleForSecurity(trade.Security.SecurityId);
+        var securityPosition = await SecurityPositionRepoService.GetSingleForSecurity(trade.AccountId, trade.Security.SecurityId);
 
         if (trade.Action == TradeActionEnum.Buy)
         {
@@ -151,7 +150,7 @@ public class PortfolioService : IPortfolioService
 
     private async Task<bool> DeleteSecurityPosition(Trade trade)
     {
-        var securityPosition = await SecurityPositionRepoService.GetSingleForSecurity(trade.Security.SecurityId);
+        var securityPosition = await SecurityPositionRepoService.GetSingleForSecurity(trade.AccountId, trade.Security.SecurityId);
 
         if (trade.Action == TradeActionEnum.Buy)
         {
