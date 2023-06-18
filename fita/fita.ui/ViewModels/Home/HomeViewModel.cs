@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -81,17 +82,23 @@ public class HomeViewModel : ComposedViewModelBase, IDisposable
 
         try
         {
-            var baseCurrency = (await FileSettingsRepoService.GetAll(true)).First().BaseCurrency;
+            var tasks = new List<Task>();
+            
+            var baseCurrencyTask = FileSettingsRepoService.GetAll(true);
+            tasks.Add(baseCurrencyTask);
+            var accountsTask = AccountRepoService.GetAll(true);
+            tasks.Add(accountsTask);
+            var transactionsTask = TransactionRepoService.GetAllBetweenDates(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1));
+            tasks.Add(transactionsTask);
+            var closedPositionsTask = ClosedPositionRepoService.GetAllBetweenDates(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1));
+            tasks.Add(closedPositionsTask);
 
-            var accounts = (await AccountRepoService.GetAll(true)).ToList();
-
-            var transactions =
-                (await TransactionRepoService.GetAllBetweenDates(new DateTime(DateTime.Now.Year,
-                    DateTime.Now.Month, 1))).ToList();
-
-            var closedPositions = (await ClosedPositionRepoService.GetAllBetweenDates(new DateTime(
-                DateTime.Now.Year,
-                DateTime.Now.Month, 1))).ToList();
+            await Task.WhenAll(tasks);
+            
+            var baseCurrency = baseCurrencyTask.Result.First().BaseCurrency;
+            var accounts = accountsTask.Result.ToList();
+            var transactions = transactionsTask.Result.ToList();
+            var closedPositions = closedPositionsTask.Result.ToList();
 
             var expenses = 0m;
             var income = 0m;
