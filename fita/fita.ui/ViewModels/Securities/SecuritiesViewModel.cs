@@ -77,6 +77,10 @@ public class SecuritiesViewModel : ComposedDocumentViewModelBase
 
             Data.AddRange(data);
         }
+        catch (Exception)
+        {
+            Messenger.Default.Send(new NotificationMessage("Failed to refresh securities", NotificationStatusEnum.Error));
+        }
         finally
         {
             Data.EndUpdate();

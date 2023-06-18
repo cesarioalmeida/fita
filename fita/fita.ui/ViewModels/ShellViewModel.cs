@@ -21,7 +21,6 @@ using twentySix.Framework.Core.Helpers;
 using twentySix.Framework.Core.Messages;
 using twentySix.Framework.Core.Services;
 using twentySix.Framework.Core.Services.Interfaces;
-using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
 
 namespace fita.ui.ViewModels;
@@ -42,11 +41,10 @@ public class ShellViewModel : ComposedViewModelBase, IDisposable
 
     private List<HamburgerMenuItemViewModel> _accountItems = new();
     private IDBHelperService _dbHelperService;
-        
-    [Import]
-    public AccountRepoService AccountRepoService { get; set; }
 
-    public NotificationMessage Message { get; set; }
+    [Import] public AccountRepoService AccountRepoService { get; set; }
+
+    public virtual string NotificationMessage { get; set; }
 
     public HamburgerMenuItemViewModel SelectedHamburgerItem { get; set; }
 
@@ -69,11 +67,15 @@ public class ShellViewModel : ComposedViewModelBase, IDisposable
 
     public IEnumerable<HamburgerMenuItemViewModel> ReportHamburgerItems => new[]
     {
-        new HamburgerMenuItemViewModel("All Transactions", "AllTransactionsReportView", "../Resources/Icons/Reports_24x24.png"),
-        new HamburgerMenuItemViewModel("Closed Positions", "ClosedPositionsReportView", "../Resources/Icons/Reports_24x24.png"),
-        new HamburgerMenuItemViewModel("Income/Expenses", "IncomeExpensesReportView", "../Resources/Icons/Reports_24x24.png"),
+        new HamburgerMenuItemViewModel("All Transactions", "AllTransactionsReportView",
+            "../Resources/Icons/Reports_24x24.png"),
+        new HamburgerMenuItemViewModel("Closed Positions", "ClosedPositionsReportView",
+            "../Resources/Icons/Reports_24x24.png"),
+        new HamburgerMenuItemViewModel("Income/Expenses", "IncomeExpensesReportView",
+            "../Resources/Icons/Reports_24x24.png"),
         new HamburgerMenuItemViewModel("PL (Month)", "PLMonthReportView", "../Resources/Icons/Reports_24x24.png"),
-        new HamburgerMenuItemViewModel("Category (Month)", "CategoryEvolutionReportView", "../Resources/Icons/Reports_24x24.png"),
+        new HamburgerMenuItemViewModel("Category (Month)", "CategoryEvolutionReportView",
+            "../Resources/Icons/Reports_24x24.png"),
         new HamburgerMenuItemViewModel("YoY Category", "YoYCategoryReportView", "../Resources/Icons/Reports_24x24.png"),
         new HamburgerMenuItemViewModel("Net Worth", "NetWorthReportView", "../Resources/Icons/Reports_24x24.png")
     };
@@ -82,7 +84,7 @@ public class ShellViewModel : ComposedViewModelBase, IDisposable
         this.GetRequiredService<IDocumentManagerService>("ModalWindowDocumentService");
 
     protected IDispatcherService DispatcherService => GetService<IDispatcherService>();
-    
+
     public ShellViewModel()
     {
         Messenger.Default.Register<NotificationMessage>(this, OnNotificationMessage);
@@ -90,7 +92,11 @@ public class ShellViewModel : ComposedViewModelBase, IDisposable
         Messenger.Default.Register<SecuritiesChanged>(this, _ => { RefreshData().ConfigureAwait(false); });
 
         _messageTimer.Interval = 5000;
-        _messageTimer.Elapsed += (_, _) => DispatcherService.BeginInvoke(() => Message = null);
+        _messageTimer.Elapsed += (_, _) => DispatcherService.BeginInvoke(() =>
+        {
+            NotificationMessage = null;
+            _messageTimer.Stop();
+        });
     }
 
     public async Task RefreshData()
@@ -142,14 +148,14 @@ public class ShellViewModel : ComposedViewModelBase, IDisposable
     public async Task OnViewLoaded()
     {
         _dbHelperService = ApplicationHelper.Container.Resolve<DBHelperServiceFactory>()?.GetInstance();
-        
+
         await RefreshData();
 
         NavigationService?.Navigate("HomeView", null, this);
     }
 
     [UsedImplicitly]
-    public void Navigate(HamburgerMenuItemViewModel hamburgerItem) 
+    public void Navigate(HamburgerMenuItemViewModel hamburgerItem)
         => NavigationService?.Navigate(hamburgerItem.View, hamburgerItem.Account, this);
 
     [UsedImplicitly]
@@ -159,14 +165,14 @@ public class ShellViewModel : ComposedViewModelBase, IDisposable
         {
             return;
         }
-            
+
         var dbFile = _dbHelperService.DBLocation;
         var backupFile = Path.Join(Path.GetDirectoryName(dbFile),
             Path.GetFileNameWithoutExtension(dbFile) + "-backup" + Path.GetExtension(dbFile));
 
         try
         {
-            File.Copy(dbFile, backupFile, true);
+            File.Copy(dbFile!, backupFile, true);
 
             WinUIMessageBox.Show(
                 "The data was backed up successfully.",
@@ -182,9 +188,8 @@ public class ShellViewModel : ComposedViewModelBase, IDisposable
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
-            
     }
-        
+
     public void Dispose()
     {
         _messageTimer?.Dispose();
@@ -193,16 +198,8 @@ public class ShellViewModel : ComposedViewModelBase, IDisposable
 
     private void OnNotificationMessage(NotificationMessage obj)
     {
-        Message = obj;
-
-        if (obj.Status != NotificationStatusEnum.Error)
-        {
-            _messageTimer.Start();
-        }
-        else
-        {
-            _messageTimer.Stop();
-        }
+        NotificationMessage = $"[{obj.Status}] {obj.Message}";
+        _messageTimer.Start();
     }
 
     public record HamburgerMenuItemViewModel(string Caption, string View, string Icon = null,
