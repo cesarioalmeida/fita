@@ -1,9 +1,9 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using fita.services.Core;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace fita.services.tests.Core
@@ -11,7 +11,7 @@ namespace fita.services.tests.Core
     [TestFixture]
     public class AccountServiceTests : ContainerFixture
     {
-        [UsedImplicitly]
+        [Import]
         private IAccountService _accountService;
 
         [Test]

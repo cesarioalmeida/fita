@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.ComponentModel.Composition;
+using System.Threading.Tasks;
 using fita.data.Models;
 using fita.services.Core;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using twentySix.Framework.Core.Common;
 
@@ -10,7 +10,7 @@ namespace fita.services.tests.Core
     [TestFixture]
     public class SecurityServiceTests : ContainerFixture
     {
-        [UsedImplicitly]
+        [Import]
         private ISecurityService _securityService;
 
         [Test]

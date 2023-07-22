@@ -4,7 +4,9 @@ using System.Linq;
 using System.Reflection;
 using DryIoc;
 using DryIoc.MefAttributedModel;
+using Moq;
 using twentySix.Framework.Core.Helpers;
+using twentySix.Framework.Core.Services.Interfaces;
 
 namespace fita.services.tests;
 
@@ -13,9 +15,21 @@ public class ContainerFixture
     public ContainerFixture()
     {
         ApplicationHelper.SetApplicationDetails("twentySix", "fita.tests");
-        ApplicationHelper.StartUp(new Container().WithMef().WithMefAttributedModel());
 
-        Container.RegisterExports(GetAssemblies());
+        var container = new Container().WithMef().WithMefAttributedModel();
+        container.RegisterExports(GetAssemblies());
+        EnrichContainer(container);
+
+        ApplicationHelper.StartUp(container);
+        
+        container.InjectPropertiesAndFields(this);
+    }
+
+    private static void EnrichContainer(IRegistrator container)
+    {
+        // replace the logging service with mocked version
+        container.Unregister<ILoggingService>();
+        container.Register<ILoggingService>(Reuse.Singleton, Made.Of(() => Mock.Of<ILoggingService>()));
     }
 
     public static IContainer Container => ApplicationHelper.Container;
@@ -24,7 +38,6 @@ public class ContainerFixture
         => from frameworkAssembly in new[]
             {
                 "twentySix.Framework.Core.dll",
-                "twentySix.Framework.Theme.dll",
                 "fita.data.dll",
                 "fita.services.dll"
             }
