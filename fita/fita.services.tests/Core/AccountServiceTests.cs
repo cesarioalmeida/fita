@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using fita.services.Core;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace fita.services.tests.Core
@@ -17,7 +18,9 @@ namespace fita.services.tests.Core
         [Test]
         public async Task CalculateBalance_AccountNull_Returns0()
         {
-            Assert.AreEqual(0m, await _accountService.CalculateBalance(null, null));
+            var result = await _accountService.CalculateBalance(null, null);
+            
+            result.Should().Be(0m);
         }
 
         [Test]

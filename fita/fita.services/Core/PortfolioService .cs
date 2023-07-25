@@ -33,6 +33,13 @@ public class PortfolioService : IPortfolioService
         => Task.Run(
             async () =>
             {
+                if(trade?.Security is null 
+                   || trade.AccountId == ObjectId.Empty
+                   || trade.Quantity <= 0)
+                {
+                    return false;
+                }
+                
                 if (trade.Action == TradeActionEnum.Buy)
                 {
                     return true;
@@ -40,7 +47,7 @@ public class PortfolioService : IPortfolioService
 
                 var securityPosition = await SecurityPositionRepoService.GetSingleForSecurity(trade.AccountId, trade.Security.SecurityId);
 
-                return trade.Quantity <= securityPosition.Quantity;
+                return trade.Quantity <= securityPosition?.Quantity;
             });
 
     public Task<bool> ProcessTrade(Trade trade, Transaction transaction)
