@@ -137,6 +137,8 @@ public class PortfolioService : IPortfolioService
             return false;
         }
 
+        var currentBreakEvenPrice = securityPosition.BreakEvenPrice;
+        
         var closedPosition = new ClosedPosition
         {
             AccountId = trade.AccountId,
@@ -145,11 +147,11 @@ public class PortfolioService : IPortfolioService
             SellDate = trade.Date,
             BuyPrice = securityPosition.BreakEvenPrice,
             SellPrice = trade.BreakEvenPrice,
-            ProfitLoss = trade.Value - trade.Quantity * securityPosition.BreakEvenPrice
+            ProfitLoss = trade.Value - trade.Quantity * currentBreakEvenPrice
         };
 
         securityPosition.Quantity -= trade.Quantity;
-        securityPosition.Value -= trade.Value;
+        securityPosition.Value -= (trade.Quantity * currentBreakEvenPrice);
 
         return await ClosedPositionRepoService.Save(closedPosition) == Result.Success
                && await SecurityPositionRepoService.Save(securityPosition) == Result.Success;
