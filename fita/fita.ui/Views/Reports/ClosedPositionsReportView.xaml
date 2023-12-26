@@ -135,8 +135,8 @@
                         RowMinHeight="24"
                         ShowGroupPanel="True"
                         ShowIndicator="False"
-                        ShowTotalSummary="True"
                         ShowSearchPanelMode="Always"
+                        ShowTotalSummary="True"
                         VerticalScrollbarVisibility="Auto" />
                 </dxg:GridControl.View>
                 <dxg:GridControl.GroupSummary>

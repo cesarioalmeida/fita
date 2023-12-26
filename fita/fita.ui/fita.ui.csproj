@@ -64,9 +64,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="DryIoc.dll" Version="5.4.1" />
-      <PackageReference Include="twentySix.Framework.Core" Version="8.3.0" />
-      <PackageReference Include="twentySix.Framework.Theme" Version="8.2.0" />
+      <PackageReference Include="DryIoc.dll" Version="5.4.3" />
+      <PackageReference Include="twentySix.Framework.Core" Version="9.3.0" />
+      <PackageReference Include="twentySix.Framework.Theme" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>

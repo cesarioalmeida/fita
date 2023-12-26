@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
-      <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+      <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+      <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="twentySix.Framework.Core" Version="8.3.0" />
-      <PackageReference Include="YahooFinanceAPI" Version="2.6.0" />
+      <PackageReference Include="twentySix.Framework.Core" Version="9.3.0" />
+      <PackageReference Include="YahooFinanceAPI" Version="3.1.0" />
     </ItemGroup>
 
     <ItemGroup>
