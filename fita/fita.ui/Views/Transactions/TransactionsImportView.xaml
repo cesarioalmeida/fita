@@ -1,0 +1,221 @@
+﻿<UserControl
+    d:DataContext="{d:DesignInstance transactions:TransactionsImportViewModel}"
+    mc:Ignorable="d"
+    x:Class="fita.ui.Views.Transactions.TransactionsImportView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:converters="clr-namespace:fita.ui.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:enums="clr-namespace:fita.data.Enums;assembly=fita.data"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:transactions="clr-namespace:fita.ui.ViewModels.Transactions"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/fita.ui;component/Themes/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <dxe:TextEditSettings
+                Mask="c2"
+                MaskCulture="{Binding Account.Currency.Culture}"
+                MaskType="Numeric"
+                MaskUseAsDisplayFormat="True"
+                x:Key="CurrencyEditSettings" />
+
+            <ControlTemplate x:Key="popupContentTemplate">
+                <dxg:GridControl
+                    AllowColumnMRUFilterList="False"
+                    AllowMRUFilterList="False"
+                    AutoGenerateColumns="None"
+                    IsFilterEnabled="False"
+                    ItemsSource="{Binding DataContext.Categories, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                    ShowBorder="False"
+                    ShowLoadingPanel="False"
+                    x:Name="PART_GridControl">
+                    <dxg:GridControl.Columns>
+                        <dxg:GridColumn FieldName="Name" />
+                        <dxg:GridColumn Binding="{Binding Group, Converter={converters:EnumDisplayConverter}}" FieldName="Group" />
+                    </dxg:GridControl.Columns>
+                    <dxg:GridControl.View>
+                        <dxg:TableView
+                            AllowFilterEditor="False"
+                            AutoWidth="True"
+                            HorizontalScrollbarVisibility="Hidden"
+                            ScrollAnimationDuration="0"
+                            ShowColumnHeaders="False"
+                            ShowGroupPanel="False"
+                            ShowHorizontalLines="False"
+                            ShowIndicator="False"
+                            ShowSearchPanelCloseButton="False"
+                            ShowValidationAttributeErrors="False"
+                            ShowVerticalLines="False">
+                            <dxg:TableView.FormatConditions>
+                                <dxg:FormatCondition
+                                    FieldName="Group"
+                                    PredefinedFormatName="GreenFillWithDarkGreenText"
+                                    Value1="{x:Static enums:CategoryGroupEnum.PersonalIncome}"
+                                    ValueRule="Equal" />
+                                <dxg:FormatCondition
+                                    FieldName="Group"
+                                    PredefinedFormatName="LightRedFillWithDarkRedText"
+                                    Value1="{x:Static enums:CategoryGroupEnum.PersonalExpenses}"
+                                    ValueRule="Equal" />
+                            </dxg:TableView.FormatConditions>
+                        </dxg:TableView>
+                    </dxg:GridControl.View>
+                </dxg:GridControl>
+            </ControlTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand Command="{Binding RefreshDataCommand}" EventName="Loaded" />
+        <dxmvvm:OpenFileDialogService />
+    </dxmvvm:Interaction.Behaviors>
+
+    <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                HorizontalAlignment="Center"
+                Style="{StaticResource H1}"
+                Text="{DXBinding 'Account.Name + ` - Import Transactions`'}" />
+
+            <dxlc:LayoutControl Grid.Row="1">
+                <dxlc:LayoutGroup ItemSpace="15" Orientation="Vertical">
+                    <dxlc:LayoutItem
+                        AddColonToLabel="True"
+                        Label="File"
+                        LabelPosition="Top">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <dxe:TextEdit
+                                EditValue="{Binding ImportFilePath}"
+                                Grid.Column="0"
+                                IsReadOnly="True" />
+                            <dxc:SimpleButton
+                                Command="{Binding OpenFileCommand}"
+                                Content="Open file..."
+                                Grid.Column="1"
+                                Margin="5,0,0,0" />
+                        </Grid>
+                    </dxlc:LayoutItem>
+                    <dxlc:LayoutItem VerticalAlignment="Stretch">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <dxg:GridControl ItemsSource="{Binding Entities}" SelectionMode="Row">
+                                <dxg:GridControl.Columns>
+                                    <dxg:GridColumn
+                                        FieldName="IsSelected"
+                                        Header=""
+                                        Width="18">
+                                        <dxg:GridColumn.EditSettings>
+                                            <dxe:CheckEditSettings />
+                                        </dxg:GridColumn.EditSettings>
+                                    </dxg:GridColumn>
+                                    <dxg:GridColumn
+                                        FieldName="Entity.Date"
+                                        Header="Date"
+                                        Width="40">
+                                        <dxg:GridColumn.EditSettings>
+                                            <dxe:DateEditSettings />
+                                        </dxg:GridColumn.EditSettings>
+                                    </dxg:GridColumn>
+                                    <dxg:GridColumn FieldName="Entity.Description" Header="Description" />
+                                    <dxg:GridColumn
+                                        FieldName="Entity.Notes"
+                                        Header="Notes"
+                                        Width="40" />
+                                    <dxg:GridColumn
+                                        FieldName="Entity.Category"
+                                        Header="Category"
+                                        Width="60">
+                                        <dxg:GridColumn.EditSettings>
+                                            <dxg:LookUpEditSettings
+                                                AutoPopulateColumns="False"
+                                                DisplayMember="Name"
+                                                FilterCondition="Contains"
+                                                ImmediatePopup="True"
+                                                IsTextEditable="False"
+                                                ItemsSource="{Binding Categories}"
+                                                PopupContentTemplate="{StaticResource popupContentTemplate}"
+                                                PopupMaxWidth="320"
+                                                PopupMinHeight="260"
+                                                PopupWidth="320"
+                                                ShowSizeGrip="False" />
+                                        </dxg:GridColumn.EditSettings>
+                                    </dxg:GridColumn>
+                                    <dxg:GridColumn
+                                        EditSettings="{StaticResource CurrencyEditSettings}"
+                                        FieldName="Entity.Payment"
+                                        Header="Payment"
+                                        Width="50" />
+                                    <dxg:GridColumn
+                                        EditSettings="{StaticResource CurrencyEditSettings}"
+                                        FieldName="Entity.Deposit"
+                                        Header="Deposit"
+                                        Width="50" />
+                                </dxg:GridControl.Columns>
+                                <dxg:GridControl.View>
+                                    <dxg:TableView
+                                        AllowEditing="True"
+                                        AutoWidth="True"
+                                        RowMinHeight="24"
+                                        ShowGroupPanel="False"
+                                        ShowIndicator="False"
+                                        ShowSearchPanelMode="Always">
+                                        <dxg:TableView.FormatConditions>
+                                            <dxg:FormatCondition
+                                                FieldName="Entity.Payment"
+                                                PredefinedFormatName="LightRedFillWithDarkRedText"
+                                                Value1="0"
+                                                ValueRule="Greater" />
+                                            <dxg:FormatCondition
+                                                FieldName="Entity.Deposit"
+                                                PredefinedFormatName="GreenFillWithDarkGreenText"
+                                                Value1="0"
+                                                ValueRule="Greater" />
+                                        </dxg:TableView.FormatConditions>
+                                    </dxg:TableView>
+                                </dxg:GridControl.View>
+                            </dxg:GridControl>
+                        </Grid>
+                    </dxlc:LayoutItem>
+                </dxlc:LayoutGroup>
+            </dxlc:LayoutControl>
+
+            <StackPanel
+                Grid.Row="2"
+                HorizontalAlignment="Right"
+                Margin="4"
+                Orientation="Horizontal">
+                <dxc:SimpleButton
+                    Command="{Binding ImportCommand}"
+                    Content="Import"
+                    Style="{StaticResource ActionButton}" />
+                <dxc:SimpleButton
+                    Command="{Binding CancelCommand}"
+                    Content="Cancel"
+                    IsCancel="True"
+                    Margin="15,0,7,0"
+                    Style="{StaticResource ActionButton}" />
+            </StackPanel>
+        </Grid>
+    </dxc:LoadingDecorator>
+
+</UserControl>

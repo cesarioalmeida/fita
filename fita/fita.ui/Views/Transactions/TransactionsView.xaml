@@ -28,8 +28,11 @@
                 MaskUseAsDisplayFormat="True"
                 x:Key="CurrencyEditSettings" />
 
-            <dxmvvm:ObjectToObjectConverter DefaultTarget="{x:Static Visibility.Hidden}" x:Key="AccountTypeToVisibilityConverter">
+            <dxmvvm:ObjectToObjectConverter DefaultTarget="{x:Static Visibility.Collapsed}" x:Key="AccountTypeToVisibilityConverter">
                 <dxmvvm:MapItem Source="{x:Static enums:AccountTypeEnum.Investment}" Target="{x:Static Visibility.Visible}" />
+            </dxmvvm:ObjectToObjectConverter>
+            <dxmvvm:ObjectToObjectConverter DefaultTarget="{x:Static Visibility.Visible}" x:Key="ImportVisibilityConverter">
+                <dxmvvm:MapItem Source="{x:Static enums:AccountTypeEnum.Investment}" Target="{x:Static Visibility.Collapsed}" />
             </dxmvvm:ObjectToObjectConverter>
 
         </ResourceDictionary>
@@ -38,6 +41,7 @@
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:KeyToCommand Command="{Binding NewTransactionCommand}" KeyGesture="Ctrl+T" />
         <dxmvvm:KeyToCommand Command="{Binding NewTransferCommand}" KeyGesture="Ctrl+Y" />
+        <dxmvvm:KeyToCommand Command="{Binding ImportTransactionsCommand}" KeyGesture="Ctrl+I" />
     </dxmvvm:Interaction.Behaviors>
 
     <dxc:LoadingDecorator IsSplashScreenShown="{Binding IsBusy}">
@@ -168,14 +172,19 @@
                             CommandParameter="{x:Static enums:TradeActionEnum.Buy}"
                             Content="Buy Security"
                             Style="{StaticResource ActionButton}"
-                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}" />
+                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}, FallbackValue=Collapsed}" />
                         <dxc:SimpleButton
                             Command="{Binding TradeCommand}"
                             CommandParameter="{x:Static enums:TradeActionEnum.Sell}"
                             Content="Sell Security"
                             Margin="4,0,14,0"
                             Style="{StaticResource ActionButton}"
-                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}}" />
+                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}, FallbackValue=Collapsed}" />
+                        <dxc:SimpleButton
+                            Command="{Binding ImportTransactionsCommand}"
+                            Content="Import"
+                            Style="{StaticResource ActionButton}"
+                            Visibility="{Binding Account.Type, Converter={StaticResource ImportVisibilityConverter}, FallbackValue=Visible}" />
                         <dxc:SimpleButton
                             Command="{Binding NewTransactionCommand}"
                             Content="Transaction"

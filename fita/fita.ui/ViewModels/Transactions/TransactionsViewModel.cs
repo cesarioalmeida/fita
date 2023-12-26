@@ -9,14 +9,17 @@ using DevExpress.Mvvm.DataAnnotations;
 using DevExpress.Mvvm.POCO;
 using DevExpress.Xpf.Core;
 using DevExpress.Xpf.WindowsUI;
+using DryIoc;
 using fita.data.Enums;
 using fita.data.Models;
 using fita.services.Core;
 using fita.services.Repositories;
+using fita.ui.ViewModels.Transactions.ImportManagers;
 using fita.ui.Views.Transactions;
 using JetBrains.Annotations;
 using twentySix.Framework.Core.Common;
 using twentySix.Framework.Core.Messages;
+using twentySix.Framework.Core.UI;
 using twentySix.Framework.Core.UI.Enums;
 using twentySix.Framework.Core.UI.ViewModels;
 
@@ -33,22 +36,18 @@ public class TransactionsViewModel : ComposedViewModelBase
 
     public LockableCollection<EntityModel> Data { get; set; } = new();
 
-    [Import]
-    public AccountRepoService AccountRepoService { get; set; }
+    [Import] public AccountRepoService AccountRepoService { get; set; }
 
-    [Import]
-    public TransactionRepoService TransactionRepoService { get; set; }
+    [Import] public TransactionRepoService TransactionRepoService { get; set; }
 
-    [Import]
-    public TradeRepoService TradeRepoService { get; set; }
+    [Import] public TradeRepoService TradeRepoService { get; set; }
 
-    [Import]
-    public IAccountService AccountService { get; set; }
-        
-    [Import]
-    public IPortfolioService PortfolioService { get; set; }
-        
-    protected IDocumentManagerService ModalDocumentManagerService => GetService<IDocumentManagerService>("ModalWindowDocumentService", ServiceSearchMode.PreferParents);
+    [Import] public IAccountService AccountService { get; set; }
+
+    [Import] public IPortfolioService PortfolioService { get; set; }
+
+    protected IDocumentManagerService ModalDocumentManagerService =>
+        GetService<IDocumentManagerService>("ModalWindowDocumentService", ServiceSearchMode.PreferParents);
 
     public async Task RefreshData()
     {
@@ -60,7 +59,7 @@ public class TransactionsViewModel : ComposedViewModelBase
             {
                 return;
             }
-                
+
             Account = await AccountRepoService.GetSingle(Account.AccountId, true);
             if (Account is null)
             {
@@ -81,7 +80,7 @@ public class TransactionsViewModel : ComposedViewModelBase
                 balance = await AccountService.CalculateBalance(transaction, balance);
                 Data.Add(new EntityModel(Account, transaction, balance));
             }
-                
+
             Data.EndUpdate();
         }
         finally
@@ -107,7 +106,7 @@ public class TransactionsViewModel : ComposedViewModelBase
     }
 
     [UsedImplicitly]
-    public bool CanEdit(EntityModel model) 
+    public bool CanEdit(EntityModel model)
         => model?.Entity.Category is not null && model.Entity.TradeId is null;
 
     [UsedImplicitly]
@@ -200,7 +199,29 @@ public class TransactionsViewModel : ComposedViewModelBase
             await RefreshData();
         }
     }
-        
+
+    [UsedImplicitly]
+    public async Task ImportTransactions()
+    {
+        var viewModel = ViewModelSource.Create<TransactionsImportViewModel>();
+        viewModel.Account = Account;
+
+        var document = ModalDocumentManagerService.CreateDocument(nameof(TransactionsImportView), viewModel, null, this);
+        document.DestroyOnClose = true;
+        document.Show();
+
+        if (viewModel.Saved)
+        {
+            await RefreshData();
+        }
+    }
+
+    [UsedImplicitly]
+    public bool CanImportTransactions()
+        => !string.IsNullOrEmpty(Account?.Name) &&
+           DryIocBootstrapper.Container.ResolveMany<IImportManager>()
+               .Any(x => x.AppliesToAccountsWithName.Contains(Account.Name));
+
     [UsedImplicitly]
     public void NavigateTo() => NavigationService?.Navigate("PortfolioView", Account, this);
 
@@ -229,7 +250,8 @@ public class TransactionsViewModel : ComposedViewModelBase
     private bool EditTransfer(EntityModel model)
     {
         var viewModel = ViewModelSource.Create<TransferDetailsViewModel>();
-        viewModel.Transaction = model?.Entity ?? new Transaction {AccountId = Account.AccountId, Date = _lastTransactionDate};
+        viewModel.Transaction = model?.Entity ?? new Transaction
+            {AccountId = Account.AccountId, Date = _lastTransactionDate};
         viewModel.Account = Account;
 
         var document = ModalDocumentManagerService.CreateDocument(nameof(TransferDetailsView), viewModel, null, this);
@@ -245,10 +267,12 @@ public class TransactionsViewModel : ComposedViewModelBase
     private bool EditTransaction(EntityModel model)
     {
         var viewModel = ViewModelSource.Create<TransactionDetailsViewModel>();
-        viewModel.Entity = model?.Entity ?? new Transaction {AccountId = Account.AccountId, Date = _lastTransactionDate};
+        viewModel.Entity = model?.Entity ?? new Transaction
+            {AccountId = Account.AccountId, Date = _lastTransactionDate};
         viewModel.Account = Account;
 
-        var document = ModalDocumentManagerService.CreateDocument(nameof(TransactionDetailsView), viewModel, null, this);
+        var document =
+            ModalDocumentManagerService.CreateDocument(nameof(TransactionDetailsView), viewModel, null, this);
 
         document.DestroyOnClose = true;
         document.Show();
