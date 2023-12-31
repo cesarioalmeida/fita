@@ -121,9 +121,12 @@
                             <dxg:GridControl ItemsSource="{Binding Entities}" SelectionMode="Row">
                                 <dxg:GridControl.Columns>
                                     <dxg:GridColumn
+                                        AllowColumnFiltering="False"
                                         FieldName="IsSelected"
                                         Header=""
-                                        Width="18">
+                                        HorizontalHeaderContentAlignment="Center"
+                                        ShowCheckBoxInHeader="True"
+                                        Width="20">
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:CheckEditSettings />
                                         </dxg:GridColumn.EditSettings>
@@ -131,6 +134,7 @@
                                     <dxg:GridColumn
                                         FieldName="Entity.Date"
                                         Header="Date"
+                                        SortOrder="Descending"
                                         Width="40">
                                         <dxg:GridColumn.EditSettings>
                                             <dxe:DateEditSettings />
@@ -175,6 +179,7 @@
                                     <dxg:TableView
                                         AllowEditing="True"
                                         AutoWidth="True"
+                                        EnableImmediatePosting="True"
                                         RowMinHeight="24"
                                         ShowGroupPanel="False"
                                         ShowIndicator="False"

@@ -36,10 +36,9 @@ public class NovoBancoImportManager : IImportManager
     public IEnumerable<string> AppliesToAccountsWithName => ["Novo Banco"];
     public string FileFilter => "Excel Files (.xls)|*.xls|XML Files (.xml)|*.xml|All Files (*.*)|*.*";
 
-    public IEnumerable<Transaction> GetTransactions(string filePath, IReadOnlyList<Category> categories)
+    public IEnumerable<(Transaction, bool)> GetTransactions(string filePath, IReadOnlyList<Category> categories)
     {
-        // we expect the file path to an excel file
-        // convert to csv before processing
+        // we expect the file path to be an excel file
         using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
         var xDoc = XDocument.Load(stream, LoadOptions.None);
         XNamespace ssNs = Namespace;
@@ -55,14 +54,14 @@ public class NovoBancoImportManager : IImportManager
             if (date == default) continue;
             var descriptionLower = cells[3].Value.ToLowerInvariant();
 
-            yield return new Transaction
+            yield return (new Transaction
             {
                 Date = ParseDate(cells[0]),
                 Description = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(descriptionLower),
                 Deposit = ParseDecimal(cells[5]),
                 Payment = -ParseDecimal(cells[4]),
                 Category = MapCategory(descriptionLower, categories)
-            };
+            }, true);
         }
     }
 

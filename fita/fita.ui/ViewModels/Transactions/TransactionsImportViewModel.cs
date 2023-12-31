@@ -37,7 +37,7 @@ public class TransactionsImportViewModel : ComposedDocumentViewModelBase, IDesir
     public virtual ObservableCollection<EntityModel> Entities { get; set; }
     
     public virtual LockableCollection<Category> Categories { get; set; } = new();
-
+    
     public bool Saved { get; private set; }
         
     [Import]
@@ -84,10 +84,15 @@ public class TransactionsImportViewModel : ComposedDocumentViewModelBase, IDesir
             ImportFilePath = OpenFileDialogService.Files.First().GetFullName();
         }
         
+        if (string.IsNullOrWhiteSpace(ImportFilePath))
+        {
+            return;
+        }
+        
         // load file and adjust transactions
         var importedTransactions = _importManager.GetTransactions(ImportFilePath, Categories).ToList();
-        importedTransactions.ForEach(x => x.AccountId = Account.AccountId);
-        Entities = importedTransactions.Select(x => new EntityModel(true, x)).ToObservableCollection();
+        importedTransactions.ForEach(x => x.Transaction.AccountId = Account.AccountId);
+        Entities = importedTransactions.Select(x => new EntityModel(x.IsSelected, x.Transaction)).ToObservableCollection();
     }
 
     [UsedImplicitly]

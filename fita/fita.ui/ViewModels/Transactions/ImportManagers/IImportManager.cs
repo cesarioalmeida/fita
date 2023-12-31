@@ -8,5 +8,5 @@ public interface IImportManager
     public IEnumerable<string> AppliesToAccountsWithName { get; }
     public string FileFilter { get; }
     
-    public IEnumerable<Transaction> GetTransactions(string filePath, IReadOnlyList<Category> categories);
+    public IEnumerable<(Transaction Transaction, bool IsSelected)> GetTransactions(string filePath, IReadOnlyList<Category> categories);
 }
