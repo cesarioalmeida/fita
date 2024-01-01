@@ -39,7 +39,15 @@ public class CsvImportManager : IImportManager
         {"sprüngli", "Dining"},
     };
 
-    private static readonly List<string> DescriptionToDeSelectMapper = ["viseca", "bancomat"];
+    private static readonly List<string> DescriptionsToDeSelect = ["viseca", "bancomat"];
+    
+    private static readonly Dictionary<string, string> PortionsToReplace = new()
+    {
+        // order matters
+        {"einkauf twint,", ""},
+        {"einkauf", ""},
+        {"e-banking", ""},
+    };
 
     public IEnumerable<string> AppliesToAccountsWithName => ["Raiffeisen", "One", "Novo Banco Gold"];
 
@@ -61,6 +69,11 @@ public class CsvImportManager : IImportManager
 
             var descriptionLower = parts[2].ToLowerInvariant();
             var amount = ParseDecimal(parts[3]);
+            
+            foreach (var (key, value) in PortionsToReplace)
+            {
+                descriptionLower = descriptionLower.Replace(key, value).Trim();
+            }
 
             yield return (new Transaction
             {
@@ -69,7 +82,7 @@ public class CsvImportManager : IImportManager
                 Deposit = amount > 0 ? amount : null,
                 Payment = amount < 0 ? -amount : null,
                 Category = MapCategory(descriptionLower, categories)
-            }, !DescriptionToDeSelectMapper.Any(x => descriptionLower.Contains(x)));
+            }, !DescriptionsToDeSelect.Any(x => descriptionLower.Contains(x)));
         }
     }
 

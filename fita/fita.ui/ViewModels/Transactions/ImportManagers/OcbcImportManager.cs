@@ -17,7 +17,7 @@ public class OcbcImportManager : IImportManager
         {"cash rebate", "Interest"}
     };
 
-    private static readonly List<string> DescriptionToDeSelectMapper = ["payment by internet"];
+    private static readonly List<string> DescriptionsToDeSelect = ["payment by internet"];
 
     public IEnumerable<string> AppliesToAccountsWithName => ["OCBC", "OCBC 365"];
 
@@ -47,7 +47,7 @@ public class OcbcImportManager : IImportManager
                 Deposit = amount > 0 ? amount : null,
                 Payment = amount < 0 ? -amount : null,
                 Category = MapCategory(descriptionLower, categories)
-            }, !DescriptionToDeSelectMapper.Any(x => descriptionLower.Contains(x)));
+            }, !DescriptionsToDeSelect.Any(x => descriptionLower.Contains(x)));
         }
     }
 

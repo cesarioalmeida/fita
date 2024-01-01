@@ -19,7 +19,7 @@ public class UbsImportManager : IImportManager
         {"hsgutschrift", "Salary"},
     };
 
-    private static readonly List<string> DescriptionToDeSelectMapper = ["incoming sic-payment"];
+    private static readonly List<string> DescriptionsToDeSelect = ["incoming sic-payment"];
 
     public IEnumerable<string> AppliesToAccountsWithName => ["UBS", "UBS Gold"];
 
@@ -53,7 +53,7 @@ public class UbsImportManager : IImportManager
                 Deposit = amount > 0 ? amount : null,
                 Payment = amount < 0 ? -amount : null,
                 Category = MapCategory(descriptionLower, categories)
-            }, !DescriptionToDeSelectMapper.Any(x => descriptionLower.Contains(x)));
+            }, !DescriptionsToDeSelect.Any(x => descriptionLower.Contains(x)));
         }
     }
 
