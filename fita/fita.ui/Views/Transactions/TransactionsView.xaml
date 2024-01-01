@@ -172,19 +172,19 @@
                             CommandParameter="{x:Static enums:TradeActionEnum.Buy}"
                             Content="Buy Security"
                             Style="{StaticResource ActionButton}"
-                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}, FallbackValue=Collapsed}" />
+                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}, FallbackValue=Collapsed, IsAsync=True}" />
                         <dxc:SimpleButton
                             Command="{Binding TradeCommand}"
                             CommandParameter="{x:Static enums:TradeActionEnum.Sell}"
                             Content="Sell Security"
                             Margin="4,0,14,0"
                             Style="{StaticResource ActionButton}"
-                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}, FallbackValue=Collapsed}" />
+                            Visibility="{Binding Account.Type, Converter={StaticResource AccountTypeToVisibilityConverter}, FallbackValue=Collapsed, IsAsync=True}" />
                         <dxc:SimpleButton
                             Command="{Binding ImportTransactionsCommand}"
                             Content="Import"
                             Style="{StaticResource ActionButton}"
-                            Visibility="{Binding Account.Type, Converter={StaticResource ImportVisibilityConverter}, FallbackValue=Visible}" />
+                            Visibility="{Binding Account.Type, Converter={StaticResource ImportVisibilityConverter}, FallbackValue=Visible, IsAsync=True}" />
                         <dxc:SimpleButton
                             Command="{Binding NewTransactionCommand}"
                             Content="Transaction"

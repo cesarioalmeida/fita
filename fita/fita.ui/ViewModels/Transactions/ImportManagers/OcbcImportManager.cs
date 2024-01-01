@@ -9,32 +9,17 @@ using fita.data.Models;
 namespace fita.ui.ViewModels.Transactions.ImportManagers;
 
 [Export(typeof(IImportManager))]
-public class RaiffeisenImportManager : IImportManager
+public class OcbcImportManager : IImportManager
 {
     private static readonly Dictionary<string, string> DescriptionToCategoriesMapper = new()
     {
         // order matters
-        {"coop", "Groceries"},
-        {"migros", "Groceries"},
-        {"lidl", "Groceries"},
-        {"nishi", "Groceries"},
-        {"asia store", "Groceries"},
-        {"ingrid", "Rent"},
-        {"sunrise", "Telecommunications"},
-        {"swisscom", "Telecommunications"},
-        {"toppharm", "Healthcare"},
-        {"sanitas", "Insurance:Health"},
-        {"leonteq", "Salary"},
-        {"sbb", "Commuting"},
-        {"cembrapay", "Commuting"},
-        {"manora", "Dining"},
-        {"manor", "Groceries"}
+        {"cash rebate", "Interest"}
     };
 
-    private static readonly List<string> DescriptionToDeSelectMapper = new()
-        {"viseca", "bancomat"};
+    private static readonly List<string> DescriptionToDeSelectMapper = ["payment by internet"];
 
-    public IEnumerable<string> AppliesToAccountsWithName => ["Raiffeisen"];
+    public IEnumerable<string> AppliesToAccountsWithName => ["OCBC", "OCBC 365"];
 
     public string FileFilter => "CSV Files (.csv)|*.csv|All Files (*.*)|*.*";
 
@@ -42,22 +27,22 @@ public class RaiffeisenImportManager : IImportManager
     {
         // we expect the file path to be a csv file
         // in the following format:
-        //IBAN;Date;Description;Credit/Debit Amount;Balance;Value Date
+        //Transaction date,Description,Withdrawals (SGD),Deposits (SGD)
         var lines = System.IO.File.ReadAllLines(filePath);
-        // skip the first line
-        lines = lines.Skip(1).ToArray();
+        // skip the first 7 lines
+        lines = lines.Skip(7).ToArray();
 
         foreach (var line in lines)
         {
-            var parts = line.Split(';');
+            var parts = line.Split(',');
             if (parts.Length < 4) continue;
 
-            var descriptionLower = parts[2].ToLowerInvariant();
-            var amount = ParseDecimal(parts[3]);
+            var descriptionLower = parts[1].ToLowerInvariant();
+            var amount = -ParseDecimal(parts[2]) ?? ParseDecimal(parts[3]);
 
             yield return (new Transaction
             {
-                Date = ParseDate(parts[1]),
+                Date = ParseDate(parts[0]),
                 Description = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(descriptionLower),
                 Deposit = amount > 0 ? amount : null,
                 Payment = amount < 0 ? -amount : null,
@@ -67,7 +52,10 @@ public class RaiffeisenImportManager : IImportManager
     }
 
     private static DateTime ParseDate(string element)
-        => DateTime.TryParse(element, out var date) ? date : default;
+        => DateTime.TryParseExact(element, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None,
+            out var date)
+            ? date
+            : default;
 
     private static decimal? ParseDecimal(string element)
         => decimal.TryParse(element, NumberStyles.Any, CultureInfo.InvariantCulture, out var result)
