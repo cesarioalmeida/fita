@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using fita.data.Models;
 using fita.services.Repositories;
+using JetBrains.Annotations;
 using twentySix.Framework.Core.Common;
 using twentySix.Framework.Core.Services.Interfaces;
 using YahooFinanceAPI;
@@ -21,6 +22,7 @@ public class SecurityService : ISecurityService
 
     [Import] public ILoggingService LoggingService { get; set; }
 
+    [UsedImplicitly]
     public Task<Result> Update(SecurityHistory securityHistory, DateTime? date = null)
         => Task.Run(
             async () =>
@@ -62,26 +64,25 @@ public class SecurityService : ISecurityService
 
     private static async Task<HistoricalElement> DownloadData(SecurityHistory securityHistory, DateTime? date = null)
     {
-        List<YahooHistoryPrice> yahooHistorical = new();
+        List<YahooHistoryPrice> yahooHistorical = [];
 
         var numberOfTries = 0;
         var startDate = date ?? DateTime.Now;
 
-        if (startDate.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
-        {
-            startDate = startDate.DayOfWeek == DayOfWeek.Saturday
-                ? startDate.AddDays(-1)
-                : startDate.AddDays(-2);
-        }
-
         const int timeout = 5000;
 
-        while (yahooHistorical.Count == 0 && numberOfTries < 3)
+        while (yahooHistorical.Count == 0 && numberOfTries < 4)
         {
             var downloadTask = YahooHistorical.GetPriceAsync(securityHistory.Security.Symbol, startDate.Date, DateTime.Now);
             if (await Task.WhenAny(downloadTask, Task.Delay(timeout)) == downloadTask)
             {
                 yahooHistorical = downloadTask.Result;
+            }
+            
+            startDate = startDate.AddDays(-1);
+            while(startDate.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+            {
+                startDate = startDate.AddDays(-1);
             }
 
             numberOfTries++;
