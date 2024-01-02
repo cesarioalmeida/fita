@@ -78,6 +78,8 @@ public class HomeViewModel : ComposedViewModelBase, IDisposable
 
     public async Task RefreshData()
     {
+        if (IsBusy) return;
+        
         IsBusy = true;
 
         try

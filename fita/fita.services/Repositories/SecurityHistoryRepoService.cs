@@ -31,7 +31,7 @@ public class SecurityHistoryRepoService : RepositoryService<SecurityHistory>
 
         try
         {
-            return (await GetAllConditional(x => x.Security.SecurityId == security.SecurityId, true)).Single();
+            return (await GetAllConditional(x => x.Security.SecurityId == security.SecurityId, true)).SingleOrDefault();
         }
         catch (Exception ex)
         {

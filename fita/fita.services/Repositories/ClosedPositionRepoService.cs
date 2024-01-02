@@ -21,6 +21,7 @@ public class ClosedPositionRepoService : RepositoryService<ClosedPosition>
     {
         Collection.EnsureIndex(x => x.ClosedPositionId);
         Collection.EnsureIndex(x => x.Security);
+        Collection.EnsureIndex(x => x.SellDate);
     }
 
     public async Task<IEnumerable<ClosedPosition>> GetAllForSecurity(ObjectId securityId)

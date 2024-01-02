@@ -23,13 +23,14 @@ public class SecurityPositionRepoService : RepositoryService<SecurityPosition>
         Collection.EnsureIndex(x => x.SecurityPositionId);
         Collection.EnsureIndex(x => x.Security);
         Collection.EnsureIndex(x => x.AccountId);
+        Collection.EnsureIndex(x => x.Quantity);
     }
 
     public async Task<IEnumerable<SecurityPosition>> GetAllForAccount(ObjectId accountId)
     {
         try
         {
-            return (await GetAllConditional(x => x.AccountId == accountId && x.Quantity > 0, true));
+            return await GetAllConditional(x => x.AccountId == accountId && x.Quantity > 0, true);
         }
         catch (Exception ex)
         {
@@ -42,7 +43,7 @@ public class SecurityPositionRepoService : RepositoryService<SecurityPosition>
     {
         try
         {
-            return (await GetAllConditional(x => x.AccountId == accountId && x.Security.SecurityId == securityId, true)).Single();
+            return (await GetAllConditional(x => x.AccountId == accountId && x.Security.SecurityId == securityId, true)).SingleOrDefault();
         }
         catch (Exception ex)
         {
