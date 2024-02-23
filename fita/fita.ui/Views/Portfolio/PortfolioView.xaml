@@ -80,7 +80,7 @@
                     <dxg:GridColumn
                         EditSettings="{StaticResource Currency2EditSettings}"
                         FieldName="Entity.Value"
-                        Header="Value" />
+                        Header="Buy Total" />
                     <dxg:GridColumn
                         EditSettings="{StaticResource Currency4EditSettings}"
                         FieldName="Entity.BreakEvenPrice"
